@@ -1,0 +1,205 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dr. Yogesh Shepal | Personal Website</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #007bff;
+      --dark: #1e1e2f;
+      --light: #f8f9fa;
+      --text: #333;
+    }
+
+    * {
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--light);
+      color: var(--text);
+    }
+
+    header {
+      background: var(--dark);
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    nav {
+      background: var(--primary);
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 14px 20px;
+      display: inline-block;
+      transition: background 0.3s;
+    }
+
+    nav a:hover {
+      background: #0056b3;
+    }
+
+    section {
+      padding: 60px 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    section h2 {
+      color: var(--primary);
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 5px;
+    }
+
+    .about img {
+      width: 160px;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 4px solid var(--primary);
+      margin-bottom: 20px;
+    }
+
+    .about p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    .resume a {
+      background: var(--primary);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: var(--dark);
+      color: white;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.5rem;
+      }
+      nav a {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Dr. Yogesh Shepal</h1>
+    <p>Associate Professor | CSE Researcher | Web Developer</p>
+  </header>
+
+  <nav>
+    <a href="#about">About</a>
+    <a href="#resume">Resume</a>
+    <a href="#projects">Projects</a>
+    <a href="#research">Research</a>
+    <a href="#blog">Blog</a>
+    <a href="#teaching">Teaching</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <section id="about" class="about">
+    <div style="text-align:center;">
+      <img src="yogesh-shepal.jpg" alt="Dr. Yogesh Shepal" />
+      <p>Hello! I'm Dr. Yogesh Ramdas Shepal, Associate Professor at ASM NEXTGEN Technical Campus, Pune. Passionate about teaching, research, and building intelligent software solutions.</p>
+    </div>
+  </section>
+
+  <section id="resume" class="resume">
+    <h2>Resume / CV</h2>
+    <p>You can download my full CV below:</p>
+    <a href="Resume.docx" download>📄 Download Resume</a>
+  </section>
+
+  <section id="projects">
+    <h2>Projects</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Training & Placement Web App</h3>
+        <p>Web-based solution with predictive features for college T&P management.</p>
+      </div>
+      <div class="card">
+        <h3>Emotion-Based Music Player</h3>
+        <p>AI model detects emotion to recommend music. Published in IRJMET.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="research">
+    <h2>Research & Publications</h2>
+    <ul>
+      <li>Deep Learning for Cervical Cancer Detection - Panamerican Mathematical Journal (2024)</li>
+      <li>AI for Diabetes Risk - Frontiers in Health Informatics (2024)</li>
+      <li>Word Sense Disambiguation - Copyrighted, 2024</li>
+    </ul>
+  </section>
+
+  <section id="blog">
+    <h2>Blog / Articles</h2>
+    <p>Coming soon: Thoughts on AI, Education, and Programming.</p>
+  </section>
+
+  <section id="teaching">
+    <h2>Teaching</h2>
+    <p>I have taught at multiple institutes including ASM NEXTGEN, Sinhgad Institute, and D.Y. Patil College. My areas include C, Java, and AI.</p>
+  </section>
+
+  <section id="contact">
+    <h2>Contact Me</h2>
+    <p>Email: yogeshshepal@asmedu.org | yogeshshepal@gmail.com</p>
+    <p><a href="https://www.asmnext.edu.in/" target="_blank">ASM NEXTGEN Technical Campus</a></p>
+  </section>
+
+  <footer>
+    © 2025 ASM NEXTGEN Technical Campus — Developed by Dr. Yogesh Shepal
+  </footer>
+</body>
+</html>
