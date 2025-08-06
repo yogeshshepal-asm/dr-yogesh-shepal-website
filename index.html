@@ -119,6 +119,40 @@
       background: var(--dark);
       color: white;
     }
+    .material-card {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 24px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  border: 2px solid var(--primary);
+}
+.material-card h4 {
+  color: var(--primary);
+  margin-top: 0;
+}
+.material-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.material-list li {
+  margin-bottom: 16px;
+}
+.material-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+.material-table td, .material-table th {
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+.material-table th {
+  background: #f0f4fa;
+  color: var(--primary);
+}
 
     @media (max-width: 600px) {
       header h1 {
@@ -133,7 +167,7 @@
 <body>
   <header>
     <h1>Dr. Yogesh Shepal</h1>
-    <p>Associate Professor | CSE Researcher | Web Developer</p>
+    <p>Associate Professor | CSE Researcher </p>
   </header>
 
   <nav>
@@ -190,9 +224,60 @@
   </section>
 
   <section id="teaching">
-    <h2>Teaching</h2>
-    <p>I have taught at multiple institutes including ASM NEXTGEN, PCET NMIET, Sinhgad Institute, PRES and D.Y. Patil College. My areas include C, Java, and AI.</p>
-  </section>
+  <h2>Teaching</h2>
+  <p>
+    I have taught at multiple institutes including ASM NEXTGEN, PCET NMIET, Sinhgad Institute, PRES and D.Y. Patil College.<br>
+    My areas include C, Java, and AI.
+  </p>
+  
+  <div class="material-card">
+    <h4> Fundamentals of Programming Languages Subject Material</h4>
+    <ul class="material-list">
+      <li>
+        <strong>Syllabus:</strong>
+        <a href="FPL_Syllabus.pdf" target="_blank">Download Syllabus</a>
+      </li>
+      <li>
+        <strong>Notes:</strong>
+        <table class="material-table">
+          <tr>
+
+            <th>Unit</th>
+            <th>Notes Link</th>
+          </tr>
+          <tr>
+            <td>Unit 1</td>
+            <td><a href="FPL_Unit1_Notes.pdf" target="_blank">Download Notes</a></td>
+          </tr>
+          <!--<tr>
+            <td>Unit 2</td>
+            <td><a href="FPL_Unit2_Notes.pdf" target="_blank">Download Notes</a></td>
+          </tr>
+          <tr>
+            <td>Unit 3</td>
+            <td><a href="FPL_Unit3_Notes.pdf" target="_blank">Download Notes</a></td>
+          </tr>
+          <tr>
+            <td>Unit 4</td>
+            <td><a href="FPL_Unit4_Notes.pdf" target="_blank">Download Notes</a></td>
+          </tr>
+          <tr>
+            <td>Unit 5</td>
+            <td><a href="FPL_Unit5_Notes.pdf" target="_blank">Download Notes</a></td>
+          </tr>-->
+        </table>
+      </li>
+      <li>
+        <strong>Books:</strong>
+        <a href="https://aiict.edu.bd/wp-content/uploads/2022/09/ansi-c-balaguruswamy-c-language-PDFDrive.com-.pdf" target="_blank">c-balaguruswamy Books</a>
+      </li>
+      <!--<li>
+        <strong>Lab Manual:</strong>
+        <a href="FPL_Lab_Manual.pdf" target="_blank">Download Lab Manual</a>
+      </li>-->
+    </ul>
+  </div>
+</section>
 
   <section id="contact">
     <h2>Contact Me</h2>
