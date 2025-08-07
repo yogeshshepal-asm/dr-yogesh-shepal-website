@@ -12,12 +12,10 @@
       --light: #f8f9fa;
       --text: #333;
     }
-
     * {
       box-sizing: border-box;
       scroll-behavior: smooth;
     }
-
     body {
       font-family: 'Roboto', sans-serif;
       margin: 0;
@@ -25,68 +23,32 @@
       background: #eaf0fa;
       color: #222;
     }
-
-    /*header {
-      background: var(--dark);
-      color: white;
-      padding: 20px 0;
-      text-align: center;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 2rem;
-    }*/
-
-    nav {
-      background: var(--primary);
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      padding: 14px 20px;
-      display: inline-block;
-      transition: background 0.3s;
-    }
-
-    nav a:hover {
-      background: #0056b3;
-    }
-
     section {
       padding: 60px 20px;
       max-width: 1000px;
       margin: auto;
     }
-
     section h2 {
       color: var(--primary);
       margin-bottom: 20px;
       border-bottom: 2px solid var(--primary);
       padding-bottom: 5px;
     }
-
     .about img {
       width: 160px;
       height: 160px;
-      object-fit: contain; /* Changed from cover to contain */
+      object-fit: contain;
       background: #fff;
       border-radius: 50%;
       border: 4px solid var(--primary);
       margin-bottom: 20px;
     }
-
     .about p {
       font-size: 1.1rem;
       line-height: 1.6;
       max-width: 700px;
       margin: auto;
     }
-
     .resume a {
       background: var(--primary);
       color: white;
@@ -94,13 +56,11 @@
       border-radius: 5px;
       text-decoration: none;
     }
-
     .cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
     }
-
     .card {
       background: white;
       padding: 20px;
@@ -108,92 +68,90 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       transition: transform 0.3s;
     }
-
     .card:hover {
       transform: translateY(-5px);
     }
-    /* Slider styles - place in your <style> section */
-.slider-container {
-  width: 100%;
-  max-width: 700px;
-  height: 250px;
-  margin: 0 auto;
-  background: var(--dark);
-  border-radius: 0 0 12px 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-  overflow: hidden;
-  position: relative;
-}
-.slider {
-  display: flex;
-  transition: transform 0.6s cubic-bezier(.77,0,.18,1);
-  height: 250px;
-  touch-action: pan-x;
-}
-.slide {
-  flex: 0 0 50%;
-  height: 250px;
-  object-fit: contain;
-  background: #fff;
-  border-right: 2px solid #eee;
-}
-.slide:last-child {
-  border-right: none;
-}
-.prev, .next {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0,0,0,0.5);
-  color: #fff;
-  border: none;
-  font-size: 2rem;
-  padding: 8px 16px;
-  cursor: pointer;
-  border-radius: 50%;
-  z-index: 2;
-}
-.prev { left: 10px; }
-.next { right: 10px; }
-.slider-dots {
-  position: absolute;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 8px;
-}
-.slider-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #bbb;
-  cursor: pointer;
-  border: none;
-  outline: none;
-  transition: background 0.3s;
-}
-.slider-dot.active {
-  background: var(--primary);
-}
-@media (max-width: 800px) {
-  .slider-container, .slider {
-    max-width: 100vw;
-    height: 180px;
-  }
-  .slide {
-    height: 180px;
-  }
-}
-@media (max-width: 500px) {
-  .slider-container, .slider {
-    height: 120px;
-  }
-  .slide {
-    height: 120px;
-  }
-}
-
+    /* Slider styles */
+    .slider-container {
+      width: 100%;
+      max-width: 700px;
+      height: 250px;
+      margin: 0 auto;
+      background: var(--dark);
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+      position: relative;
+    }
+    .slider {
+      display: flex;
+      transition: transform 0.6s cubic-bezier(.77,0,.18,1);
+      height: 250px;
+      touch-action: pan-x;
+    }
+    .slide {
+      flex: 0 0 50%;
+      height: 250px;
+      object-fit: contain;
+      background: #fff;
+      border-right: 2px solid #eee;
+    }
+    .slide:last-child {
+      border-right: none;
+    }
+    .prev, .next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      border: none;
+      font-size: 2rem;
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 50%;
+      z-index: 2;
+    }
+    .prev { left: 10px; }
+    .next { right: 10px; }
+    .slider-dots {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+    }
+    .slider-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #bbb;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      transition: background 0.3s;
+    }
+    .slider-dot.active {
+      background: var(--primary);
+    }
+    @media (max-width: 800px) {
+      .slider-container, .slider {
+        max-width: 100vw;
+        height: 180px;
+      }
+      .slide {
+        height: 180px;
+      }
+    }
+    @media (max-width: 500px) {
+      .slider-container, .slider {
+        height: 120px;
+      }
+      .slide {
+        height: 120px;
+      }
+    }
     footer {
       text-align: center;
       padding: 20px;
@@ -203,170 +161,173 @@
       margin-top: 40px;
     }
     .material-card {
-  max-width: 600px;
-  margin: 30px auto;
-  padding: 24px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-  border: 2px solid var(--primary);
-}
-.material-card h4 {
-  color: var(--primary);
-  margin-top: 0;
-}
-.material-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.material-list li {
-  margin-bottom: 16px;
-}
-.material-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 8px;
-}
-.material-table td, .material-table th {
-  padding: 8px;
-  border: 1px solid #ddd;
-}
-.material-table th {
-  background: #f0f4fa;
-  color: var(--primary);
-}
-
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 1.5rem;
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 24px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      border: 2px solid var(--primary);
+    }
+    .material-card h4 {
+      color: var(--primary);
+      margin-top: 0;
+    }
+    .material-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .material-list li {
+      margin-bottom: 16px;
+    }
+    .material-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+    .material-table td, .material-table th {
+      padding: 8px;
+      border: 1px solid #ddd;
+    }
+    .material-table th {
+      background: #f0f4fa;
+      color: var(--primary);
+    }
+    /* Sidebar styles */
+    .sidebar {
+      width: 260px;
+      background: linear-gradient(180deg, #007bff 0%, #0056b3 100%);
+      color: #fff;
+      min-height: 100vh;
+      padding: 0;
+      box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 100;
+    }
+    .sidebar-header {
+      text-align: center;
+      padding: 32px 10px 16px 10px;
+    }
+    .sidebar-img {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 3px solid #fff;
+      object-fit: contain;
+      margin-bottom: 10px;
+      background: #fff;
+    }
+    .sidebar h2 {
+      margin: 10px 0 4px 0;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+    .sidebar p {
+      margin: 0 0 16px 0;
+      font-size: 1rem;
+      font-weight: 400;
+    }
+    .sidebar nav {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+      padding: 0 20px;
+    }
+    .sidebar nav a {
+      color: #fff;
+      text-decoration: none;
+      padding: 12px 18px;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: background 0.2s, color 0.2s;
+      font-size: 1rem;
+    }
+    .sidebar nav a:hover,
+    .sidebar nav a.active {
+      background: #fff;
+      color: #007bff;
+    }
+    .main-content {
+      margin-left: 260px;
+      width: calc(100% - 260px);
+      padding: 0;
+    }
+    /* Sidebar toggle button */
+    .sidebar-toggle {
+      display: none;
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: #fff;
+      color: #007bff;
+      border: none;
+      font-size: 2rem;
+      border-radius: 6px;
+      padding: 4px 10px;
+      z-index: 101;
+      cursor: pointer;
+    }
+    @media (max-width: 900px) {
+      .sidebar {
+        width: 220px;
+        left: -220px;
+        transition: left 0.3s;
+        box-shadow: 2px 0 12px rgba(0,0,0,0.08);
       }
-      nav a {
-        padding: 10px;
+      .sidebar.open {
+        left: 0;
+      }
+      .sidebar-toggle {
+        display: block;
+      }
+      .main-content {
+        margin-left: 0;
+        width: 100%;
+      }
+      .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        background: rgba(0,0,0,0.2);
+        z-index: 99;
+      }
+      .sidebar.open ~ .sidebar-overlay {
+        display: block;
       }
     }
-
-    /* Sidebar styles */
-.sidebar {
-  width: 260px;
-  background: linear-gradient(180deg, #007bff 0%, #0056b3 100%);
-  color: #fff;
-  min-height: 100vh;
-  padding: 0;
-  box-shadow: 2px 0 12px rgba(0,0,0,0.08);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 100;
-}
-.sidebar-header {
-  text-align: center;
-  padding: 32px 10px 16px 10px;
-}
-.sidebar-img {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  border: 3px solid #fff;
-  object-fit: contain;
-  margin-bottom: 10px;
-  background: #fff;
-}
-.sidebar h2 {
-  margin: 10px 0 4px 0;
-  font-size: 1.3rem;
-  font-weight: 700;
-}
-.sidebar p {
-  margin: 0 0 16px 0;
-  font-size: 1rem;
-  font-weight: 400;
-}
-.sidebar nav {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
-  padding: 0 20px;
-}
-.sidebar nav a {
-  color: #fff;
-  text-decoration: none;
-  padding: 12px 18px;
-  border-radius: 6px;
-  font-weight: 500;
-  transition: background 0.2s, color 0.2s;
-  font-size: 1rem;
-}
-.sidebar nav a:hover,
-.sidebar nav a.active {
-  background: #fff;
-  color: #007bff;
-}
-.main-content {
-  margin-left: 260px;
-  width: calc(100% - 260px);
-  padding: 0;
-}
-@media (max-width: 900px) {
-  .sidebar {
-    width: 220px;
-    left: -220px;
-    transition: left 0.3s;
-    box-shadow: 2px 0 12px rgba(0,0,0,0.08);
-  }
-  .sidebar.open {
-    left: 0;
-  }
-  .sidebar-toggle {
-    display: block;
-  }
-  .main-content {
-    margin-left: 0;
-    width: 100%;
-  }
-  /* Overlay for sidebar when open */
-  .sidebar-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.2);
-    z-index: 99;
-  }
-  .sidebar.open ~ .sidebar-overlay {
-    display: block;
-  }
-}
-/* Color tweaks for cards and sections */
-.card-section, .material-card, section {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-  margin-bottom: 30px;
-  padding: 30px 24px;
-}
-.card-section h2, section h2 {
-  color: #0056b3;
-  margin-bottom: 18px;
-  border-bottom: 2px solid #007bff;
-  padding-bottom: 5px;
-}
-
+    /* Color tweaks for cards and sections */
+    .card-section, .material-card, section {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      margin-bottom: 30px;
+      padding: 30px 24px;
+    }
+    .card-section h2, section h2 {
+      color: #0056b3;
+      margin-bottom: 18px;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 5px;
+    }
   </style>
 </head>
 <body>
   <div class="sidebar">
-  <button class="sidebar-toggle" aria-label="Toggle navigation">&#9776;</button>
-  <div class="sidebar-header">
-    <img src="yogesh-shepal.jpg" alt="Dr. Yogesh Shepal" class="sidebar-img" />
-    <h2>Dr. Yogesh Shepal</h2>
-    <p>Associate Professor</p>
-  </div>
-  <nav>
+    <button class="sidebar-toggle" aria-label="Toggle navigation">&#9776;</button>
+    <div class="sidebar-header">
+      <img src="yogesh-shepal.jpg" alt="Dr. Yogesh Shepal" class="sidebar-img" />
+      <h2>Dr. Yogesh Shepal</h2>
+      <p>Associate Professor</p>
+    </div>
+    <nav>
       <a href="#about">About</a>
       <a href="#resume">Resume</a>
       <a href="#projects">Projects</a>
@@ -376,252 +337,200 @@
       <a href="#contact">Contact</a>
     </nav>
   </div>
+  <div class="sidebar-overlay"></div>
   <div class="main-content">
-    <!-- Move all your existing content (slider, sections, footer, script) inside this div -->
-    <!--  <header>
-    <h1>Dr. Yogesh Shepal</h1>
-    <p>Associate Professor | CSE Researcher </p>
-  </header>-->
-<body>
-  <div class="slider-container">
-    <div class="slider">
-      <img src="slider1.jpg" alt="Slide 1" class="slide">
-      <img src="slider2.jpg" alt="Slide 2" class="slide">
-      <img src="slider3.jpg" alt="Slide 3" class="slide">
-      <img src="slider4.jpg" alt="Slide 4" class="slide">
-      <img src="slider5.jpg" alt="Slide 5" class="slide">
-      <img src="slider6.jpg" alt="Slide 6" class="slide">
-    </div>
-    <button class="prev">&#10094;</button>
-    <button class="next">&#10095;</button>
-    <div class="slider-dots"></div>
-  </div>
-
-  <section id="about" class="about">
-    <div style="text-align:center;">
-      <img src="yogesh-shepal.jpg" alt="Dr. Yogesh Shepal" />
-      <p>Hello! I'm Dr. Yogesh Ramdas Shepal, Associate Professor at ASM NEXTGEN Technical Campus, Pune. Passionate about teaching, research, and building intelligent software solutions.</p>
-    </div>
-  </section>
-
-  <section id="resume" class="resume">
-    <h2>Resume / CV</h2>
-    <p>You can download my full CV below:</p>
-    <a href="Resume.pdf" download>📄 Download Resume</a>
-  </section>
-
-  <section id="projects">
-    <h2>Projects</h2>
-    <div class="cards">
-      <div class="card">
-        <h3>Training & Placement Web App</h3>
-        <p>Web-based solution with predictive features for college T&amp;P management.</p>
+    <div class="slider-container">
+      <div class="slider">
+        <img src="slider1.jpg" alt="Slide 1" class="slide">
+        <img src="slider2.jpg" alt="Slide 2" class="slide">
+        <img src="slider3.jpg" alt="Slide 3" class="slide">
+        <img src="slider4.jpg" alt="Slide 4" class="slide">
+        <img src="slider5.jpg" alt="Slide 5" class="slide">
+        <img src="slider6.jpg" alt="Slide 6" class="slide">
       </div>
-      <div class="card">
-        <h3>Emotion-Based Music Player</h3>
-        <p>AI model detects emotion to recommend music.</p>
-      </div>
+      <button class="prev">&#10094;</button>
+      <button class="next">&#10095;</button>
+      <div class="slider-dots"></div>
     </div>
-  </section>
-
-  <section id="research">
-    <h2>Research & Publications</h2>
-    <ul>
-      <li>Deep Learning for Cervical Cancer Detection - Panamerican Mathematical Journal (2024)</li>
-      <li>AI for Diabetes Risk - Frontiers in Health Informatics (2024)</li>
-      <li>Word Sense Disambiguation - Copyrighted, 2024</li>
-      <li>Autonomous Drone Navigation Console  (Patent) 2024</li>
-    </ul>
-  </section>
-
-  <section id="blog">
-    <h2>Blog / Articles</h2>
-    <p>Explore my AI-powered learning tool for C programming:</p>
-    <p><a href="https://c-professor-ai.onrender.com/" target="_blank">👉 Ask Your C Professor (AI Agent)</a></p>
-  </section>
-
-  <section id="teaching">
-  <h2>Teaching</h2>
-  <p>
-    I have taught at multiple institutes including ASM NEXTGEN, PCET NMIET, Sinhgad Institute, PRES and D.Y. Patil College.<br>
-    My areas include C, Java, and AI.
-  </p>
-  
-  <div class="material-card">
-    <h4> Fundamentals of Programming Languages Subject Material</h4>
-    <ul class="material-list">
-      <li>
-        <strong>Syllabus:</strong>
-        <a href="FPL_Syllabus.pdf" target="_blank">Download Syllabus</a>
-      </li>
-      <li>
-        <strong>Notes:</strong>
-        <table class="material-table">
-          <tr>
-
-            <th>Unit</th>
-            <th>Notes Link</th>
-          </tr>
-          <tr>
-            <td>Unit 1</td>
-            <td><a href="FPL_Unit1_Notes.pdf" target="_blank">Download Notes</a></td>
-          </tr>
-          <tr>
-            <td>Unit 2</td>
-            <td><a href="FPL_Unit2_Notes.pdf" target="_blank">Download Notes</a></td>
-          </tr>
-         <!-- <tr>
-            <td>Unit 3</td>
-            <td><a href="FPL_Unit3_Notes.pdf" target="_blank">Download Notes</a></td>
-          </tr>
-          <tr>
-            <td>Unit 4</td>
-            <td><a href="FPL_Unit4_Notes.pdf" target="_blank">Download Notes</a></td>
-          </tr>
-          <tr>
-            <td>Unit 5</td>
-            <td><a href="FPL_Unit5_Notes.pdf" target="_blank">Download Notes</a></td>
-          </tr>-->
-        </table>
-      </li>
-      <li>
-        <strong>Books:</strong>
-        <a href="https://aiict.edu.bd/wp-content/uploads/2022/09/ansi-c-balaguruswamy-c-language-PDFDrive.com-.pdf" target="_blank">c-balaguruswamy Books</a>
-      </li>
-      <li>
-        <strong>NPTEL Youtube Video</strong>
-        <a href="https://www.youtube.com/watch?v=-wv-OERJK3M&t=2s" target="_blank">Problem Solving Through Programming In C</a>
-      </li>
-      <!--<li>
-        <strong>Lab Manual:</strong>
-        <a href="FPL_Lab_Manual.pdf" target="_blank">Download Lab Manual</a>
-      </li>-->
-    </ul>
-  </div>
-</section>
-
-  <section id="contact">
-    <h2>Contact Me</h2>
-    <p>Email: yogeshshepal@asmedu.org | yogeshshepal@gmail.com</p>
-    <p><a href="https://www.asmnext.edu.in/" target="_blank">ASM NEXTGEN Technical Campus</a></p>
-  </section>
-
-  <footer>
-    © 2025 ASM NEXTGEN Technical Campus — Developed by Dr. Yogesh Shepal
-  </footer>
-<script>
-// filepath: d:\Dr_Yogesh_Shepal_Website\index.html
-const slider = document.querySelector('.slider');
-const slides = Array.from(document.querySelectorAll('.slide'));
-const visibleSlides = 2;
-let currentSlide = 0;
-
-// Clone first and last slides for seamless looping
-for (let i = 0; i < visibleSlides; i++) {
-  slider.appendChild(slides[i].cloneNode(true));
-  slider.insertBefore(slides[slides.length - 1 - i].cloneNode(true), slider.firstChild);
-}
-const allSlides = slider.querySelectorAll('.slide');
-const totalSlides = allSlides.length;
-
-// Dots navigation
-const dotsContainer = document.querySelector('.slider-dots');
-const dotCount = slides.length;
-dotsContainer.innerHTML = '';
-for (let i = 0; i < dotCount; i++) {
-  const dot = document.createElement('button');
-  dot.className = 'slider-dot';
-  dot.setAttribute('aria-label', `Go to slide ${i+1}`);
-  dot.onclick = () => goToSlide(i);
-  dotsContainer.appendChild(dot);
-}
-
-function updateDots() {
-  const dots = dotsContainer.querySelectorAll('.slider-dot');
-  dots.forEach(dot => dot.classList.remove('active'));
-  dots[currentSlide % dotCount].classList.add('active');
-}
-
-// Set initial position
-function setSliderPosition(animate = true) {
-  slider.style.transition = animate ? 'transform 0.6s cubic-bezier(.77,0,.18,1)' : 'none';
-  slider.style.transform = `translateX(-${(currentSlide + visibleSlides) * (100 / visibleSlides)}%)`;
-  updateDots();
-}
-
-// Next/Prev handlers
-function nextSlide() {
-  currentSlide++;
-  setSliderPosition();
-  if (currentSlide >= slides.length) {
-    setTimeout(() => {
-      slider.style.transition = 'none';
-      currentSlide = 0;
+    <section id="about" class="about">
+      <div style="text-align:center;">
+        <img src="yogesh-shepal.jpg" alt="Dr. Yogesh Shepal" />
+        <p>Hello! I'm Dr. Yogesh Ramdas Shepal, Associate Professor at ASM NEXTGEN Technical Campus, Pune. Passionate about teaching, research, and building intelligent software solutions.</p>
+      </div>
+    </section>
+    <section id="resume" class="resume">
+      <h2>Resume / CV</h2>
+      <p>You can download my full CV below:</p>
+      <a href="Resume.pdf" download>📄 Download Resume</a>
+    </section>
+    <section id="projects">
+      <h2>Projects</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>Training & Placement Web App</h3>
+          <p>Web-based solution with predictive features for college T&amp;P management.</p>
+        </div>
+        <div class="card">
+          <h3>Emotion-Based Music Player</h3>
+          <p>AI model detects emotion to recommend music.</p>
+        </div>
+      </div>
+    </section>
+    <section id="research">
+      <h2>Research & Publications</h2>
+      <ul>
+        <li>Deep Learning for Cervical Cancer Detection - Panamerican Mathematical Journal (2024)</li>
+        <li>AI for Diabetes Risk - Frontiers in Health Informatics (2024)</li>
+        <li>Word Sense Disambiguation - Copyrighted, 2024</li>
+        <li>Autonomous Drone Navigation Console  (Patent) 2024</li>
+      </ul>
+    </section>
+    <section id="blog">
+      <h2>Blog / Articles</h2>
+      <p>Explore my AI-powered learning tool for C programming:</p>
+      <p><a href="https://c-professor-ai.onrender.com/" target="_blank">👉 Ask Your C Professor (AI Agent)</a></p>
+    </section>
+    <section id="teaching">
+      <h2>Teaching</h2>
+      <p>
+        I have taught at multiple institutes including ASM NEXTGEN, PCET NMIET, Sinhgad Institute, PRES and D.Y. Patil College.<br>
+        My areas include C, Java, and AI.
+      </p>
+      <div class="material-card">
+        <h4> Fundamentals of Programming Languages Subject Material</h4>
+        <ul class="material-list">
+          <li>
+            <strong>Syllabus:</strong>
+            <a href="FPL_Syllabus.pdf" target="_blank">Download Syllabus</a>
+          </li>
+          <li>
+            <strong>Notes:</strong>
+            <table class="material-table">
+              <tr>
+                <th>Unit</th>
+                <th>Notes Link</th>
+              </tr>
+              <tr>
+                <td>Unit 1</td>
+                <td><a href="FPL_Unit1_Notes.pdf" target="_blank">Download Notes</a></td>
+              </tr>
+              <tr>
+                <td>Unit 2</td>
+                <td><a href="FPL_Unit2_Notes.pdf" target="_blank">Download Notes</a></td>
+              </tr>
+            </table>
+          </li>
+          <li>
+            <strong>Books:</strong>
+            <a href="https://aiict.edu.bd/wp-content/uploads/2022/09/ansi-c-balaguruswamy-c-language-PDFDrive.com-.pdf" target="_blank">c-balaguruswamy Books</a>
+          </li>
+          <li>
+            <strong>NPTEL Youtube Video</strong>
+            <a href="https://www.youtube.com/watch?v=-wv-OERJK3M&t=2s" target="_blank">Problem Solving Through Programming In C</a>
+          </li>
+        </ul>
+      </div>
+    </section>
+    <section id="contact">
+      <h2>Contact Me</h2>
+      <p>Email: yogeshshepal@asmedu.org | yogeshshepal@gmail.com</p>
+      <p><a href="https://www.asmnext.edu.in/" target="_blank">ASM NEXTGEN Technical Campus</a></p>
+    </section>
+    <footer>
+      © 2025 ASM NEXTGEN Technical Campus — Developed by Dr. Yogesh Shepal
+    </footer>
+    <script>
+      // Slider JS (unchanged)
+      const slider = document.querySelector('.slider');
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const visibleSlides = 2;
+      let currentSlide = 0;
+      for (let i = 0; i < visibleSlides; i++) {
+        slider.appendChild(slides[i].cloneNode(true));
+        slider.insertBefore(slides[slides.length - 1 - i].cloneNode(true), slider.firstChild);
+      }
+      const allSlides = slider.querySelectorAll('.slide');
+      const totalSlides = allSlides.length;
+      const dotsContainer = document.querySelector('.slider-dots');
+      const dotCount = slides.length;
+      dotsContainer.innerHTML = '';
+      for (let i = 0; i < dotCount; i++) {
+        const dot = document.createElement('button');
+        dot.className = 'slider-dot';
+        dot.setAttribute('aria-label', `Go to slide ${i+1}`);
+        dot.onclick = () => goToSlide(i);
+        dotsContainer.appendChild(dot);
+      }
+      function updateDots() {
+        const dots = dotsContainer.querySelectorAll('.slider-dot');
+        dots.forEach(dot => dot.classList.remove('active'));
+        dots[currentSlide % dotCount].classList.add('active');
+      }
+      function setSliderPosition(animate = true) {
+        slider.style.transition = animate ? 'transform 0.6s cubic-bezier(.77,0,.18,1)' : 'none';
+        slider.style.transform = `translateX(-${(currentSlide + visibleSlides) * (100 / visibleSlides)}%)`;
+        updateDots();
+      }
+      function nextSlide() {
+        currentSlide++;
+        setSliderPosition();
+        if (currentSlide >= slides.length) {
+          setTimeout(() => {
+            slider.style.transition = 'none';
+            currentSlide = 0;
+            setSliderPosition(false);
+          }, 600);
+        }
+      }
+      function prevSlide() {
+        currentSlide--;
+        setSliderPosition();
+        if (currentSlide < 0) {
+          setTimeout(() => {
+            slider.style.transition = 'none';
+            currentSlide = slides.length - 1;
+            setSliderPosition(false);
+          }, 600);
+        }
+      }
+      function goToSlide(idx) {
+        currentSlide = idx;
+        setSliderPosition();
+      }
+      let startX = null;
+      slider.addEventListener('touchstart', e => {
+        startX = e.touches[0].clientX;
+      });
+      slider.addEventListener('touchend', e => {
+        if (startX === null) return;
+        let endX = e.changedTouches[0].clientX;
+        if (endX - startX > 50) prevSlide();
+        else if (startX - endX > 50) nextSlide();
+        startX = null;
+      });
+      document.querySelector('.prev').setAttribute('tabindex', '0');
+      document.querySelector('.next').setAttribute('tabindex', '0');
+      document.querySelector('.prev').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') prevSlide(); });
+      document.querySelector('.next').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') nextSlide(); });
+      let autoSlide = setInterval(nextSlide, 4000);
+      slider.addEventListener('mouseenter', () => clearInterval(autoSlide));
+      slider.addEventListener('mouseleave', () => autoSlide = setInterval(nextSlide, 4000));
       setSliderPosition(false);
-    }, 600);
-  }
-}
-function prevSlide() {
-  currentSlide--;
-  setSliderPosition();
-  if (currentSlide < 0) {
-    setTimeout(() => {
-      slider.style.transition = 'none';
-      currentSlide = slides.length - 1;
-      setSliderPosition(false);
-    }, 600);
-  }
-}
-function goToSlide(idx) {
-  currentSlide = idx;
-  setSliderPosition();
-}
-
-// Touch/swipe support
-let startX = null;
-slider.addEventListener('touchstart', e => {
-  startX = e.touches[0].clientX;
-});
-slider.addEventListener('touchend', e => {
-  if (startX === null) return;
-  let endX = e.changedTouches[0].clientX;
-  if (endX - startX > 50) prevSlide();
-  else if (startX - endX > 50) nextSlide();
-  startX = null;
-});
-
-// Keyboard accessibility
-document.querySelector('.prev').setAttribute('tabindex', '0');
-document.querySelector('.next').setAttribute('tabindex', '0');
-document.querySelector('.prev').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') prevSlide(); });
-document.querySelector('.next').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') nextSlide(); });
-
-// Auto-slide every 4 seconds
-let autoSlide = setInterval(nextSlide, 4000);
-slider.addEventListener('mouseenter', () => clearInterval(autoSlide));
-slider.addEventListener('mouseleave', () => autoSlide = setInterval(nextSlide, 4000));
-
-// Initial position
-setSliderPosition(false);
-</script>
-<script>
-// filepath: d:\Dr_Yogesh_Shepal_Website\index.html
-const sidebar = document.querySelector('.sidebar');
-const toggleBtn = document.querySelector('.sidebar-toggle');
-const overlay = document.querySelector('.sidebar-overlay');
-
-toggleBtn.addEventListener('click', () => {
-  sidebar.classList.toggle('open');
-  overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
-});
-
-overlay.addEventListener('click', () => {
-  sidebar.classList.remove('open');
-  overlay.style.display = 'none';
-});
-</script>
-<div class="sidebar-overlay"></div>
-
+    </script>
+    <script>
+      // Sidebar toggle JS
+      const sidebar = document.querySelector('.sidebar');
+      const toggleBtn = document.querySelector('.sidebar-toggle');
+      const overlay = document.querySelector('.sidebar-overlay');
+      toggleBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+        overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
+      });
+      overlay.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        overlay.style.display = 'none';
+      });
+    </script>
   </div>
 </body>
 </html>
