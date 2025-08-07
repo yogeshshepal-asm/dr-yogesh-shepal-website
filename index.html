@@ -313,28 +313,32 @@
 }
 @media (max-width: 900px) {
   .sidebar {
-    width: 70px;
-    padding: 0;
+    width: 220px;
+    left: -220px;
+    transition: left 0.3s;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.08);
   }
-  .sidebar-header {
-    padding: 16px 0 8px 0;
+  .sidebar.open {
+    left: 0;
   }
-  .sidebar-img {
-    width: 40px;
-    height: 40px;
-    margin-bottom: 0;
-  }
-  .sidebar h2, .sidebar p {
-    display: none;
-  }
-  .sidebar nav a {
-    font-size: 0.9rem;
-    padding: 10px 8px;
-    text-align: center;
+  .sidebar-toggle {
+    display: block;
   }
   .main-content {
-    margin-left: 70px;
-    width: calc(100% - 70px);
+    margin-left: 0;
+    width: 100%;
+  }
+  /* Overlay for sidebar when open */
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.2);
+    z-index: 99;
+  }
+  .sidebar.open ~ .sidebar-overlay {
+    display: block;
   }
 }
 /* Color tweaks for cards and sections */
@@ -356,12 +360,13 @@
 </head>
 <body>
   <div class="sidebar">
-    <div class="sidebar-header">
-      <img src="yogesh-shepal.jpg" alt="Dr. Yogesh Shepal" class="sidebar-img" />
-      <h2>Dr. Yogesh Shepal</h2>
-      <p>Associate Professor</p>
-    </div>
-    <nav>
+  <button class="sidebar-toggle" aria-label="Toggle navigation">&#9776;</button>
+  <div class="sidebar-header">
+    <img src="yogesh-shepal.jpg" alt="Dr. Yogesh Shepal" class="sidebar-img" />
+    <h2>Dr. Yogesh Shepal</h2>
+    <p>Associate Professor</p>
+  </div>
+  <nav>
       <a href="#about">About</a>
       <a href="#resume">Resume</a>
       <a href="#projects">Projects</a>
@@ -599,6 +604,23 @@ slider.addEventListener('mouseleave', () => autoSlide = setInterval(nextSlide, 4
 // Initial position
 setSliderPosition(false);
 </script>
+<script>
+// filepath: d:\Dr_Yogesh_Shepal_Website\index.html
+const sidebar = document.querySelector('.sidebar');
+const toggleBtn = document.querySelector('.sidebar-toggle');
+const overlay = document.querySelector('.sidebar-overlay');
+
+toggleBtn.addEventListener('click', () => {
+  sidebar.classList.toggle('open');
+  overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
+});
+
+overlay.addEventListener('click', () => {
+  sidebar.classList.remove('open');
+  overlay.style.display = 'none';
+});
+</script>
+<div class="sidebar-overlay"></div>
 
   </div>
 </body>
