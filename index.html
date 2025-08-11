@@ -486,128 +486,172 @@
     <footer>
       © 2025 Developed by Dr. Yogesh Shepal
     </footer>
-    <script>
-      // Loading Spinner
-      function showSpinner() { document.getElementById('spinner').style.display = 'flex'; }
-      function hideSpinner() { document.getElementById('spinner').style.display = 'none'; }
-      window.addEventListener('load', hideSpinner);
-      window.addEventListener('beforeunload', showSpinner);
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- Spinner Logic ---
+        const spinner = document.getElementById('spinner');
 
-      // Back to Top Button
-      window.addEventListener('scroll', function() {
-        document.getElementById('backToTop').style.display = window.scrollY > 300 ? 'block' : 'none';
-      });
-      document.getElementById('backToTop').onclick = function() {
-        window.scrollTo({top:0,behavior:'smooth'});
-      };
-
-      // PDF Preview
-      function previewPDF(url) {
-        document.getElementById('pdfFrame').src = url;
-        document.getElementById('pdfModal').style.display = 'block';
-      }
-      function closePDF() {
-        document.getElementById('pdfModal').style.display = 'none';
-        document.getElementById('pdfFrame').src = '';
-      }
-
-      // Dark Mode Toggle
-      document.getElementById('darkModeToggle').onclick = function() {
-        document.body.classList.toggle('dark-mode');
-      };
-    </script>
-    <script>
-      // Slider JS (unchanged)
-      const slider = document.querySelector('.slider');
-      const slides = Array.from(document.querySelectorAll('.slide'));
-      const visibleSlides = 2;
-      let currentSlide = 0;
-      for (let i = 0; i < visibleSlides; i++) {
-        slider.appendChild(slides[i].cloneNode(true));
-        slider.insertBefore(slides[slides.length - 1 - i].cloneNode(true), slider.firstChild);
-      }
-      const allSlides = slider.querySelectorAll('.slide');
-      const totalSlides = allSlides.length;
-      const dotsContainer = document.querySelector('.slider-dots');
-      const dotCount = slides.length;
-      dotsContainer.innerHTML = '';
-      for (let i = 0; i < dotCount; i++) {
-        const dot = document.createElement('button');
-        dot.className = 'slider-dot';
-        dot.setAttribute('aria-label', `Go to slide ${i+1}`);
-        dot.onclick = () => goToSlide(i);
-        dotsContainer.appendChild(dot);
-      }
-      function updateDots() {
-        const dots = dotsContainer.querySelectorAll('.slider-dot');
-        dots.forEach(dot => dot.classList.remove('active'));
-        dots[currentSlide % dotCount].classList.add('active');
-      }
-      function setSliderPosition(animate = true) {
-        slider.style.transition = animate ? 'transform 0.6s cubic-bezier(.77,0,.18,1)' : 'none';
-        slider.style.transform = `translateX(-${(currentSlide + visibleSlides) * (100 / visibleSlides)}%)`;
-        updateDots();
-      }
-      function nextSlide() {
-        currentSlide++;
-        setSliderPosition();
-        if (currentSlide >= slides.length) {
-          setTimeout(() => {
-            slider.style.transition = 'none';
-            currentSlide = 0;
-            setSliderPosition(false);
-          }, 600);
+        function showSpinner() {
+            spinner.style.display = 'flex';
         }
-      }
-      function prevSlide() {
-        currentSlide--;
-        setSliderPosition();
-        if (currentSlide < 0) {
-          setTimeout(() => {
-            slider.style.transition = 'none';
-            currentSlide = slides.length - 1;
-            setSliderPosition(false);
-          }, 600);
+
+        function hideSpinner() {
+            spinner.style.display = 'none';
         }
-      }
-      function goToSlide(idx) {
-        currentSlide = idx;
-        setSliderPosition();
-      }
-      let startX = null;
-      slider.addEventListener('touchstart', e => {
-        startX = e.touches[0].clientX;
-      });
-      slider.addEventListener('touchend', e => {
-        if (startX === null) return;
-        let endX = e.changedTouches[0].clientX;
-        if (endX - startX > 50) prevSlide();
-        else if (startX - endX > 50) nextSlide();
-        startX = null;
-      });
-      document.querySelector('.prev').setAttribute('tabindex', '0');
-      document.querySelector('.next').setAttribute('tabindex', '0');
-      document.querySelector('.prev').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') prevSlide(); });
-      document.querySelector('.next').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') nextSlide(); });
-      let autoSlide = setInterval(nextSlide, 4000);
-      slider.addEventListener('mouseenter', () => clearInterval(autoSlide));
-      slider.addEventListener('mouseleave', () => autoSlide = setInterval(nextSlide, 4000));
-      setSliderPosition(false);
-    </script>
-    <script>
-      // Sidebar toggle JS
-      const sidebar = document.querySelector('.sidebar');
-      const toggleBtn = document.querySelector('.sidebar-toggle');
-      const overlay = document.querySelector('.sidebar-overlay');
-      toggleBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('open');
-        overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
-      });
-      overlay.addEventListener('click', () => {
-        sidebar.classList.remove('open');
-        overlay.style.display = 'none';
-      });
-    </script>
+
+        window.addEventListener('load', hideSpinner);
+
+        const allLinksAndButtons = document.querySelectorAll(
+            'a[download], a[href*=".zip"], button[onclick*="window.location.href"], a[href*=".pdf"]'
+        );
+
+        allLinksAndButtons.forEach(element => {
+            element.addEventListener('click', (event) => {
+                event.preventDefault();
+                showSpinner();
+
+                setTimeout(() => {
+                    let url;
+                    if (element.tagName === 'A') {
+                        url = element.href;
+                    } else if (element.tagName === 'BUTTON') {
+                        const match = element.getAttribute('onclick').match(/'([^']*)'/);
+                        if (match && match[1]) {
+                            url = match[1];
+                        }
+                    }
+
+                    if (url) {
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = url.split('/').pop();
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    }
+
+                    setTimeout(hideSpinner, 2000);
+                }, 500);
+            });
+        });
+
+        // --- Back to Top Button ---
+        window.addEventListener('scroll', function() {
+            document.getElementById('backToTop').style.display = window.scrollY > 300 ? 'block' : 'none';
+        });
+        document.getElementById('backToTop').onclick = function() {
+            window.scrollTo({top:0,behavior:'smooth'});
+        };
+
+        // --- PDF Preview ---
+        function previewPDF(url) {
+            document.getElementById('pdfFrame').src = url;
+            document.getElementById('pdfModal').style.display = 'block';
+        }
+        function closePDF() {
+            document.getElementById('pdfModal').style.display = 'none';
+            document.getElementById('pdfFrame').src = '';
+        }
+        // Expose previewPDF and closePDF to the global scope if they are called from inline HTML
+        window.previewPDF = previewPDF;
+        window.closePDF = closePDF;
+
+        // --- Dark Mode Toggle ---
+        document.getElementById('darkModeToggle').onclick = function() {
+            document.body.classList.toggle('dark-mode');
+        };
+        
+        // --- Slider JS ---
+        const slider = document.querySelector('.slider');
+        const slides = Array.from(document.querySelectorAll('.slide'));
+        const visibleSlides = 2;
+        let currentSlide = 0;
+        for (let i = 0; i < visibleSlides; i++) {
+            slider.appendChild(slides[i].cloneNode(true));
+            slider.insertBefore(slides[slides.length - 1 - i].cloneNode(true), slider.firstChild);
+        }
+        const allSlides = slider.querySelectorAll('.slide');
+        const totalSlides = allSlides.length;
+        const dotsContainer = document.querySelector('.slider-dots');
+        const dotCount = slides.length;
+        dotsContainer.innerHTML = '';
+        for (let i = 0; i < dotCount; i++) {
+            const dot = document.createElement('button');
+            dot.className = 'slider-dot';
+            dot.setAttribute('aria-label', `Go to slide ${i+1}`);
+            dot.onclick = () => goToSlide(i);
+            dotsContainer.appendChild(dot);
+        }
+        function updateDots() {
+            const dots = dotsContainer.querySelectorAll('.slider-dot');
+            dots.forEach(dot => dot.classList.remove('active'));
+            dots[currentSlide % dotCount].classList.add('active');
+        }
+        function setSliderPosition(animate = true) {
+            slider.style.transition = animate ? 'transform 0.6s cubic-bezier(.77,0,.18,1)' : 'none';
+            slider.style.transform = `translateX(-${(currentSlide + visibleSlides) * (100 / visibleSlides)}%)`;
+            updateDots();
+        }
+        function nextSlide() {
+            currentSlide++;
+            setSliderPosition();
+            if (currentSlide >= slides.length) {
+                setTimeout(() => {
+                    slider.style.transition = 'none';
+                    currentSlide = 0;
+                    setSliderPosition(false);
+                }, 600);
+            }
+        }
+        function prevSlide() {
+            currentSlide--;
+            setSliderPosition();
+            if (currentSlide < 0) {
+                setTimeout(() => {
+                    slider.style.transition = 'none';
+                    currentSlide = slides.length - 1;
+                    setSliderPosition(false);
+                }, 600);
+            }
+        }
+        function goToSlide(idx) {
+            currentSlide = idx;
+            setSliderPosition();
+        }
+        let startX = null;
+        slider.addEventListener('touchstart', e => {
+            startX = e.touches[0].clientX;
+        });
+        slider.addEventListener('touchend', e => {
+            if (startX === null) return;
+            let endX = e.changedTouches[0].clientX;
+            if (endX - startX > 50) prevSlide();
+            else if (startX - endX > 50) nextSlide();
+            startX = null;
+        });
+        document.querySelector('.prev').setAttribute('tabindex', '0');
+        document.querySelector('.next').setAttribute('tabindex', '0');
+        document.querySelector('.prev').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') prevSlide(); });
+        document.querySelector('.next').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') nextSlide(); });
+        let autoSlide = setInterval(nextSlide, 4000);
+        slider.addEventListener('mouseenter', () => clearInterval(autoSlide));
+        slider.addEventListener('mouseleave', () => autoSlide = setInterval(nextSlide, 4000));
+        setSliderPosition(false);
+
+        // --- Sidebar toggle JS ---
+        const sidebar = document.querySelector('.sidebar');
+        const toggleBtn = document.querySelector('.sidebar-toggle');
+        const overlay = document.querySelector('.sidebar-overlay');
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
+        });
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            overlay.style.display = 'none';
+        });
+    });
+</script>
   </div>
 </body>
 </html>
