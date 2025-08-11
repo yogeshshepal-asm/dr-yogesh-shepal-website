@@ -290,6 +290,9 @@
       .sidebar-toggle {
         display: block;
       }
+    }
+    .sidebar-toggle {
+      display: none;
       .main-content {
         margin-left: 0;
         width: 100%;
@@ -347,6 +350,204 @@
       background: #222 !important;
       color: #eee !important;
     }
+    /* Animation styles */
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .animate-on-scroll.animate-in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .animate-slide-left {
+      opacity: 0;
+      transform: translateX(-50px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .animate-slide-left.animate-in {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .animate-slide-right {
+      opacity: 0;
+      transform: translateX(50px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .animate-slide-right.animate-in {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .animate-scale {
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .animate-scale.animate-in {
+      opacity: 1;
+      transform: scale(1);
+    }
+    /* Tabbed Interface Styles */
+    .tabs-container {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    .tabs-nav {
+      display: flex;
+      background: #f8f9fa;
+      border-bottom: 1px solid #ddd;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px 16px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: #666;
+      transition: all 0.3s ease;
+      border-bottom: 3px solid transparent;
+    }
+    .tab-btn:hover {
+      background: #e9ecef;
+      color: #333;
+    }
+    .tab-btn.active {
+      background: #fff;
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    .tab-content {
+      padding: 24px;
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .unit-card {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      transition: all 0.3s ease;
+    }
+    .unit-card:hover {
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .unit-title {
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    .unit-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .unit-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.3s ease;
+    }
+    .download-btn {
+      background: var(--primary);
+      color: #fff;
+    }
+    .preview-btn {
+      background: #28a745;
+      color: #fff;
+    }
+    .unit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    /* Toast Notification Styles */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 2001;
+      pointer-events: none;
+    }
+    .toast {
+      background: #28a745;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      margin-bottom: 10px;
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 280px;
+      pointer-events: auto;
+    }
+    .toast.show {
+      transform: translateX(0);
+    }
+    .toast.error {
+      background: #dc3545;
+    }
+    .toast.info {
+      background: #17a2b8;
+    }
+    .toast-icon {
+      font-size: 18px;
+    }
+    .toast-message {
+      flex: 1;
+      font-size: 14px;
+    }
+    .toast-close {
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 0;
+      margin-left: 8px;
+    }
+    @media (max-width: 768px) {
+      .toast-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+      }
+      .toast {
+        min-width: auto;
+        width: 100%;
+      }
+    }
+    /* Typing Animation Styles */
+    .typewriter {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      max-width: 700px;
+      margin: auto;
+      min-height: 60px;
+    }
+    .typewriter-text {
+      border-right: 2px solid var(--primary);
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0%, 50% { border-color: var(--primary); }
+      51%, 100% { border-color: transparent; }
+    }
+    .typing-complete .typewriter-text {
+      border-right: none;
+      animation: none;
+    }
   </style>
   <div class="sidebar">
     <button class="sidebar-toggle" aria-label="Toggle navigation">&#9776;</button>
@@ -369,6 +570,8 @@
   </div>
   <div class="sidebar-overlay"></div>
   <div class="main-content">
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
     <!-- Back to Top Button -->
     <button id="backToTop" style="display:none;position:fixed;bottom:30px;right:30px;z-index:1000;background:#007bff;color:#fff;border:none;border-radius:50%;width:48px;height:48px;font-size:2rem;cursor:pointer;">&#8679;</button>
     <div class="slider-container">
@@ -384,110 +587,132 @@
       <button class="next">&#10095;</button>
       <div class="slider-dots"></div>
     </div>
-    <section id="about" class="about">
+    <section id="about" class="about animate-on-scroll">
       <div style="text-align:center;">
-        <img src="yogesh-shepal.jpg" alt="Dr. Yogesh Shepal" />
-        <p>Hello! I'm Dr. Yogesh Ramdas Shepal, Associate Professor at ASM NEXTGEN Technical Campus, Pune. Passionate about teaching, research, and building intelligent software solutions.</p>
+        <img src="yogesh-shepal.jpg" alt="Dr. Yogesh Shepal" class="animate-scale" />
+        <p class="typewriter animate-on-scroll" id="typewriter"><span class="typewriter-text"></span></p>
       </div>
     </section>
-    <section id="resume" class="resume">
+    <section id="resume" class="resume animate-slide-left">
       <h2>Resume / CV</h2>
       <p>You can download my full CV below:</p>
       <a href="Resume.pdf" download>📄 Download Resume</a>
     </section>
-    <section id="projects">
+    <section id="projects" class="animate-on-scroll">
       <h2>Projects</h2>
       <div class="cards">
-        <div class="card">
+        <div class="card animate-slide-left">
           <h3>Training & Placement Web App</h3>
           <p>Web-based solution with predictive features for college T&amp;P management.</p>
         </div>
-        <div class="card">
+        <div class="card animate-slide-right">
           <h3>Emotion-Based Music Player</h3>
           <p>AI model detects emotion to recommend music.</p>
         </div>
       </div>
     </section>
-    <section id="research">
+    <section id="research" class="animate-on-scroll">
       <h2>Research & Publications</h2>
       <ul>
-        <li>Deep Learning for Cervical Cancer Detection - Panamerican Mathematical Journal (2024)</li>
-        <li>AI for Diabetes Risk - Frontiers in Health Informatics (2024)</li>
-        <li>Word Sense Disambiguation - Copyrighted, 2024</li>
-        <li>Autonomous Drone Navigation Console  (Patent) 2024</li>
+        <li class="animate-slide-left">Deep Learning for Cervical Cancer Detection - Panamerican Mathematical Journal (2024)</li>
+        <li class="animate-slide-right">AI for Diabetes Risk - Frontiers in Health Informatics (2024)</li>
+        <li class="animate-slide-left">Word Sense Disambiguation - Copyrighted, 2024</li>
+        <li class="animate-slide-right">Autonomous Drone Navigation Console  (Patent) 2024</li>
       </ul>
     </section>
-    <section id="blog">
+    <section id="blog" class="animate-on-scroll">
       <h2>Blog / Articles</h2>
       <p>Explore my AI-powered learning tool for C programming:</p>
       <p><a href="https://c-professor-ai.onrender.com/" target="_blank">👉 Ask Your C Professor (AI Agent)</a></p>
     </section>
-    <section id="teaching">
+    <section id="teaching" class="animate-on-scroll">
       <h2>Teaching</h2>
       <p>
         I have taught at multiple institutes including ASM NEXTGEN, PCET NMIET, Sinhgad Institute, PRES and D.Y. Patil College.<br>
         My areas include C, Java, and AI.
       </p>
-      <div class="material-card">
+      <div class="material-card animate-scale">
         <center><h4> Savitribai Phule Pune University (SPPU)</h4>
         <h4> First Year of Engineering (2024 Pattern)</h4>
         <h4> Course Code: ESC-105-COM </h4>
         <h4> Course Name:Fundamentals of Programming Languages </h4> </center>
         
-        <ul class="material-list">
-          <li>
-            <strong>Syllabus:</strong>
-            <a href="FPL_Syllabus.pdf" target="_blank">Download Syllabus</a>
-          </li>
-          <li>
-            <!-- Download All Notes Button -->
-            <button onclick="window.location.href='all_notes.zip'" style="background:#007bff;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;margin-bottom:12px;">Download All Notes (ZIP)</button>
-            <strong>Notes:</strong>
-            <table class="material-table">
-              <tr>
-                <th>Unit</th>
-                <th>Notes Link</th>
-                <th>Preview</th>
-              </tr>
-              <tr>
-                <td>Unit 1</td>
-                <td><a href="FPL_Unit1_Notes.pdf" target="_blank">Download Notes</a></td>
-                <td><button onclick="previewPDF('FPL_Unit1_Notes.pdf')">Preview</button></td>
-              </tr>
-              <tr>
-                <td>Unit 2</td>
-                <td><a href="FPL_Unit2_Notes.pdf" target="_blank">Download Notes</a></td>
-                <td><button onclick="previewPDF('FPL_Unit2_Notes.pdf')">Preview</button></td>
-              </tr>
-              <tr>
-                <td>Unit 3</td>
-                <td><a href="FPL_Unit3_Notes.pdf" target="_blank">Download Notes</a></td>
-                <td><button onclick="previewPDF('FPL_Unit3_Notes.pdf')">Preview</button></td>
-              </tr>
-              <tr>
-                <td>Unit 4</td>
-                <td><a href="FPL_Unit4_Notes.pdf" target="_blank">Download Notes</a></td>
-                <td><button onclick="previewPDF('FPL_Unit4_Notes.pdf')">Preview</button></td>
-              </tr>
-              <tr>
-                <td>Unit 5</td>
-                <td><a href="FPL_Unit5_Notes.pdf" target="_blank">Download Notes</a></td>
-                <td><button onclick="previewPDF('FPL_Unit5_Notes.pdf')">Preview</button></td>
-              </tr>
-            </table>
-          </li>
-          <li>
-            <strong>Books:</strong>
-            <a href="https://aiict.edu.bd/wp-content/uploads/2022/09/ansi-c-balaguruswamy-c-language-PDFDrive.com-.pdf" target="_blank">c-balaguruswamy Books</a>
-          </li>
-          <li>
-            <strong>NPTEL Youtube Video</strong>
-            <a href="https://www.youtube.com/watch?v=-wv-OERJK3M&t=2s" target="_blank">Problem Solving Through Programming In C</a>
-          </li>
-        </ul>
+        <div class="tabs-container">
+          <div class="tabs-nav">
+            <button class="tab-btn active" data-tab="overview">Overview</button>
+            <button class="tab-btn" data-tab="notes">Notes</button>
+            <button class="tab-btn" data-tab="resources">Resources</button>
+          </div>
+          
+          <div class="tab-content active" id="overview">
+            <h4>Course Information</h4>
+            <p><strong>Syllabus:</strong> <a href="FPL_Syllabus.pdf" target="_blank">Download Syllabus</a></p>
+            <button onclick="window.location.href='all_notes.zip'" style="background:#007bff;color:#fff;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;margin:16px 0;">📦 Download All Notes (ZIP)</button>
+            <div class="unit-card">
+              <div class="unit-title">Course Objectives</div>
+              <p>Learn fundamentals of programming using C language, problem-solving techniques, and software development basics.</p>
+            </div>
+          </div>
+          
+          <div class="tab-content" id="notes">
+            <h4>Unit-wise Notes</h4>
+            <div class="unit-card">
+              <div class="unit-title">Unit 1 - Introduction to Programming</div>
+              <p>Basic concepts, algorithms, flowcharts, and introduction to C programming.</p>
+              <div class="unit-actions">
+                <button class="unit-btn download-btn" onclick="window.open('FPL_Unit1_Notes.pdf')">📄 Download</button>
+                <button class="unit-btn preview-btn" onclick="previewPDF('FPL_Unit1_Notes.pdf')">👁️ Preview</button>
+              </div>
+            </div>
+            <div class="unit-card">
+              <div class="unit-title">Unit 2 - Data Types & Operators</div>
+              <p>Variables, constants, data types, operators, and expressions in C.</p>
+              <div class="unit-actions">
+                <button class="unit-btn download-btn" onclick="window.open('FPL_Unit2_Notes.pdf')">📄 Download</button>
+                <button class="unit-btn preview-btn" onclick="previewPDF('FPL_Unit2_Notes.pdf')">👁️ Preview</button>
+              </div>
+            </div>
+            <div class="unit-card">
+              <div class="unit-title">Unit 3 - Control Structures</div>
+              <p>Decision making, loops, and control flow statements.</p>
+              <div class="unit-actions">
+                <button class="unit-btn download-btn" onclick="window.open('FPL_Unit3_Notes.pdf')">📄 Download</button>
+                <button class="unit-btn preview-btn" onclick="previewPDF('FPL_Unit3_Notes.pdf')">👁️ Preview</button>
+              </div>
+            </div>
+            <div class="unit-card">
+              <div class="unit-title">Unit 4 - Arrays & Strings</div>
+              <p>Array operations, string handling, and multi-dimensional arrays.</p>
+              <div class="unit-actions">
+                <button class="unit-btn download-btn" onclick="window.open('FPL_Unit4_Notes.pdf')">📄 Download</button>
+                <button class="unit-btn preview-btn" onclick="previewPDF('FPL_Unit4_Notes.pdf')">👁️ Preview</button>
+              </div>
+            </div>
+            <div class="unit-card">
+              <div class="unit-title">Unit 5 - Functions & Pointers</div>
+              <p>Function definition, recursion, pointers, and memory management.</p>
+              <div class="unit-actions">
+                <button class="unit-btn download-btn" onclick="window.open('FPL_Unit5_Notes.pdf')">📄 Download</button>
+                <button class="unit-btn preview-btn" onclick="previewPDF('FPL_Unit5_Notes.pdf')">👁️ Preview</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="tab-content" id="resources">
+            <h4>Additional Resources</h4>
+            <div class="unit-card">
+              <div class="unit-title">📚 Recommended Books</div>
+              <p><a href="https://aiict.edu.bd/wp-content/uploads/2022/09/ansi-c-balaguruswamy-c-language-PDFDrive.com-.pdf" target="_blank">C Programming by Balaguruswamy</a></p>
+            </div>
+            <div class="unit-card">
+              <div class="unit-title">🎥 Video Lectures</div>
+              <p><a href="https://www.youtube.com/watch?v=-wv-OERJK3M&t=2s" target="_blank">NPTEL - Problem Solving Through Programming In C</a></p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
-    <section id="contact">
+    <section id="contact" class="animate-on-scroll">
       <h2>Contact Me</h2>
       <p>Email: yogeshshepal@asmedu.org | yogeshshepal@gmail.com</p>
       <p><a href="https://www.asmnext.edu.in/" target="_blank">ASM NEXTGEN Technical Campus</a></p>
@@ -517,6 +742,34 @@
 
         window.addEventListener('load', hideSpinner);
 
+        // --- Toast Notification System ---
+        function showToast(message, type = 'success', duration = 3000) {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = {
+                success: '✅',
+                error: '❌',
+                info: 'ℹ️'
+            };
+            
+            toast.innerHTML = `
+                <span class="toast-icon">${icons[type] || icons.success}</span>
+                <span class="toast-message">${message}</span>
+                <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            setTimeout(() => toast.classList.add('show'), 100);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
         const allLinksAndButtons = document.querySelectorAll(
             'a[download], a[href*=".zip"], button[onclick*="window.location.href"], a[href*=".pdf"]'
         );
@@ -527,13 +780,15 @@
                 showSpinner();
 
                 setTimeout(() => {
-                    let url;
+                    let url, fileName;
                     if (element.tagName === 'A') {
                         url = element.href;
+                        fileName = element.textContent.trim() || url.split('/').pop();
                     } else if (element.tagName === 'BUTTON') {
                         const match = element.getAttribute('onclick').match(/'([^']*)'/);
                         if (match && match[1]) {
                             url = match[1];
+                            fileName = element.textContent.trim() || url.split('/').pop();
                         }
                     }
 
@@ -544,9 +799,14 @@
                         document.body.appendChild(a);
                         a.click();
                         document.body.removeChild(a);
+                        
+                        // Show success toast
+                        showToast(`📥 ${fileName} download started!`, 'success');
+                    } else {
+                        showToast('❌ Download failed. Please try again.', 'error');
                     }
 
-                    setTimeout(hideSpinner, 2000);
+                    setTimeout(hideSpinner, 1000);
                 }, 500);
             });
         });
@@ -563,10 +823,12 @@
         function previewPDF(url) {
             document.getElementById('pdfFrame').src = url;
             document.getElementById('pdfModal').style.display = 'block';
+            showToast('👁️ PDF preview opened', 'info', 2000);
         }
         function closePDF() {
             document.getElementById('pdfModal').style.display = 'none';
             document.getElementById('pdfFrame').src = '';
+            showToast('ℹ️ PDF preview closed', 'info', 1500);
         }
         // Expose previewPDF and closePDF to the global scope if they are called from inline HTML
         window.previewPDF = previewPDF;
@@ -653,6 +915,85 @@
         slider.addEventListener('mouseenter', () => clearInterval(autoSlide));
         slider.addEventListener('mouseleave', () => autoSlide = setInterval(nextSlide, 4000));
         setSliderPosition(false);
+
+        // --- Intersection Observer for Animations ---
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.animate-on-scroll, .animate-slide-left, .animate-slide-right, .animate-scale').forEach(el => {
+            observer.observe(el);
+        });
+
+        // --- Typewriter Animation ---
+        const typewriterTexts = [
+            "Hello! I'm Dr. Yogesh Ramdas Shepal, Associate Professor at ASM NEXTGEN Technical Campus, Pune.",
+            "Passionate about teaching, research, and building intelligent software solutions.",
+            "Specializing in AI, Deep Learning, and C Programming education.",
+            "Helping students master programming fundamentals and advanced concepts."
+        ];
+        
+        let currentTextIndex = 0;
+        let currentCharIndex = 0;
+        let isDeleting = false;
+        const typewriterElement = document.querySelector('.typewriter-text');
+        
+        function typeWriter() {
+            const currentText = typewriterTexts[currentTextIndex];
+            
+            if (isDeleting) {
+                typewriterElement.textContent = currentText.substring(0, currentCharIndex - 1);
+                currentCharIndex--;
+            } else {
+                typewriterElement.textContent = currentText.substring(0, currentCharIndex + 1);
+                currentCharIndex++;
+            }
+            
+            let typeSpeed = isDeleting ? 30 : 50;
+            
+            if (!isDeleting && currentCharIndex === currentText.length) {
+                typeSpeed = 2000;
+                isDeleting = true;
+            } else if (isDeleting && currentCharIndex === 0) {
+                isDeleting = false;
+                currentTextIndex = (currentTextIndex + 1) % typewriterTexts.length;
+                typeSpeed = 500;
+            }
+            
+            setTimeout(typeWriter, typeSpeed);
+        }
+        
+        // Start typewriter after page loads
+        setTimeout(() => {
+            typeWriter();
+        }, 1000);
+
+        // --- Tabbed Interface JS ---
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetTab = btn.dataset.tab;
+                
+                // Remove active class from all tabs and contents
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab and corresponding content
+                btn.classList.add('active');
+                document.getElementById(targetTab).classList.add('active');
+            });
+        });
 
         // --- Sidebar toggle JS ---
         const sidebar = document.querySelector('.sidebar');
