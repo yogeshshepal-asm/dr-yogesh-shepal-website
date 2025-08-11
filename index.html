@@ -226,7 +226,7 @@
     .timeline-year {
       color: var(--primary);
       font-weight: 700;
-      font-size: 1.2rem;
+      font-size: 1rem;
       margin-bottom: 8px;
       display: flex;
       align-items: center;
@@ -265,16 +265,15 @@
       font-style: italic;
     }
     .timeline-duration {
-      position: absolute;
-      top: -8px;
-      right: 15px;
       background: var(--primary);
       color: white;
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-size: 0.8rem;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 0.65rem;
       font-weight: 600;
-      box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+      margin-right: 6px;
+      display: inline-block;
+      white-space: nowrap;
     }
     @media (max-width: 768px) {
       .timeline::after {
@@ -308,9 +307,11 @@
         border-width: 10px;
       }
       .timeline-duration {
-        position: static;
         display: inline-block;
-        margin-bottom: 8px;
+        margin-right: 4px;
+        font-size: 0.6rem;
+        padding: 1px 4px;
+        white-space: nowrap;
       }
     }
     /* Slider styles */
@@ -981,8 +982,7 @@
       <div class="timeline">
         <div class="timeline-item timeline-left">
           <div class="timeline-content">
-            <div class="timeline-duration">3+ Years</div>
-            <div class="timeline-year">Aug 2025 - Present</div>
+            <div class="timeline-year"><span class="timeline-duration">3+ Years</span> Aug 2025 - Present</div>
             <div class="timeline-title">Associate Professor</div>
             <div class="timeline-institution">ASM NEXTGEN Technical Campus, Pune</div>
             <div class="timeline-description">Leading advanced courses in AI, Deep Learning, and C Programming. Mentoring students in cutting-edge technology research and development.</div>
@@ -990,8 +990,7 @@
         </div>
         <div class="timeline-item timeline-right">
           <div class="timeline-content">
-            <div class="timeline-duration">2.5 Years</div>
-            <div class="timeline-year">Dec 2022 - Jul 2025</div>
+            <div class="timeline-year"><span class="timeline-duration">2.5 Years</span> Dec 2022 - Jul 2025</div>
             <div class="timeline-title">Assistant Professor</div>
             <div class="timeline-institution">Nutan Maharashtra Institute of Engineering & Technology, Pune</div>
             <div class="timeline-description">Information Technology Department. Specialized in programming fundamentals, data structures, and software engineering principles.</div>
@@ -999,8 +998,7 @@
         </div>
         <div class="timeline-item timeline-left">
           <div class="timeline-content">
-            <div class="timeline-duration">6 Months</div>
-            <div class="timeline-year">Jun 2022 - Dec 2022</div>
+            <div class="timeline-year"><span class="timeline-duration">6 Months</span> Jun 2022 - Dec 2022</div>
             <div class="timeline-title">Assistant Professor</div>
             <div class="timeline-institution">Sinhgad Institute of Technology, Lonavala</div>
             <div class="timeline-description">Focused on Programming Fundamentals and Data Structures. Developed innovative teaching methodologies for complex programming concepts.</div>
@@ -1008,8 +1006,7 @@
         </div>
         <div class="timeline-item timeline-right">
           <div class="timeline-content">
-            <div class="timeline-duration">10 Months</div>
-            <div class="timeline-year">Jul 2021 - May 2022</div>
+            <div class="timeline-year"><span class="timeline-duration">10 Months</span> Jul 2021 - May 2022</div>
             <div class="timeline-title">Assistant Professor</div>
             <div class="timeline-institution">Dr. D. Y. Patil College of Engineering And Innovation, Pune</div>
             <div class="timeline-description">Computer Engineering Department. Contributed to curriculum development and student project guidance in emerging technologies.</div>
@@ -1017,8 +1014,7 @@
         </div>
         <div class="timeline-item timeline-left">
           <div class="timeline-content">
-            <div class="timeline-duration">2 Years</div>
-            <div class="timeline-year">Apr 2019 - May 2021</div>
+            <div class="timeline-year"><span class="timeline-duration">2 Years</span> Apr 2019 - May 2021</div>
             <div class="timeline-title">IT Manager</div>
             <div class="timeline-institution">Pravara Rural Education Society, Ahilyanagar</div>
             <div class="timeline-description">Managed comprehensive IT infrastructure and educational technology systems. Led digital transformation initiatives across multiple campuses.</div>
@@ -1026,8 +1022,7 @@
         </div>
         <div class="timeline-item timeline-right">
           <div class="timeline-content">
-            <div class="timeline-duration">6+ Years</div>
-            <div class="timeline-year">Dec 2012 - Apr 2019</div>
+            <div class="timeline-year"><span class="timeline-duration">6+ Years</span> Dec 2012 - Apr 2019</div>
             <div class="timeline-title">Assistant Professor</div>
             <div class="timeline-institution">Shivajirao S. Jondhle College of Engineering & Technology</div>
             <div class="timeline-description">Asangaon Shahapur. Extensive teaching experience in Computer Engineering. Built strong foundation in academic excellence and student mentorship.</div>
