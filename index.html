@@ -508,12 +508,37 @@
       min-height: 100vh; /* Ensure main content fills viewport height */
       padding-bottom: 0; /* Remove extra bottom padding */
     }
+    .sidebar-toggle {
+      display: none;
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 101;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.5);
+      z-index: 99;
+    }
+    .sidebar.open ~ .sidebar-overlay {
+      display: block;
+    }
     @media (max-width: 900px) {
       .sidebar {
-        width: 220px;
-        left: -220px;
-        transition: left 0.3s;
-        box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+        width: 280px;
+        left: -280px;
+        transition: left 0.3s ease;
+        box-shadow: 2px 0 12px rgba(0,0,0,0.15);
       }
       .sidebar.open {
         left: 0;
@@ -521,25 +546,24 @@
       .sidebar-toggle {
         display: block;
       }
-    }
-    .sidebar-toggle {
-      display: none;
       .main-content {
         margin-left: 0;
         width: 100%;
         min-height: 100vh;
-        padding-bottom: 0; /* Remove extra bottom padding for mobile too */
+        padding-bottom: 0;
       }
-      .sidebar-overlay {
-        display: none;
-        position: fixed;
-        top: 0; left: 0;
-        width: 100vw; height: 100vh;
-        background: rgba(0,0,0,0.2);
-        z-index: 99;
+      section {
+        padding: 40px 15px;
       }
-      .sidebar.open ~ .sidebar-overlay {
-        display: block;
+      .timeline {
+        padding: 20px 0;
+      }
+      .research-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .cards {
+        grid-template-columns: 1fr;
       }
     }
     /* Color tweaks for cards and sections */
@@ -616,6 +640,27 @@
       border-radius: 6px;
       font-size: 0.8rem;
       color: #495057;
+    }
+    @media (max-width: 768px) {
+      .research-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .research-paper {
+        padding: 20px;
+        margin: 0 5px;
+      }
+      .research-paper h4 {
+        font-size: 1rem;
+        margin-right: 60px;
+      }
+      .paper-metrics {
+        gap: 8px;
+      }
+      .metric {
+        font-size: 0.75rem;
+        padding: 3px 6px;
+      }
     }
   </style>
 </head>
@@ -761,6 +806,32 @@
       transform: translateY(-1px);
       box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
+    @media (max-width: 768px) {
+      .tabs-nav {
+        flex-wrap: wrap;
+      }
+      .tab-btn {
+        flex: 1;
+        min-width: 100px;
+        font-size: 13px;
+        padding: 10px 8px;
+      }
+      .tab-content {
+        padding: 20px 15px;
+      }
+      .unit-card {
+        padding: 15px;
+        margin-bottom: 15px;
+      }
+      .unit-actions {
+        flex-direction: column;
+        gap: 6px;
+      }
+      .unit-btn {
+        width: 100%;
+        padding: 8px 12px;
+      }
+    }
     /* Toast Notification Styles */
     .toast-container {
       position: fixed;
@@ -811,13 +882,17 @@
     }
     @media (max-width: 768px) {
       .toast-container {
-        top: 10px;
+        top: 60px;
         right: 10px;
         left: 10px;
       }
       .toast {
         min-width: auto;
         width: 100%;
+        transform: translateX(0);
+      }
+      .toast.show {
+        transform: translateX(0);
       }
     }
     /* Typing Animation Styles */
@@ -865,7 +940,18 @@
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
     <!-- Back to Top Button -->
-    <button id="backToTop" style="display:none;position:fixed;bottom:30px;right:30px;z-index:1000;background:#007bff;color:#fff;border:none;border-radius:50%;width:48px;height:48px;font-size:2rem;cursor:pointer;">&#8679;</button>
+    <button id="backToTop" style="display:none;position:fixed;bottom:30px;right:30px;z-index:1000;background:#007bff;color:#fff;border:none;border-radius:50%;width:48px;height:48px;font-size:2rem;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.2);">&#8679;</button>
+    <style>
+    @media (max-width: 768px) {
+      #backToTop {
+        bottom: 20px !important;
+        right: 20px !important;
+        width: 44px !important;
+        height: 44px !important;
+        font-size: 1.8rem !important;
+      }
+    }
+    </style>
     <div class="slider-container">
       <div class="slider">
         <img src="slider1.jpg" alt="Slide 1" class="slide">
