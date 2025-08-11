@@ -79,8 +79,239 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       transition: transform 0.3s;
     }
-    .card:hover {
+    /* 3D Flip Card Styles */
+    .card {
+      background: transparent;
+      perspective: 1000px;
+      height: 200px;
+    }
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+    .card:hover .card-inner {
+      transform: rotateY(180deg);
+    }
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .card-back {
+      background: linear-gradient(135deg, var(--primary), #0056b3);
+      color: white;
+      transform: rotateY(180deg);
+    }
+    .card-back h4 {
+      margin: 0 0 10px 0;
+      font-size: 1.1rem;
+    }
+    .card-back p {
+      font-size: 0.9rem;
+      margin: 5px 0;
+    }
+    /* Enhanced Timeline Styles */
+    .timeline {
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 0;
+    }
+    .timeline::after {
+      content: '';
+      position: absolute;
+      width: 6px;
+      background: linear-gradient(180deg, var(--primary) 0%, #0056b3 100%);
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      margin-left: -3px;
+      border-radius: 3px;
+      box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+    }
+    .timeline-item {
+      padding: 15px 50px;
+      position: relative;
+      background: inherit;
+      width: 50%;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease;
+    }
+    .timeline-item.animate-in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      right: -12px;
+      background: linear-gradient(135deg, var(--primary), #0056b3);
+      border: 5px solid #fff;
+      top: 20px;
+      border-radius: 50%;
+      z-index: 2;
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+      transition: all 0.3s ease;
+    }
+    .timeline-item:hover::after {
+      transform: scale(1.2);
+      box-shadow: 0 6px 20px rgba(0, 123, 255, 0.6);
+    }
+    .timeline-left {
+      left: 0;
+    }
+    .timeline-right {
+      left: 50%;
+    }
+    .timeline-right::after {
+      left: -12px;
+    }
+    .timeline-content {
+      padding: 25px 35px;
+      background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+      position: relative;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+      border: 1px solid rgba(0, 123, 255, 0.1);
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+    .timeline-content::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), #0056b3);
+    }
+    .timeline-content:hover {
       transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.18);
+      border-color: var(--primary);
+    }
+    .timeline-left .timeline-content::before {
+      content: '';
+      position: absolute;
+      top: 25px;
+      right: -12px;
+      border: 12px solid transparent;
+      border-left-color: #fff;
+      z-index: 1;
+    }
+    .timeline-right .timeline-content::before {
+      content: '';
+      position: absolute;
+      top: 25px;
+      left: -12px;
+      border: 12px solid transparent;
+      border-right-color: #fff;
+      z-index: 1;
+    }
+    .timeline-year {
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .timeline-year::before {
+      content: '📅';
+      font-size: 1rem;
+    }
+    .timeline-title {
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-bottom: 12px;
+      color: #2c3e50;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .timeline-title::before {
+      content: '🎓';
+      font-size: 1.1rem;
+    }
+    .timeline-content p {
+      color: #555;
+      line-height: 1.6;
+      margin: 0;
+      font-size: 1rem;
+    }
+    .timeline-institution {
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+    .timeline-description {
+      color: #666;
+      font-style: italic;
+    }
+    .timeline-duration {
+      position: absolute;
+      top: -8px;
+      right: 15px;
+      background: var(--primary);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+    }
+    @media (max-width: 768px) {
+      .timeline::after {
+        left: 35px;
+        width: 4px;
+        margin-left: -2px;
+      }
+      .timeline-item {
+        width: 100%;
+        padding-left: 80px;
+        padding-right: 25px;
+      }
+      .timeline-item::after {
+        left: 23px;
+        width: 20px;
+        height: 20px;
+      }
+      .timeline-right {
+        left: 0%;
+      }
+      .timeline-right .timeline-content::before {
+        left: -10px;
+        border-right-color: #fff;
+        border-left-color: transparent;
+        border-width: 10px;
+      }
+      .timeline-left .timeline-content::before {
+        left: -10px;
+        border-right-color: #fff;
+        border-left-color: transparent;
+        border-width: 10px;
+      }
+      .timeline-duration {
+        position: static;
+        display: inline-block;
+        margin-bottom: 8px;
+      }
     }
     /* Slider styles */
     .slider-container {
@@ -598,16 +829,95 @@
       <p>You can download my full CV below:</p>
       <a href="Resume.pdf" download>📄 Download Resume</a>
     </section>
+    <section id="timeline" class="animate-on-scroll">
+      <h2>🚀 Career Journey</h2>
+      <div class="timeline">
+        <div class="timeline-item timeline-left">
+          <div class="timeline-content">
+            <div class="timeline-duration">3+ Years</div>
+            <div class="timeline-year">Aug 2025 - Present</div>
+            <div class="timeline-title">Associate Professor</div>
+            <div class="timeline-institution">ASM NEXTGEN Technical Campus, Pune</div>
+            <div class="timeline-description">Leading advanced courses in AI, Deep Learning, and C Programming. Mentoring students in cutting-edge technology research and development.</div>
+          </div>
+        </div>
+        <div class="timeline-item timeline-right">
+          <div class="timeline-content">
+            <div class="timeline-duration">2.5 Years</div>
+            <div class="timeline-year">Dec 2022 - Jul 2025</div>
+            <div class="timeline-title">Assistant Professor</div>
+            <div class="timeline-institution">Nutan Maharashtra Institute of Engineering & Technology, Pune</div>
+            <div class="timeline-description">Information Technology Department. Specialized in programming fundamentals, data structures, and software engineering principles.</div>
+          </div>
+        </div>
+        <div class="timeline-item timeline-left">
+          <div class="timeline-content">
+            <div class="timeline-duration">6 Months</div>
+            <div class="timeline-year">Jun 2022 - Dec 2022</div>
+            <div class="timeline-title">Assistant Professor</div>
+            <div class="timeline-institution">Sinhgad Institute of Technology, Lonavala</div>
+            <div class="timeline-description">Focused on Programming Fundamentals and Data Structures. Developed innovative teaching methodologies for complex programming concepts.</div>
+          </div>
+        </div>
+        <div class="timeline-item timeline-right">
+          <div class="timeline-content">
+            <div class="timeline-duration">10 Months</div>
+            <div class="timeline-year">Jul 2021 - May 2022</div>
+            <div class="timeline-title">Assistant Professor</div>
+            <div class="timeline-institution">Dr. D. Y. Patil College of Engineering And Innovation, Pune</div>
+            <div class="timeline-description">Computer Engineering Department. Contributed to curriculum development and student project guidance in emerging technologies.</div>
+          </div>
+        </div>
+        <div class="timeline-item timeline-left">
+          <div class="timeline-content">
+            <div class="timeline-duration">2 Years</div>
+            <div class="timeline-year">Apr 2019 - May 2021</div>
+            <div class="timeline-title">IT Manager</div>
+            <div class="timeline-institution">Pravara Rural Education Society, Ahilyanagar</div>
+            <div class="timeline-description">Managed comprehensive IT infrastructure and educational technology systems. Led digital transformation initiatives across multiple campuses.</div>
+          </div>
+        </div>
+        <div class="timeline-item timeline-right">
+          <div class="timeline-content">
+            <div class="timeline-duration">6+ Years</div>
+            <div class="timeline-year">Dec 2012 - Apr 2019</div>
+            <div class="timeline-title">Assistant Professor</div>
+            <div class="timeline-institution">Shivajirao S. Jondhle College of Engineering & Technology</div>
+            <div class="timeline-description">Asangaon Shahapur. Extensive teaching experience in Computer Engineering. Built strong foundation in academic excellence and student mentorship.</div>
+          </div>
+        </div>
+      </div>
+    </section>
     <section id="projects" class="animate-on-scroll">
       <h2>Projects</h2>
       <div class="cards">
         <div class="card animate-slide-left">
-          <h3>Training & Placement Web App</h3>
-          <p>Web-based solution with predictive features for college T&amp;P management.</p>
+          <div class="card-inner">
+            <div class="card-front">
+              <h3>Training & Placement Web App</h3>
+              <p>Web-based solution with predictive features for college T&P management.</p>
+            </div>
+            <div class="card-back">
+              <h4>🚀 Project Details</h4>
+              <p><strong>Tech Stack:</strong> React, Node.js, MongoDB</p>
+              <p><strong>Features:</strong> Predictive analytics, Student portal, Company dashboard</p>
+              <p><strong>Status:</strong> Completed & Deployed</p>
+            </div>
+          </div>
         </div>
         <div class="card animate-slide-right">
-          <h3>Emotion-Based Music Player</h3>
-          <p>AI model detects emotion to recommend music.</p>
+          <div class="card-inner">
+            <div class="card-front">
+              <h3>Emotion-Based Music Player</h3>
+              <p>AI model detects emotion to recommend music.</p>
+            </div>
+            <div class="card-back">
+              <h4>🎵 Project Details</h4>
+              <p><strong>Tech Stack:</strong> Python, TensorFlow, Flask</p>
+              <p><strong>Features:</strong> Emotion detection, Music recommendation, Real-time analysis</p>
+              <p><strong>Status:</strong> Research Phase</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -932,6 +1242,13 @@
         
         document.querySelectorAll('.animate-on-scroll, .animate-slide-left, .animate-slide-right, .animate-scale').forEach(el => {
             observer.observe(el);
+        });
+        
+        // Timeline items animation
+        document.querySelectorAll('.timeline-item').forEach((item, index) => {
+            setTimeout(() => {
+                observer.observe(item);
+            }, index * 100);
         });
 
         // --- Typewriter Animation ---
