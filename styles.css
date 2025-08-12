@@ -722,7 +722,7 @@ footer {
   .main-content {
     margin-left: 0;
     width: 100%;
-    padding-top: 60px;
+    padding-top: 20px;
   }
   
   .sidebar-overlay.show {
@@ -1003,6 +1003,33 @@ footer {
   }
 }
 
+/* Back to Top Button */
+#backToTop {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+#backToTop:hover {
+  background: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,123,255,0.4);
+}
+
 /* Print styles */
 @media print {
   .sidebar {
@@ -1019,6 +1046,10 @@ footer {
   }
   
   #toolModal {
+    display: none !important;
+  }
+  
+  #backToTop {
     display: none !important;
   }
 }or: white;
@@ -1909,9 +1940,9 @@ footer {
   #backToTop {
     bottom: 20px !important;
     right: 20px !important;
-    width: 44px !important;
-    height: 44px !important;
-    font-size: 1.8rem !important;
+    width: 45px !important;
+    height: 45px !important;
+    font-size: 1.3rem !important;
   }
 }
 
