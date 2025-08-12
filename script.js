@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
 let currentSlide = 0;
 const slides = document.querySelectorAll('.slide');
 const totalSlides = slides.length;
+let touchStartX = 0;
+let touchEndX = 0;
+let autoSlideInterval;
 
 function initializeSlider() {
     if (totalSlides === 0) return;
@@ -29,8 +32,57 @@ function initializeSlider() {
         updateDots();
     }
     
-    // Auto-slide
-    setInterval(nextSlide, 4000);
+    // Touch support for mobile
+    const slider = document.querySelector('.slider');
+    if (slider) {
+        slider.addEventListener('touchstart', handleTouchStart, { passive: true });
+        slider.addEventListener('touchend', handleTouchEnd, { passive: true });
+    }
+    
+    // Auto-slide with pause on interaction
+    startAutoSlide();
+    
+    // Pause auto-slide on hover/touch
+    const sliderContainer = document.querySelector('.slider-container');
+    if (sliderContainer) {
+        sliderContainer.addEventListener('mouseenter', stopAutoSlide);
+        sliderContainer.addEventListener('mouseleave', startAutoSlide);
+        sliderContainer.addEventListener('touchstart', stopAutoSlide);
+    }
+}
+
+function handleTouchStart(e) {
+    touchStartX = e.touches[0].clientX;
+}
+
+function handleTouchEnd(e) {
+    touchEndX = e.changedTouches[0].clientX;
+    handleSwipe();
+}
+
+function handleSwipe() {
+    const swipeThreshold = 50;
+    const diff = touchStartX - touchEndX;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+            nextSlide();
+        } else {
+            prevSlide();
+        }
+    }
+}
+
+function startAutoSlide() {
+    stopAutoSlide();
+    autoSlideInterval = setInterval(nextSlide, 4000);
+}
+
+function stopAutoSlide() {
+    if (autoSlideInterval) {
+        clearInterval(autoSlideInterval);
+        autoSlideInterval = null;
+    }
 }
 
 function nextSlide() {
@@ -51,7 +103,9 @@ function goToSlide(index) {
 function updateSlider() {
     const slider = document.querySelector('.slider');
     if (slider) {
-        slider.style.transform = `translateX(-${currentSlide * 50}%)`;
+        // Use 100% for mobile (single slide view) and 50% for desktop (dual slide view)
+        const slideWidth = window.innerWidth <= 768 ? 100 : 50;
+        slider.style.transform = `translateX(-${currentSlide * slideWidth}%)`;
         updateDots();
     }
 }
