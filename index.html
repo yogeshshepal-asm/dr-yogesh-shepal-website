@@ -823,6 +823,12 @@
       background: #1e1e1e;
       color: #fff;
       resize: vertical;
+      line-height: 1.4;
+      tab-size: 4;
+    }
+    .code-editor:focus {
+      outline: 2px solid var(--primary);
+      border-color: var(--primary);
     }
     .output-panel {
       background: #000;
@@ -2193,20 +2199,23 @@ class UserService {
             <h2>💻 Code Playground</h2>
             <div style="margin-bottom: 15px;">
                 <select id="language" onchange="changeLanguage()" style="padding: 10px; border-radius: 5px; margin-right: 10px;">
-                    <option value="c">C Language</option>
-                    <option value="python">Python</option>
+                    <option value="50">C (GCC)</option>
+                    <option value="71">Python 3</option>
+                    <option value="63">JavaScript (Node.js)</option>
+                    <option value="62">Java</option>
                 </select>
                 <button onclick="runCode()" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">▶ Run Code</button>
                 <button onclick="clearOutput()" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 5px; margin-left: 5px; cursor: pointer;">Clear</button>
+                <input type="text" id="inputData" placeholder="Input (optional)" style="padding: 8px; border-radius: 5px; margin-left: 10px; width: 150px;">
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; height: 400px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; height: 450px;">
                 <div>
                     <h4>Code Editor:</h4>
-                    <textarea id="codeEditor" class="code-editor">#include <stdio.h>\n\nint main() {\n    printf("Hello, World!\\n");\n    return 0;\n}</textarea>
+                    <textarea id="codeEditor" class="code-editor" style="height: 380px;">#include <stdio.h>\n\nint main() {\n    printf("Hello, World!\\n");\n    return 0;\n}</textarea>
                 </div>
                 <div>
                     <h4>Output:</h4>
-                    <div id="output" class="output-panel">Click 'Run Code' to see output...</div>
+                    <div id="output" class="output-panel" style="height: 380px;">Click 'Run Code' to see output...</div>
                 </div>
             </div>
         `;
@@ -2370,58 +2379,90 @@ class UserService {
     
     // Tool-specific functions
     function changeLanguage() {
-        const lang = document.getElementById('language').value;
+        const langId = document.getElementById('language').value;
         const editor = document.getElementById('codeEditor');
-        if (lang === 'python') {
-            editor.value = '# Python Code\nprint("Hello, World!")\n\n# Try some Python code:\nfor i in range(5):\n    print(f"Number: {i}")';
-        } else {
-            editor.value = '#include <stdio.h>\n\nint main() {\n    printf("Hello, World!\\n");\n    \n    // Try some C code:\n    for(int i = 0; i < 5; i++) {\n        printf("Number: %d\\n", i);\n    }\n    \n    return 0;\n}';
+        
+        const templates = {
+            '50': '#include <stdio.h>\n\nint main() {\n    printf("Hello, World!\\n");\n    return 0;\n}',
+            '71': 'print("Hello, World!")\n\n# Try some Python code:\nfor i in range(5):\n    print(f"Number: {i}")',
+            '63': 'console.log("Hello, World!");\n\n// Try some JavaScript code:\nfor(let i = 0; i < 5; i++) {\n    console.log(`Number: ${i}`);\n}',
+            '62': 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, World!");\n    }\n}'
+        };
+        
+        editor.value = templates[langId] || templates['50'];
+    }
+    
+    async function runCode() {
+        const code = document.getElementById('codeEditor').value;
+        const languageId = document.getElementById('language').value;
+        const input = document.getElementById('inputData').value;
+        const output = document.getElementById('output');
+        
+        if (!code.trim()) {
+            output.innerHTML = 'Please enter some code to run.';
+            return;
+        }
+        
+        output.innerHTML = '🔄 Compiling and running code...\n';
+        
+        try {
+            // Use Piston API (free alternative)
+            const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    language: getLanguageName(languageId),
+                    version: '*',
+                    files: [{
+                        content: code
+                    }],
+                    stdin: input || ''
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error('Compilation failed');
+            }
+            
+            const result = await response.json();
+            
+            let outputText = '';
+            
+            if (result.run.stdout) {
+                outputText += '📤 Output:\n' + result.run.stdout + '\n';
+            }
+            
+            if (result.run.stderr) {
+                outputText += '❌ Runtime Error:\n' + result.run.stderr + '\n';
+            }
+            
+            if (result.compile && result.compile.stderr) {
+                outputText += '🔧 Compile Error:\n' + result.compile.stderr + '\n';
+            }
+            
+            outputText += `\n📊 Language: ${result.language} ${result.version}`;
+            
+            if (result.run.code !== undefined) {
+                outputText += `\n🔢 Exit Code: ${result.run.code}`;
+            }
+            
+            output.innerHTML = outputText || '✅ Code executed successfully (no output)';
+            
+        } catch (error) {
+            output.innerHTML = '❌ Compiler Error: ' + error.message + '\n\nPlease check your code and try again.';
         }
     }
     
-    function runCode() {
-        const code = document.getElementById('codeEditor').value;
-        const output = document.getElementById('output');
-        const lang = document.getElementById('language').value;
-        
-        output.innerHTML = '> Compiling and running...\n';
-        
-        setTimeout(() => {
-            let result = '';
-            if (lang === 'python') {
-                if (code.includes('print("Hello, World!")')) {
-                    result += 'Hello, World!\n';
-                }
-                if (code.includes('for i in range(5)')) {
-                    for(let i = 0; i < 5; i++) {
-                        result += `Number: ${i}\n`;
-                    }
-                }
-                if (code.includes('input(')) {
-                    result += 'Input functions not supported in demo mode\n';
-                }
-            } else {
-                if (code.includes('printf("Hello, World!')) {
-                    result += 'Hello, World!\n';
-                }
-                if (code.includes('for(int i = 0; i < 5; i++)')) {
-                    for(let i = 0; i < 5; i++) {
-                        result += `Number: ${i}\n`;
-                    }
-                }
-                if (code.includes('scanf')) {
-                    result += 'Input functions not supported in demo mode\n';
-                }
-            }
-            
-            if (!result) {
-                result = 'Code compiled and executed successfully!\n> Program finished with exit code 0';
-            } else {
-                result += '\n> Program finished with exit code 0';
-            }
-            
-            output.innerHTML = result;
-        }, 1500);
+    function getLanguageName(languageId) {
+        const languages = {
+            '50': 'c',
+            '71': 'python',
+            '63': 'javascript',
+            '62': 'java'
+        };
+        return languages[languageId] || 'c';
     }
     
     function clearOutput() {
@@ -2741,9 +2782,13 @@ class UserService {
         document.getElementById('question').innerHTML = q.question;
         
         let optionsHtml = '';
-        q.options.forEach((option, index) => {
-            optionsHtml += `<div class="quiz-option" onclick="selectOption(${index})" id="option${index}">${String.fromCharCode(65 + index)}. ${option}</div>`;
-        });
+        if (q.options && q.options.length > 0) {
+            q.options.forEach((option, index) => {
+                optionsHtml += `<div class="quiz-option" onclick="selectOption(${index})" id="option${index}">${String.fromCharCode(65 + index)}. ${option}</div>`;
+            });
+        } else {
+            optionsHtml = '<div style="color: red;">Error: No options available for this question</div>';
+        }
         document.getElementById('options').innerHTML = optionsHtml;
         
         document.getElementById('result').style.display = 'none';
