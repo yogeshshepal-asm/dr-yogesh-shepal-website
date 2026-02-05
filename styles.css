@@ -1052,7 +1052,11 @@ footer {
   #backToTop {
     display: none !important;
   }
-}or: white;
+}
+
+/* Additional Sidebar Styles */
+.sidebar-toggle {
+  color: white;
   border: none;
   padding: 10px;
   border-radius: 5px;
@@ -1063,8 +1067,10 @@ footer {
 .sidebar-overlay {
   display: none;
   position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
+  top: 0; 
+  left: 0;
+  width: 100vw; 
+  height: 100vh;
   background: rgba(0,0,0,0.5);
   z-index: 99;
 }
