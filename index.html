@@ -13,7 +13,16 @@
   <meta name="description" content="Official personal website of Dr. Yogesh Shepal, Associate Professor at ASM NEXTGEN Technical Campus. Explore his research, projects, teaching materials for SPPU, and C programming blog.">
   <meta name="keywords" content="Dr. Yogesh Shepal, ASM NEXTGEN, Associate Professor, SPPU, C Programming, teaching, research, AI, deep learning, resume, projects, blog, programming notes, FPL, computer science, Pune">
   <meta name="author" content="Dr. Yogesh Shepal">
+<script>
+(function () {
+  var host = window.location.hostname;
 
+  // If user is on the Render domain → redirect
+  if (host === "dr-yogesh-shepal-website.onrender.com") {
+    window.location.replace("https://dryogeshshepal.in" + window.location.pathname + window.location.search);
+  }
+})();
+</script>
   <!-- Open Graph Meta Tags -->
   <meta property="og:title" content="Dr. Yogesh Shepal | Associate Professor & Researcher">
   <meta property="og:description" content="Official personal website of Dr. Yogesh Shepal, Associate Professor at ASM NEXTGEN Technical Campus. Explore his research, projects, teaching materials for SPPU, and C programming blog.">
