@@ -110,7 +110,11 @@
     <section id="resume" class="resume animate-slide-left">
       <h2>Resume / CV</h2>
       <p>You can download my full CV below:</p>
-      <a href="Resume.pdf" download>📄 Download Resume</a>
+     <a href="Resume.pdf" download onclick="gtag('event', 'resume_download', {
+  file_name: 'Resume.pdf'
+});">
+  📄 Download Resume
+</a>
     </section>
 
     <!-- Timeline Section -->
