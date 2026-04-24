@@ -1,4 +1,4 @@
-name: Jekyll site CI
+name: Static Site Checks
 
 on:
   push:
@@ -7,14 +7,20 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-
+  validate:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the site in the jekyll/builder container
-      run: |
-        docker run \
-        -v ${{ github.workspace }}:/srv/jekyll -v ${{ github.workspace }}/_site:/srv/jekyll/_site \
-        jekyll/builder:latest /bin/bash -c "chmod -R 777 /srv/jekyll && jekyll build --future"
+      - uses: actions/checkout@v4
+      - name: Validate static site files
+        run: |
+          test -f index.html
+          test -f styles.css
+          test -f script.js
+          test -f render.yaml
+          test -f robots.txt
+          test -f sitemap.xml
+      - name: Validate primary domain references
+        run: |
+          grep -q 'https://dryogeshshepal.in' index.html
+          grep -q 'https://dryogeshshepal.in/sitemap.xml' robots.txt
