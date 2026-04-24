@@ -7,6 +7,7 @@
   
   <!-- External Stylesheets -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <script>document.documentElement.classList.add('js');</script>
   <link rel="stylesheet" href="styles.css">
   <link rel="canonical" href="https://dryogeshshepal.in">
   <!-- Meta Tags -->
@@ -37,7 +38,6 @@
   <meta property="og:title" content="Dr. Yogesh Shepal | Associate Professor & Researcher">
   <meta property="og:description" content="Official personal website of Dr. Yogesh Shepal, Associate Professor at ASM NEXTGEN Technical Campus. Explore his research, projects, teaching materials for SPPU, and C programming blog.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://c-professor-ai.onrender.com">
   <meta property="og:url" content="https://dryogeshshepal.in">
    <meta property="og:image" content="https://dryogeshshepal.in/yogesh-shepal.jpg">
 <script type="application/ld+json">
@@ -50,19 +50,11 @@
   "worksFor": {
     "@type": "Organization",
     "name": "ASM NEXTGEN Technical Campus"
-  },
-  "sameAs": [
-    "https://www.linkedin.com/"
-  ]
+  }
 }
 </script>
 </head>
 <body>
-  <!-- Loading Spinner -->
-  <div id="spinner" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);z-index:2000;align-items:center;justify-content:center;">
-    <div style="border:8px solid #eee;border-top:8px solid #007bff;border-radius:50%;width:60px;height:60px;animation:spin 1s linear infinite;"></div>
-  </div>
-
   <!-- Sidebar -->
   <div class="sidebar">
     <button class="sidebar-toggle" aria-label="Toggle navigation">&#9776;</button>
@@ -89,9 +81,6 @@
 
   <!-- Main Content -->
   <div class="main-content">
-    <!-- Toast Container -->
-    <div class="toast-container" id="toastContainer"></div>
-    
     <!-- Back to Top Button -->
     <button id="backToTop" style="display:none;position:fixed;bottom:30px;right:30px;z-index:1000;background:#007bff;color:#fff;border:none;border-radius:50%;width:48px;height:48px;font-size:2rem;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.2);">&#8679;</button>
 
@@ -192,6 +181,10 @@
     <!-- Projects Section -->
     <section id="projects" class="animate-on-scroll">
       <h2>Projects</h2>
+      <p class="projects-intro">
+        Academic and software projects, including selected public repositories from
+        <a href="https://github.com/yogeshshepal-asm" target="_blank">GitHub</a>.
+      </p>
       <div class="cards">
         <div class="card animate-slide-left">
           <div class="card-inner">
@@ -221,70 +214,505 @@
             </div>
           </div>
         </div>
+
+        <div class="card animate-slide-left">
+          <div class="card-inner">
+            <div class="card-front">
+              <h3>Dr Yogesh Shepal Website</h3>
+              <p>Personal academic website featuring teaching materials, research highlights, publications, and interactive learning tools.</p>
+              <div class="project-links">
+                <a class="project-link" href="https://github.com/yogeshshepal-asm/dr-yogesh-shepal-website" target="_blank">GitHub Repo</a>
+              </div>
+            </div>
+            <div class="card-back">
+              <h4>GitHub Project</h4>
+              <p><strong>Repository:</strong> dr-yogesh-shepal-website</p>
+              <p><strong>Language:</strong> JavaScript</p>
+              <p><strong>Updated:</strong> Apr 2026</p>
+              <div class="project-links">
+                <a class="project-link" href="https://github.com/yogeshshepal-asm/dr-yogesh-shepal-website" target="_blank">Open Repo</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card animate-slide-right">
+          <div class="card-inner">
+            <div class="card-front">
+              <h3>C-Professor-AI</h3>
+              <p>AI-powered assistant project focused on helping students learn and practice C programming concepts.</p>
+              <div class="project-links">
+                <a class="project-link" href="https://github.com/yogeshshepal-asm/C-Professor-AI" target="_blank">GitHub Repo</a>
+              </div>
+            </div>
+            <div class="card-back">
+              <h4>GitHub Project</h4>
+              <p><strong>Repository:</strong> C-Professor-AI</p>
+              <p><strong>Language:</strong> HTML</p>
+              <p><strong>Updated:</strong> Feb 2026</p>
+              <div class="project-links">
+                <a class="project-link" href="https://github.com/yogeshshepal-asm/C-Professor-AI" target="_blank">Open Repo</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card animate-slide-left">
+          <div class="card-inner">
+            <div class="card-front">
+              <h3>ASM Nextgen Grievance Redressal</h3>
+              <p>Institution-focused grievance redressal portal published on GitHub with a live deployed frontend.</p>
+              <div class="project-links">
+                <a class="project-link" href="https://github.com/yogeshshepal-asm/asm-nextgen-grievance-redressal" target="_blank">GitHub Repo</a>
+                <a class="project-link secondary-link" href="https://asm-nextgen-grievance-redressal.vercel.app" target="_blank">Live Demo</a>
+              </div>
+            </div>
+            <div class="card-back">
+              <h4>GitHub Project</h4>
+              <p><strong>Repository:</strong> asm-nextgen-grievance-redressal</p>
+              <p><strong>Language:</strong> TypeScript</p>
+              <p><strong>Updated:</strong> Feb 2026</p>
+              <div class="project-links">
+                <a class="project-link" href="https://github.com/yogeshshepal-asm/asm-nextgen-grievance-redressal" target="_blank">Open Repo</a>
+                <a class="project-link secondary-link" href="https://asm-nextgen-grievance-redressal.vercel.app" target="_blank">Open Demo</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card animate-slide-right">
+          <div class="card-inner">
+            <div class="card-front">
+              <h3>MIS</h3>
+              <p>Management information system repository published on GitHub for future application and workflow development.</p>
+              <div class="project-links">
+                <a class="project-link" href="https://github.com/yogeshshepal-asm/MIS" target="_blank">GitHub Repo</a>
+              </div>
+            </div>
+            <div class="card-back">
+              <h4>GitHub Project</h4>
+              <p><strong>Repository:</strong> MIS</p>
+              <p><strong>Language:</strong> Repository Initialized</p>
+              <p><strong>Updated:</strong> Feb 2026</p>
+              <div class="project-links">
+                <a class="project-link" href="https://github.com/yogeshshepal-asm/MIS" target="_blank">Open Repo</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card animate-slide-left">
+          <div class="card-inner">
+            <div class="card-front">
+              <h3>Nextgen Redressal Engine</h3>
+              <p>Supporting repository for next-generation grievance redressal workflows and backend-oriented project setup.</p>
+              <div class="project-links">
+                <a class="project-link" href="https://github.com/yogeshshepal-asm/Nextgen-Redressal-Engine" target="_blank">GitHub Repo</a>
+              </div>
+            </div>
+            <div class="card-back">
+              <h4>GitHub Project</h4>
+              <p><strong>Repository:</strong> Nextgen-Redressal-Engine</p>
+              <p><strong>Language:</strong> Repository Initialized</p>
+              <p><strong>Updated:</strong> Feb 2026</p>
+              <div class="project-links">
+                <a class="project-link" href="https://github.com/yogeshshepal-asm/Nextgen-Redressal-Engine" target="_blank">Open Repo</a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- Research Section -->
     <section id="research" class="animate-on-scroll">
       <h2>📚 Research & Publications</h2>
-     <p style="margin-bottom: 30px;">
-  View my complete research profile:
+     <p style="margin-bottom: 16px;">
+  Indexed research profiles:
   <a href="https://scholar.google.com/citations?user=kndMOOEAAAAJ&hl=en&oi=ao" 
      target="_blank" 
      style="color: var(--primary); font-weight: 600;">
-     Google Scholar Profile
+     Google Scholar
   </a>
-</p>
-
-<p>
+  |
   <a href="https://www.semanticscholar.org/author/Yogesh-R.-Shepal/2103060462" 
      target="_blank" 
      style="color: var(--primary); font-weight: 600;">
-     Semantic Scholar Profile
+     Semantic Scholar Profile 1
+  </a>
+  |
+  <a href="https://www.semanticscholar.org/author/Prof.-Yogesh-Shepal/2303370250" 
+     target="_blank" 
+     style="color: var(--primary); font-weight: 600;">
+     Semantic Scholar Profile 2
   </a>
 </p>
-      
+
+      <div class="paper-metrics" style="margin-bottom: 14px;">
+        <span class="metric">Semantic Scholar Profiles: 2</span>
+        <span class="metric">Verified Publications: 12</span>
+        <span class="metric">Verified Patents: 3</span>
+        <span class="metric">Verified Copyrights: 19</span>
+        <span class="metric">Latest Indexed Year: 2026</span>
+      </div>
+
+      <h3 class="research-subtitle">Verified Publications</h3>
       <div class="research-grid">
         <div class="research-paper animate-slide-left">
-          <div class="paper-year">2024</div>
-          <h4>Deep Learning for Cervical Cancer Detection using Pap Smear Images</h4>
-          <p class="paper-journal">Panamerican Mathematical Journal</p>
-          <p class="paper-description">Advanced deep learning techniques for automated cervical cancer screening using convolutional neural networks.</p>
+          <div class="paper-year">2026</div>
+          <h4>Effectiveness of e-Learning Modules in Community-Based Tuberculosis Awareness Programs</h4>
+          <p class="paper-journal">Indian Journal of Tuberculosis</p>
+          <p class="paper-description">Indexed publication on community-based tuberculosis awareness through e-learning modules.</p>
           <div class="paper-metrics">
-            <span class="metric">📊 Citations: 12</span>
-            <span class="metric">📈 Impact Factor: 2.1</span>
+            <span class="metric">Semantic Scholar Profile 1</span>
+            <span class="metric">Latest Indexed Publication</span>
           </div>
         </div>
-        
+
         <div class="research-paper animate-slide-right">
           <div class="paper-year">2024</div>
-          <h4>Machine Learning Approaches for Diabetes Risk Prediction</h4>
-          <p class="paper-journal">Frontiers in Health Informatics</p>
-          <p class="paper-description">Comprehensive analysis of ML algorithms for early diabetes detection using clinical parameters.</p>
+          <h4>Mathematical Evaluation of Deep Learning Architecture with Feature Fusion for Cervical Cancer Detection Classification</h4>
+          <p class="paper-journal">Panamerican Mathematical Journal</p>
+          <p class="paper-description">Indexed publication on feature fusion and deep learning methods for cervical cancer detection.</p>
           <div class="paper-metrics">
-            <span class="metric">📊 Citations: 8</span>
-            <span class="metric">📈 Impact Factor: 1.8</span>
+            <span class="metric">Semantic Scholar Profile 1</span>
+            <span class="metric">Scopus Indexed</span>
           </div>
         </div>
-        
+
         <div class="research-paper animate-slide-left">
           <div class="paper-year">2024</div>
-          <h4>Enhanced Word Sense Disambiguation using Context-Aware Neural Networks</h4>
-          <p class="paper-journal">Copyrighted Research Work</p>
-          <p class="paper-description">Novel approach to natural language processing using transformer-based architectures for semantic understanding.</p>
+          <h4>Implementing AI Algorithms for Predicting Diabetes Risk in Patients Using Health Informatics Data</h4>
+          <p class="paper-journal">Frontiers in Health Informatics</p>
+          <p class="paper-description">Verified publication on AI-driven diabetes risk prediction using health informatics data.</p>
           <div class="paper-metrics">
-            <span class="metric">🔬 Status: Under Review</span>
+            <span class="metric">Semantic Scholar Profile 1</span>
+            <span class="metric">Scopus Indexed</span>
           </div>
         </div>
-        
+
         <div class="research-paper animate-slide-right">
           <div class="paper-year">2024</div>
-          <h4>Autonomous Drone Navigation Console</h4>
-          <p class="paper-journal">Patent Application</p>
-          <p class="paper-description">Innovative control system for autonomous drone navigation with real-time obstacle avoidance capabilities.</p>
+          <h4>Text Encryption With Authorized Deduplication In Cloud</h4>
+          <p class="paper-journal">International Journal of Creative Research Thoughts (IJCRT)</p>
+          <p class="paper-description">Publication on cloud security, encrypted storage, and authorized deduplication workflows.</p>
           <div class="paper-metrics">
-            <span class="metric">📋 Patent ID: IN202410...</span>
-            <span class="metric">⚖️ Status: Filed</span>
+            <span class="metric">Semantic Scholar Profile 2</span>
+            <span class="metric">IJCRT 2024</span>
+          </div>
+        </div>
+
+        <div class="research-paper animate-slide-left">
+          <div class="paper-year">2024</div>
+          <h4>Image And Text Encryption With Authorized Deduplication In Cloud</h4>
+          <p class="paper-journal">International Journal of Creative Research Thoughts (IJCRT)</p>
+          <p class="paper-description">Work centered on secure cloud storage with authorized deduplication for image and text data.</p>
+          <div class="paper-metrics">
+            <span class="metric">Semantic Scholar Profile 2</span>
+            <span class="metric">IJCRT 2024</span>
+          </div>
+        </div>
+
+        <div class="research-paper animate-slide-right">
+          <div class="paper-year">2024</div>
+          <h4>A Steganography Classification Based on Image,Video and Audio</h4>
+          <p class="paper-journal">International Journal of Creative Research Thoughts (IJCRT)</p>
+          <p class="paper-description">Publication focused on multimedia steganography across image, video, and audio data.</p>
+          <div class="paper-metrics">
+            <span class="metric">Semantic Scholar Profile 2</span>
+            <span class="metric">IJCRT 2024</span>
+          </div>
+        </div>
+
+        <div class="research-paper animate-slide-left">
+          <div class="paper-year">2024</div>
+          <h4>A Study Of Steganography Methods Based On Image,Video And Audio</h4>
+          <p class="paper-journal">International Journal of Creative Research Thoughts (IJCRT)</p>
+          <p class="paper-description">Study of steganography techniques for hidden communication in image, video, and audio media.</p>
+          <div class="paper-metrics">
+            <span class="metric">Semantic Scholar Profile 2</span>
+            <span class="metric">IJCRT 2024</span>
+          </div>
+        </div>
+
+        <div class="research-paper animate-slide-right">
+          <div class="paper-year">2024</div>
+          <h4>A Web Application For Training And Placement Cell With Predictive Features</h4>
+          <p class="paper-journal">International Journal of Creative Research Thoughts (IJCRT)</p>
+          <p class="paper-description">Placement management and predictive features platform publication from the institutional publication record.</p>
+          <div class="paper-metrics">
+            <span class="metric">Google Scholar / Institutional Record</span>
+            <span class="metric">IJCRT 2024</span>
+          </div>
+        </div>
+
+        <div class="research-paper animate-slide-left">
+          <div class="paper-year">2024</div>
+          <h4>Realtime Traffic Monitoring and Controlling System</h4>
+          <p class="paper-journal">Indian Journal of Technical Education</p>
+          <p class="paper-description">Publication on computer-vision-assisted traffic monitoring, counting, and control using image and video analysis.</p>
+          <div class="paper-metrics">
+            <span class="metric">Google Scholar / Public Listing</span>
+            <span class="metric">December 2024</span>
+          </div>
+        </div>
+
+        <div class="research-paper animate-slide-right">
+          <div class="paper-year">2024</div>
+          <h4>Modeling and Predicting Cyber Hacking Breaches</h4>
+          <p class="paper-journal">Indian Journal of Technical Education</p>
+          <p class="paper-description">Publication focused on SVM-based predictive modeling for cyber attack and breach analysis.</p>
+          <div class="paper-metrics">
+            <span class="metric">Google Scholar / Public Listing</span>
+            <span class="metric">December 2024</span>
+          </div>
+        </div>
+
+        <div class="research-paper animate-slide-left">
+          <div class="paper-year">2023</div>
+          <h4>A MACHINE LEARING BASED MUSIC PLAYER BY DETECTING EMOTIONS</h4>
+          <p class="paper-journal">International Research Journal of Modernization in Engineering Technology and Science (IRJMETS)</p>
+          <p class="paper-description">Paper on emotion detection and music recommendation using facial-expression analysis and convolutional neural networks.</p>
+          <div class="paper-metrics">
+            <span class="metric">Google Scholar / Public Listing</span>
+            <span class="metric">IRJMETS March 2023</span>
+          </div>
+        </div>
+
+        <div class="research-paper animate-slide-right">
+          <div class="paper-year">2014</div>
+          <h4>A Fast Clustering-Based Feature Subset Selection Algorithm for High Dimensional Data</h4>
+          <p class="paper-journal">International Journal of Research Studies in Science</p>
+          <p class="paper-description">Earlier publication in data mining and feature selection for high-dimensional datasets.</p>
+          <div class="paper-metrics">
+            <span class="metric">Semantic Scholar Profile 1</span>
+            <span class="metric">Co-authored with Ashraf Shaikh</span>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="research-subtitle">Verified Patents</h3>
+      <div class="ip-grid">
+        <div class="research-paper ip-card animate-slide-left">
+          <div class="paper-year">2024</div>
+          <h4>Ai Enhanced Daylight Pen : Seamless Writing For Day And Night</h4>
+          <p>Design No. <strong>409546-001</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">Institutional Patent Record</span>
+            <span class="metric">09 May 2024</span>
+          </div>
+        </div>
+
+        <div class="research-paper ip-card animate-slide-right">
+          <div class="paper-year">2024</div>
+          <h4>INDUSTRIAL ROBOTICS CONTROL INTERFACE DISPLAY</h4>
+          <p>Design No. <strong>441132-001</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">Institutional Patent Record</span>
+            <span class="metric">18 Dec 2024</span>
+          </div>
+        </div>
+
+        <div class="research-paper ip-card animate-slide-left">
+          <div class="paper-year">2024</div>
+          <h4>WEARABLE HEALTH MONITORING DEVICE</h4>
+          <p>Design No. <strong>441133-001</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">Institutional Patent Record</span>
+            <span class="metric">18 Dec 2024</span>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="research-subtitle">Verified Copyrights</h3>
+      <div class="ip-grid">
+        <div class="research-paper ip-card animate-slide-left">
+          <div class="paper-year">2024</div>
+          <h4>Methodology For Word Embedding</h4>
+          <p>Diary No. <strong>8565/2024-CO/L</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">19 Mar 2024</span>
+            <span class="metric">2023-24</span>
+          </div>
+        </div>
+
+        <div class="research-paper ip-card animate-slide-right">
+          <div class="paper-year">2024</div>
+          <h4>Complex Network Approach For Word Sense Disambiguation</h4>
+          <p>Diary No. <strong>8561/2024-CO/L</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">19 Mar 2024</span>
+            <span class="metric">2023-24</span>
+          </div>
+        </div>
+
+        <div class="research-paper ip-card animate-slide-left">
+          <div class="paper-year">2024</div>
+          <h4>Adaptive Lexical Resource For Word Sense Disambiguation</h4>
+          <p>Diary No. <strong>8554/2024-CO/L</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">19 Mar 2024</span>
+            <span class="metric">2023-24</span>
+          </div>
+        </div>
+
+        <div class="research-paper ip-card animate-slide-right">
+          <div class="paper-year">2024</div>
+          <h4>Adaptive Methodology For Single Sentence Word Sense Disambiguation</h4>
+          <p>Diary No. <strong>8552/2024-CO/L</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">19 Mar 2024</span>
+            <span class="metric">2023-24</span>
+          </div>
+        </div>
+
+        <div class="research-paper ip-card animate-slide-left">
+          <div class="paper-year">2024</div>
+          <h4>Research Methodology: Word Sense Disambiguation</h4>
+          <p>Diary No. <strong>8537/2024-CO/L</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">19 Mar 2024</span>
+            <span class="metric">2023-24</span>
+          </div>
+        </div>
+
+        <div class="research-paper ip-card animate-slide-right">
+          <div class="paper-year">2024</div>
+          <h4>A Novel Approach For Student Attendance Monitoring Using A Machine Learning Approach</h4>
+          <p>Diary No. <strong>L-154497/2024</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">10 Aug 2024</span>
+            <span class="metric">2024-25</span>
+          </div>
+        </div>
+
+        <div class="research-paper ip-card animate-slide-left">
+          <div class="paper-year">2024</div>
+          <h4>A Novel Model For Detecting Deforestation Using Pattern Recognition</h4>
+          <p>Diary No. <strong>L-155070/2024</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">10 Aug 2024</span>
+            <span class="metric">2024-25</span>
+          </div>
+        </div>
+
+        <div class="research-paper ip-card animate-slide-right">
+          <div class="paper-year">2024</div>
+          <h4>Adaptive Model For Road Accidents</h4>
+          <p>Diary No. <strong>L-154502/2024</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">10 Aug 2024</span>
+            <span class="metric">2024-25</span>
+          </div>
+        </div>
+
+        <div class="research-paper ip-card animate-slide-left">
+          <div class="paper-year">2024</div>
+          <h4>An Adaptive Model For Imitation Learning In Robots</h4>
+          <p>Diary No. <strong>L-155415/2024</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">10 Aug 2024</span>
+            <span class="metric">2024-25</span>
+          </div>
+        </div>
+
+        <div class="research-paper ip-card animate-slide-right">
+          <div class="paper-year">2024</div>
+          <h4>An Adaptive Model For Plant Leaf Disease Detection And Prediction Using Image Processing</h4>
+          <p>Diary No. <strong>L-155419/2024</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">10 Aug 2024</span>
+            <span class="metric">2024-25</span>
+          </div>
+        </div>
+
+        <div class="research-paper ip-card animate-slide-left">
+          <div class="paper-year">2024</div>
+          <h4>An Adaptive Model For Students Mental Health Prediction Using Image Processing</h4>
+          <p>Diary No. <strong>L-155021/2024</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">10 Aug 2024</span>
+            <span class="metric">2024-25</span>
+          </div>
+        </div>
+
+        <div class="research-paper ip-card animate-slide-right">
+          <div class="paper-year">2024</div>
+          <h4>Babies Problems Prediction Using Natural Language Processing</h4>
+          <p>Diary No. <strong>L-154500/2024</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">10 Aug 2024</span>
+            <span class="metric">2024-25</span>
+          </div>
+        </div>
+
+        <div class="research-paper ip-card animate-slide-left">
+          <div class="paper-year">2024</div>
+          <h4>College Feedback System Report</h4>
+          <p>Diary No. <strong>L-154503/2024</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">10 Aug 2024</span>
+            <span class="metric">2024-25</span>
+          </div>
+        </div>
+
+        <div class="research-paper ip-card animate-slide-right">
+          <div class="paper-year">2024</div>
+          <h4>Detecting Tomato Diseases Using Automation</h4>
+          <p>Diary No. <strong>L-155037/2024</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">10 Aug 2024</span>
+            <span class="metric">2024-25</span>
+          </div>
+        </div>
+
+        <div class="research-paper ip-card animate-slide-left">
+          <div class="paper-year">2024</div>
+          <h4>Distributed Library System Design</h4>
+          <p>Diary No. <strong>L-155069/2024</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">10 Aug 2024</span>
+            <span class="metric">2024-25</span>
+          </div>
+        </div>
+
+        <div class="research-paper ip-card animate-slide-right">
+          <div class="paper-year">2024</div>
+          <h4>Floor Mill Management System</h4>
+          <p>Diary No. <strong>L-154496/2024</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">10 Aug 2024</span>
+            <span class="metric">2024-25</span>
+          </div>
+        </div>
+
+        <div class="research-paper ip-card animate-slide-left">
+          <div class="paper-year">2024</div>
+          <h4>Prediction Of Learners Sentiment Using Natural Language Processing</h4>
+          <p>Diary No. <strong>L-155418/2024</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">10 Aug 2024</span>
+            <span class="metric">2024-25</span>
+          </div>
+        </div>
+
+        <div class="research-paper ip-card animate-slide-right">
+          <div class="paper-year">2024</div>
+          <h4>Smart Floor Dust Recognition System</h4>
+          <p>Diary No. <strong>L-155022/2024</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">10 Aug 2024</span>
+            <span class="metric">2024-25</span>
+          </div>
+        </div>
+
+        <div class="research-paper ip-card animate-slide-left">
+          <div class="paper-year">2024</div>
+          <h4>Voice Based Email For Blind Person</h4>
+          <p>Diary No. <strong>L-155412/2024</strong></p>
+          <div class="paper-metrics">
+            <span class="metric">10 Aug 2024</span>
+            <span class="metric">2024-25</span>
           </div>
         </div>
       </div>
@@ -296,76 +724,111 @@
       
       <div class="blog-grid">
         <article class="blog-post animate-slide-left">
-          <div class="blog-date">Aug 2025</div>
-          <h3>Mastering C Programming: A Comprehensive Guide for Engineering Students</h3>
+          <div class="blog-date">Apr 2026</div>
+          <h3>Mini Projects That Build Real Skills: From Classroom Concepts to Portfolio Work</h3>
           <div class="blog-excerpt">
-            <p>C programming remains the cornerstone of computer science education. This guide explores fundamental concepts, best practices, and practical applications that every engineering student should master.</p>
-            <button class="read-more-btn" onclick="toggleArticle('article1')">Read More</button>
+            <p>Mini projects are one of the fastest ways to convert theory into confidence. This article outlines how to select, plan, and complete projects that genuinely strengthen technical skills.</p>
+            <button class="read-more-btn" onclick="toggleArticle('article9')">Read More</button>
           </div>
-          <div class="blog-content" id="article1" style="display: none;">
-            <h4>Why C Programming Matters</h4>
-            <p>C programming language, developed by Dennis Ritchie in 1972, continues to be relevant in modern software development. Its efficiency, portability, and close-to-hardware nature make it essential for system programming, embedded systems, and performance-critical applications.</p>
-            
-            <h4>Core Concepts Every Student Must Know</h4>
-            <p><strong>1. Memory Management:</strong> Understanding pointers, dynamic allocation, and memory leaks prevention is crucial. Always pair malloc() with free() to avoid memory leaks.</p>
-            
-            <p><strong>2. Data Structures:</strong> Arrays, linked lists, stacks, and queues form the foundation. Practice implementing these from scratch to understand memory layout and pointer manipulation.</p>
-            
-            <p><strong>3. Function Design:</strong> Write modular, reusable functions. Follow single responsibility principle - each function should perform one specific task.</p>
-            
-            <h4>Best Practices for Clean Code</h4>
+          <div class="blog-content" id="article9" style="display: none;">
+            <h4>Why Mini Projects Work</h4>
+            <p>Mini projects create a bridge between concepts and execution. They force students to make design decisions, debug real issues, and present outcomes in a practical form.</p>
+
+            <h4>Good Project Ideas by Area</h4>
+            <p><strong>C Programming:</strong> Student record system, file-based inventory tool, or menu-driven banking simulation.</p>
+            <p><strong>Python:</strong> Attendance tracker, report card generator, quiz system, or automation scripts.</p>
+            <p><strong>Machine Learning:</strong> House price prediction, sentiment analysis, or image classification using a small curated dataset.</p>
+            <p><strong>Web Development:</strong> Placement portal, blog engine, lab management dashboard, or notes-sharing website.</p>
+
+            <h4>How to Plan a Mini Project</h4>
+            <p><strong>Define Scope:</strong> Keep the first version small and working. A complete basic project is better than an incomplete advanced one.</p>
+            <p><strong>Break Work Into Modules:</strong> Separate user interface, logic, storage, and testing so progress becomes measurable.</p>
+            <p><strong>Document Decisions:</strong> Record the problem statement, tools used, limitations, and future improvements.</p>
+
+            <h4>What Evaluators Notice</h4>
             <ul>
-              <li>Use meaningful variable names (studentCount instead of sc)</li>
-              <li>Comment complex algorithms and business logic</li>
-              <li>Validate input parameters in functions</li>
-              <li>Handle error conditions gracefully</li>
-              <li>Use const keyword for read-only parameters</li>
+              <li>Clarity of problem statement</li>
+              <li>Working demonstration, not only slides</li>
+              <li>Code readability and modular design</li>
+              <li>Ability to explain choices and limitations</li>
             </ul>
-            
-            <p><strong>Conclusion:</strong> C programming builds strong foundational skills that translate to other languages. Practice regularly, write clean code, and always prioritize readability and maintainability.</p>
+
+            <h4>Turning Projects into Portfolio Strength</h4>
+            <p>Upload code to GitHub, write a short project summary, add screenshots, and mention the technologies used. Even small projects become valuable when they are well documented and clearly explained.</p>
+
+            <p><strong>Conclusion:</strong> Mini projects help students build confidence, improve interviews, and prepare for major projects. The key is to finish, reflect, and keep improving with each new version.</p>
           </div>
         </article>
-        
+
         <article class="blog-post animate-slide-right">
-          <div class="blog-date">Aug 2025</div>
-          <h3>Deep Learning Fundamentals: From Neural Networks to Real-World Applications</h3>
+          <div class="blog-date">Mar 2026</div>
+          <h3>Prompt Engineering for Students and Teachers: Getting Better Results from AI Tools</h3>
           <div class="blog-excerpt">
-            <p>Deep learning has revolutionized artificial intelligence. This comprehensive guide covers neural network fundamentals, key architectures, and practical implementation strategies for beginners and intermediate learners.</p>
-            <button class="read-more-btn" onclick="toggleArticle('article2')">Read More</button>
+            <p>AI tools become far more useful when prompts are precise, structured, and goal-oriented. This article explains how students and educators can use prompting effectively and responsibly.</p>
+            <button class="read-more-btn" onclick="toggleArticle('article8')">Read More</button>
           </div>
-          <div class="blog-content" id="article2" style="display: none;">
-            <h4>Understanding Neural Networks</h4>
-            <p>Neural networks are computational models inspired by biological neural systems. They consist of interconnected nodes (neurons) organized in layers that process information through weighted connections and activation functions.</p>
-            
-            <h4>Core Components Explained</h4>
-            <p><strong>1. Neurons and Layers:</strong> Input layer receives data, hidden layers process information, and output layer produces results. Each neuron applies weights, adds bias, and uses activation functions.</p>
-            
-            <p><strong>2. Activation Functions:</strong> ReLU (Rectified Linear Unit) is most common for hidden layers due to computational efficiency. Sigmoid and Tanh are used for specific scenarios. Softmax is ideal for multi-class classification output.</p>
-            
-            <p><strong>Future Outlook:</strong> Deep learning continues evolving with attention mechanisms, self-supervised learning, and neural architecture search. Stay updated with latest research and practical applications in your domain.</p>
+          <div class="blog-content" id="article8" style="display: none;">
+            <h4>What Makes a Good Prompt?</h4>
+            <p>A good prompt gives context, defines the task clearly, sets output expectations, and avoids ambiguity. The better the instruction, the more useful and consistent the result.</p>
+
+            <h4>A Simple Prompt Framework</h4>
+            <p><strong>1. Role:</strong> Tell the AI what kind of assistant you want, such as tutor, reviewer, programmer, or summarizer.</p>
+            <p><strong>2. Task:</strong> Be explicit about what needs to be done: explain, compare, generate, improve, debug, or summarize.</p>
+            <p><strong>3. Context:</strong> Add the subject, audience level, constraints, or source material.</p>
+            <p><strong>4. Format:</strong> Specify whether the answer should be bullet points, code, table, paragraph, or step-by-step guidance.</p>
+
+            <h4>Examples in Education</h4>
+            <p><strong>For Students:</strong> "Explain recursion with a simple C example for first-year engineering students."</p>
+            <p><strong>For Teachers:</strong> "Create five short viva questions on Python functions with expected answers."</p>
+            <p><strong>For Researchers:</strong> "Summarize this abstract in clear academic language and list three possible extensions."</p>
+
+            <h4>Responsible Use of AI</h4>
+            <p>AI should support learning, not replace it. Students should verify facts, rewrite in their own understanding, and avoid submitting AI-generated content without review. Teachers should use AI to save time while still applying academic judgment.</p>
+
+            <h4>Best Practices</h4>
+            <ul>
+              <li>Ask follow-up questions instead of expecting one perfect answer</li>
+              <li>Provide examples to guide tone and structure</li>
+              <li>Verify technical, mathematical, and citation-heavy outputs</li>
+              <li>Use AI as a collaborator for brainstorming and refinement</li>
+            </ul>
+
+            <p><strong>Conclusion:</strong> Prompt engineering is becoming an important digital skill. Clear prompting saves time, improves learning outcomes, and makes AI tools much more practical in teaching and research.</p>
           </div>
         </article>
-        
+
         <article class="blog-post animate-slide-left">
-          <div class="blog-date">Aug 2025</div>
-          <h3>AI/Machine Learning Tutorial: Building Your First Intelligent System</h3>
+          <div class="blog-date">Feb 2026</div>
+          <h3>Data Structures for Smart Problem Solving: Lists, Trees, Graphs, and Beyond</h3>
           <div class="blog-excerpt">
-            <p>Step-by-step guide to understanding and implementing machine learning algorithms. Learn practical AI development from data preprocessing to model deployment.</p>
-            <button class="read-more-btn" onclick="toggleArticle('article3')">Read More</button>
+            <p>A practical article on choosing the right data structure for the problem in hand. Learn how arrays, stacks, queues, trees, and graphs influence performance and design quality.</p>
+            <button class="read-more-btn" onclick="toggleArticle('article7')">Read More</button>
           </div>
-          <div class="blog-content" id="article3" style="display: none;">
-            <h4>Introduction to Machine Learning</h4>
-            <p>Machine Learning is a subset of artificial intelligence that enables computers to learn and make decisions from data without explicit programming. This tutorial covers essential concepts and practical implementation strategies.</p>
-            
-            <h4>Types of Machine Learning</h4>
-            <p><strong>Supervised Learning:</strong> Uses labeled data to train models. Examples include classification (email spam detection) and regression (price prediction).</p>
-            <p><strong>Unsupervised Learning:</strong> Finds patterns in unlabeled data. Clustering customers by behavior or dimensionality reduction for data visualization.</p>
-            <p><strong>Reinforcement Learning:</strong> Learns through interaction with environment. Used in game playing, robotics, and autonomous systems.</p>
-            
-            <p><strong>Next Steps:</strong> Practice with real datasets from Kaggle, experiment with different algorithms, and build end-to-end projects to solidify your understanding.</p>
+          <div class="blog-content" id="article7" style="display: none;">
+            <h4>Why Data Structures Matter</h4>
+            <p>Data structures are not just theoretical concepts. They directly affect memory usage, runtime performance, and how easily a program can be maintained or extended.</p>
+
+            <h4>Core Structures Every Student Should Know</h4>
+            <p><strong>Arrays and Lists:</strong> Best when data is sequential and index-based access is important. They are simple, fast, and widely used in day-to-day programming.</p>
+            <p><strong>Stacks and Queues:</strong> Useful when order of processing matters. Stacks support backtracking and expression evaluation, while queues are ideal for scheduling and buffering.</p>
+            <p><strong>Trees:</strong> Suitable for hierarchical data such as file systems, menus, or search indexing. Binary search trees and heaps appear often in interview and academic problems.</p>
+            <p><strong>Graphs:</strong> Essential when relationships matter more than sequence. Social networks, route planning, dependency analysis, and recommendation systems all depend on graph thinking.</p>
+
+            <h4>How to Choose the Right One</h4>
+            <p>Start with the operations you perform most frequently. Ask whether you need fast insertion, quick lookup, ordered traversal, or relationship modeling. The answer usually points toward the appropriate structure.</p>
+
+            <h4>Common Mistakes</h4>
+            <ul>
+              <li>Using complex structures when a simple list is enough</li>
+              <li>Ignoring memory overhead while optimizing time complexity</li>
+              <li>Memorizing definitions without implementing them by hand</li>
+              <li>Not relating structures to real project use cases</li>
+            </ul>
+
+            <p><strong>Conclusion:</strong> Strong command over data structures improves coding confidence, academic performance, and system design ability. The best way to learn them is to implement and apply them repeatedly.</p>
           </div>
         </article>
-        
+
         <article class="blog-post animate-slide-right">
           <div class="blog-date">Jan 2026</div>
           <h3>General Problem Solving Concepts: A Systematic Approach to Complex Challenges</h3>
@@ -416,7 +879,7 @@
             <p><strong>Conclusion:</strong> Problem-solving is a learnable skill that improves with practice. Master these fundamental concepts, and you'll approach any challenge with confidence and systematic thinking. Remember: every expert was once a beginner who never gave up.</p>
           </div>
         </article>
-        
+
         <article class="blog-post animate-slide-left">
           <div class="blog-date">Jan 2026</div>
           <h3>Basics of Python Programming: Your Gateway to Modern Development</h3>
@@ -517,7 +980,78 @@ print(student1.introduce())</code></pre>
             <p><strong>Next Steps:</strong> Practice with small projects like calculators, to-do lists, or simple games. Explore Python's vast ecosystem and find your area of interest - web development, data science, or automation.</p>
           </div>
         </article>
-        
+
+        <article class="blog-post animate-slide-right">
+          <div class="blog-date">Aug 2025</div>
+          <h3>Mastering C Programming: A Comprehensive Guide for Engineering Students</h3>
+          <div class="blog-excerpt">
+            <p>C programming remains the cornerstone of computer science education. This guide explores fundamental concepts, best practices, and practical applications that every engineering student should master.</p>
+            <button class="read-more-btn" onclick="toggleArticle('article1')">Read More</button>
+          </div>
+          <div class="blog-content" id="article1" style="display: none;">
+            <h4>Why C Programming Matters</h4>
+            <p>C programming language, developed by Dennis Ritchie in 1972, continues to be relevant in modern software development. Its efficiency, portability, and close-to-hardware nature make it essential for system programming, embedded systems, and performance-critical applications.</p>
+            
+            <h4>Core Concepts Every Student Must Know</h4>
+            <p><strong>1. Memory Management:</strong> Understanding pointers, dynamic allocation, and memory leaks prevention is crucial. Always pair malloc() with free() to avoid memory leaks.</p>
+            
+            <p><strong>2. Data Structures:</strong> Arrays, linked lists, stacks, and queues form the foundation. Practice implementing these from scratch to understand memory layout and pointer manipulation.</p>
+            
+            <p><strong>3. Function Design:</strong> Write modular, reusable functions. Follow single responsibility principle - each function should perform one specific task.</p>
+            
+            <h4>Best Practices for Clean Code</h4>
+            <ul>
+              <li>Use meaningful variable names (studentCount instead of sc)</li>
+              <li>Comment complex algorithms and business logic</li>
+              <li>Validate input parameters in functions</li>
+              <li>Handle error conditions gracefully</li>
+              <li>Use const keyword for read-only parameters</li>
+            </ul>
+            
+            <p><strong>Conclusion:</strong> C programming builds strong foundational skills that translate to other languages. Practice regularly, write clean code, and always prioritize readability and maintainability.</p>
+          </div>
+        </article>
+
+        <article class="blog-post animate-slide-left">
+          <div class="blog-date">Aug 2025</div>
+          <h3>Deep Learning Fundamentals: From Neural Networks to Real-World Applications</h3>
+          <div class="blog-excerpt">
+            <p>Deep learning has revolutionized artificial intelligence. This comprehensive guide covers neural network fundamentals, key architectures, and practical implementation strategies for beginners and intermediate learners.</p>
+            <button class="read-more-btn" onclick="toggleArticle('article2')">Read More</button>
+          </div>
+          <div class="blog-content" id="article2" style="display: none;">
+            <h4>Understanding Neural Networks</h4>
+            <p>Neural networks are computational models inspired by biological neural systems. They consist of interconnected nodes (neurons) organized in layers that process information through weighted connections and activation functions.</p>
+            
+            <h4>Core Components Explained</h4>
+            <p><strong>1. Neurons and Layers:</strong> Input layer receives data, hidden layers process information, and output layer produces results. Each neuron applies weights, adds bias, and uses activation functions.</p>
+            
+            <p><strong>2. Activation Functions:</strong> ReLU (Rectified Linear Unit) is most common for hidden layers due to computational efficiency. Sigmoid and Tanh are used for specific scenarios. Softmax is ideal for multi-class classification output.</p>
+            
+            <p><strong>Future Outlook:</strong> Deep learning continues evolving with attention mechanisms, self-supervised learning, and neural architecture search. Stay updated with latest research and practical applications in your domain.</p>
+          </div>
+        </article>
+
+        <article class="blog-post animate-slide-right">
+          <div class="blog-date">Aug 2025</div>
+          <h3>AI/Machine Learning Tutorial: Building Your First Intelligent System</h3>
+          <div class="blog-excerpt">
+            <p>Step-by-step guide to understanding and implementing machine learning algorithms. Learn practical AI development from data preprocessing to model deployment.</p>
+            <button class="read-more-btn" onclick="toggleArticle('article3')">Read More</button>
+          </div>
+          <div class="blog-content" id="article3" style="display: none;">
+            <h4>Introduction to Machine Learning</h4>
+            <p>Machine Learning is a subset of artificial intelligence that enables computers to learn and make decisions from data without explicit programming. This tutorial covers essential concepts and practical implementation strategies.</p>
+            
+            <h4>Types of Machine Learning</h4>
+            <p><strong>Supervised Learning:</strong> Uses labeled data to train models. Examples include classification (email spam detection) and regression (price prediction).</p>
+            <p><strong>Unsupervised Learning:</strong> Finds patterns in unlabeled data. Clustering customers by behavior or dimensionality reduction for data visualization.</p>
+            <p><strong>Reinforcement Learning:</strong> Learns through interaction with environment. Used in game playing, robotics, and autonomous systems.</p>
+            
+            <p><strong>Next Steps:</strong> Practice with real datasets from Kaggle, experiment with different algorithms, and build end-to-end projects to solidify your understanding.</p>
+          </div>
+        </article>
+         
         <article class="blog-post animate-slide-left">
           <div class="blog-date">Aug 2025</div>
           <h3>Software Development Best Practices: Writing Maintainable and Scalable Code</h3>
@@ -625,7 +1159,11 @@ print(student1.introduce())</code></pre>
             <div class="unit-card">
               <div class="unit-title">🎥 Video Lectures</div>
               <p>NPTEL - Problem Solving Through Programming In C</p>
-              <iframe width="100%" height="200" src="https://www.youtube.com/embed/-wv-OERJK3M?start=2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border-radius: 8px; margin-top: 10px;"></iframe>
+              <div class="youtube-embed"
+                   data-video-id="-wv-OERJK3M"
+                   data-start="2"
+                   data-title="NPTEL - Problem Solving Through Programming In C"
+                   data-watch-url="https://www.youtube.com/watch?v=-wv-OERJK3M&t=2s"></div>
             </div>
           </div>
         </div>
@@ -708,7 +1246,10 @@ print(student1.introduce())</code></pre>
             <div class="unit-card">
               <div class="unit-title">🎥 Video Lectures</div>
               <p>NPTEL - Programming, Data Structures and Algorithms using Python</p>
-              <iframe width="100%" height="200" src="https://www.youtube.com/embed/YzHzbWFOY5U" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border-radius: 8px; margin-top: 10px;"></iframe>
+              <div class="youtube-embed"
+                   data-video-id="YzHzbWFOY5U"
+                   data-title="NPTEL - Programming, Data Structures and Algorithms using Python"
+                   data-watch-url="https://www.youtube.com/watch?v=YzHzbWFOY5U"></div>
             </div>
           </div>
         </div>
@@ -750,8 +1291,8 @@ print(student1.introduce())</code></pre>
         
         <div class="tool-card">
           <div class="tool-icon">🤖</div>
-          <h3>AI Code Reviewer</h3>
-          <p>Automated code analysis with security and best practice suggestions</p>
+          <h3>Code Reviewer</h3>
+          <p>Rule-based code analysis with security and best practice suggestions</p>
           <button class="tool-btn" onclick="openTool('reviewer')">Review Code</button>
         </div>
         
