@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeTabs();
     initializeAnimations();
     initializeTypewriter();
+    initializeYouTubeEmbeds();
 });
 
 // Slider functionality
@@ -17,20 +18,48 @@ let touchStartX = 0;
 let touchEndX = 0;
 let autoSlideInterval;
 
+function getSlidesPerView() {
+    return window.innerWidth <= 768 ? 1 : 2;
+}
+
+function getSlideWidth() {
+    return 100 / getSlidesPerView();
+}
+
+function getMaxSlideIndex() {
+    return Math.max(0, totalSlides - getSlidesPerView());
+}
+
+function clampSlideIndex(index) {
+    return Math.min(Math.max(index, 0), getMaxSlideIndex());
+}
+
+function buildSliderDots() {
+    const dotsContainer = document.querySelector('.slider-dots');
+    if (!dotsContainer) return;
+
+    dotsContainer.innerHTML = '';
+
+    for (let i = 0; i <= getMaxSlideIndex(); i++) {
+        const dot = document.createElement('button');
+        dot.className = 'slider-dot';
+        dot.type = 'button';
+        dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+        dot.onclick = () => goToSlide(i);
+        dotsContainer.appendChild(dot);
+    }
+}
+
+function handleSliderResize() {
+    currentSlide = clampSlideIndex(currentSlide);
+    buildSliderDots();
+    updateSlider();
+}
+
 function initializeSlider() {
     if (totalSlides === 0) return;
-    
-    // Create dots
-    const dotsContainer = document.querySelector('.slider-dots');
-    if (dotsContainer) {
-        for (let i = 0; i < totalSlides; i++) {
-            const dot = document.createElement('button');
-            dot.className = 'slider-dot';
-            dot.onclick = () => goToSlide(i);
-            dotsContainer.appendChild(dot);
-        }
-        updateDots();
-    }
+
+    buildSliderDots();
     
     // Touch support for mobile
     const slider = document.querySelector('.slider');
@@ -38,8 +67,11 @@ function initializeSlider() {
         slider.addEventListener('touchstart', handleTouchStart, { passive: true });
         slider.addEventListener('touchend', handleTouchEnd, { passive: true });
     }
+
+    window.addEventListener('resize', handleSliderResize);
     
     // Auto-slide with pause on interaction
+    updateSlider();
     startAutoSlide();
     
     // Pause auto-slide on hover/touch
@@ -49,6 +81,78 @@ function initializeSlider() {
         sliderContainer.addEventListener('mouseleave', startAutoSlide);
         sliderContainer.addEventListener('touchstart', stopAutoSlide);
     }
+}
+
+function initializeYouTubeEmbeds() {
+    const embeds = document.querySelectorAll('.youtube-embed');
+    if (embeds.length === 0) return;
+
+    const isServedOverHttp = window.location.protocol === 'http:' || window.location.protocol === 'https:';
+
+    embeds.forEach((embed) => {
+        const videoId = embed.dataset.videoId;
+        const title = embed.dataset.title || 'YouTube video lecture';
+        const watchUrl = embed.dataset.watchUrl || `https://www.youtube.com/watch?v=${videoId}`;
+        const start = embed.dataset.start;
+
+        embed.innerHTML = '';
+
+        if (!videoId) return;
+
+        if (!isServedOverHttp) {
+            embed.appendChild(buildVideoFallback(
+                'Video preview is unavailable when this page is opened as a local file. Open the site through localhost or use YouTube directly.',
+                watchUrl
+            ));
+            return;
+        }
+
+        const iframe = document.createElement('iframe');
+        const params = new URLSearchParams({
+            origin: window.location.origin
+        });
+
+        if (start) {
+            params.set('start', start);
+        }
+
+        iframe.width = '100%';
+        iframe.height = '200';
+        iframe.src = `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
+        iframe.title = title;
+        iframe.loading = 'lazy';
+        iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        iframe.allowFullscreen = true;
+        iframe.style.border = '0';
+        iframe.style.borderRadius = '8px';
+        iframe.style.marginTop = '10px';
+
+        embed.appendChild(iframe);
+        embed.appendChild(buildVideoLink(watchUrl));
+    });
+}
+
+function buildVideoFallback(message, watchUrl) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'video-fallback';
+
+    const text = document.createElement('p');
+    text.textContent = message;
+    wrapper.appendChild(text);
+    wrapper.appendChild(buildVideoLink(watchUrl));
+
+    return wrapper;
+}
+
+function buildVideoLink(watchUrl) {
+    const link = document.createElement('a');
+    link.className = 'video-watch-link';
+    link.href = watchUrl;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = 'Watch on YouTube';
+    return link;
 }
 
 function handleTouchStart(e) {
@@ -86,26 +190,27 @@ function stopAutoSlide() {
 }
 
 function nextSlide() {
-    currentSlide = (currentSlide + 1) % totalSlides;
+    const maxSlideIndex = getMaxSlideIndex();
+    currentSlide = currentSlide >= maxSlideIndex ? 0 : currentSlide + 1;
     updateSlider();
 }
 
 function prevSlide() {
-    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+    const maxSlideIndex = getMaxSlideIndex();
+    currentSlide = currentSlide <= 0 ? maxSlideIndex : currentSlide - 1;
     updateSlider();
 }
 
 function goToSlide(index) {
-    currentSlide = index;
+    currentSlide = clampSlideIndex(index);
     updateSlider();
 }
 
 function updateSlider() {
     const slider = document.querySelector('.slider');
     if (slider) {
-        // Use 100% for mobile (single slide view) and 50% for desktop (dual slide view)
-        const slideWidth = window.innerWidth <= 768 ? 100 : 50;
-        slider.style.transform = `translateX(-${currentSlide * slideWidth}%)`;
+        currentSlide = clampSlideIndex(currentSlide);
+        slider.style.transform = `translateX(-${currentSlide * getSlideWidth()}%)`;
         updateDots();
     }
 }
@@ -325,6 +430,7 @@ function openTool(toolType) {
             break;
         case 'dataStructures':
             content.innerHTML = getDataStructureVisualizer();
+            initDataStructureVisualizer();
             break;
     }
 }
@@ -333,6 +439,44 @@ function closeTool() {
     const modal = document.getElementById('toolModal');
     if (modal) modal.style.display = 'none';
 }
+
+function setPlainText(target, text) {
+    const element = typeof target === 'string' ? document.getElementById(target) : target;
+    if (!element) return;
+
+    element.classList.add('preformatted-output');
+    element.textContent = text;
+}
+
+function setHtml(target, html) {
+    const element = typeof target === 'string' ? document.getElementById(target) : target;
+    if (!element) return;
+
+    element.classList.remove('preformatted-output');
+    element.innerHTML = html;
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function getNumericInputValue(id) {
+    const value = Number.parseInt(document.getElementById(id)?.value ?? '', 10);
+    return Number.isNaN(value) ? null : value;
+}
+
+function getSafeArraySize(id, fallback = 8) {
+    const size = getNumericInputValue(id);
+    if (size === null) return fallback;
+    return Math.min(15, Math.max(5, size));
+}
+
+let playgroundRunId = 0;
 
 function getCodePlayground() {
     return `
@@ -355,7 +499,7 @@ function getCodePlayground() {
             </div>
             <div>
                 <h4>Output:</h4>
-                <div id="output" class="output-panel" style="height: 380px;">Click 'Run Code' to see output...</div>
+                <pre id="output" class="output-panel preformatted-output" style="height: 380px; margin: 0;">Click 'Run Code' to see output...</pre>
             </div>
         </div>
         <style>
@@ -391,17 +535,23 @@ function changeLanguage() {
 }
 
 async function runCode() {
-    const code = document.getElementById('codeEditor').value;
-    const languageId = document.getElementById('language').value;
-    const input = document.getElementById('inputData').value;
+    const codeEditor = document.getElementById('codeEditor');
+    const languageSelector = document.getElementById('language');
+    const inputField = document.getElementById('inputData');
     const output = document.getElementById('output');
+    if (!codeEditor || !languageSelector || !inputField || !output) return;
+
+    const code = codeEditor.value;
+    const languageId = languageSelector.value;
+    const input = inputField.value;
+    const runId = ++playgroundRunId;
     
     if (!code.trim()) {
-        output.innerHTML = 'Please enter some code to run.';
+        setPlainText(output, 'Please enter some code to run.');
         return;
     }
     
-    output.innerHTML = '🔄 Compiling and running code...\n';
+    setPlainText(output, 'Compiling and running code...\n');
     
     try {
         const response = await fetch('https://emkc.org/api/v2/piston/execute', {
@@ -420,35 +570,37 @@ async function runCode() {
         });
         
         if (!response.ok) {
-            throw new Error('Compilation failed');
+            throw new Error(`Compiler request failed (${response.status})`);
         }
         
         const result = await response.json();
+        if (runId !== playgroundRunId) return;
         
         let outputText = '';
         
-        if (result.run.stdout) {
-            outputText += '📤 Output:\n' + result.run.stdout + '\n';
+        if (result.run?.stdout) {
+            outputText += 'Output:\n' + result.run.stdout + '\n';
         }
         
-        if (result.run.stderr) {
-            outputText += '❌ Runtime Error:\n' + result.run.stderr + '\n';
+        if (result.run?.stderr) {
+            outputText += 'Runtime Error:\n' + result.run.stderr + '\n';
         }
         
         if (result.compile && result.compile.stderr) {
-            outputText += '🔧 Compile Error:\n' + result.compile.stderr + '\n';
+            outputText += 'Compile Error:\n' + result.compile.stderr + '\n';
         }
         
-        outputText += `\n📊 Language: ${result.language} ${result.version}`;
+        outputText += `\nLanguage: ${result.language} ${result.version}`;
         
-        if (result.run.code !== undefined) {
-            outputText += `\n🔢 Exit Code: ${result.run.code}`;
+        if (result.run?.code !== undefined) {
+            outputText += `\nExit Code: ${result.run.code}`;
         }
         
-        output.innerHTML = outputText || '✅ Code executed successfully (no output)';
+        setPlainText(output, outputText || 'Code executed successfully (no output).');
         
     } catch (error) {
-        output.innerHTML = '❌ Compiler Error: ' + error.message + '\n\nPlease check your code and try again.';
+        if (runId !== playgroundRunId) return;
+        setPlainText(output, 'Compiler Error: ' + error.message + '\n\nPlease check your code and try again.');
     }
 }
 
@@ -463,7 +615,7 @@ function getLanguageName(languageId) {
 }
 
 function clearOutput() {
-    document.getElementById('output').innerHTML = 'Output cleared. Click \'Run Code\' to execute.';
+    setPlainText('output', 'Output cleared. Click \'Run Code\' to execute.');
 }
 
 function getProgrammingQuiz() {
@@ -828,7 +980,7 @@ function selectAlgorithm() {
     const algo = document.getElementById('algorithm').value;
     document.getElementById('explanation').innerHTML = getAlgorithmExplanation(algo);
     document.getElementById('pseudocode').innerHTML = getPseudocode(algo);
-    document.getElementById('stepDescription').innerHTML = 'Ready to start';
+    document.getElementById('stepDescription').textContent = 'Ready to start';
     
     // Show/hide relevant input fields
     const inputs = document.getElementById('userInputs');
@@ -846,15 +998,15 @@ function selectAlgorithm() {
     
     // Show relevant inputs based on algorithm
     if (['linear', 'binary'].includes(algo)) {
-        inputs.style.display = 'block';
+        inputs.style.display = 'flex';
         searchTarget.style.display = 'inline-block';
         arraySize.style.display = 'inline-block';
     } else if (['kmp'].includes(algo)) {
-        inputs.style.display = 'block';
+        inputs.style.display = 'flex';
         textInput.style.display = 'inline-block';
         patternInput.style.display = 'inline-block';
     } else if (['bubble', 'selection', 'insertion', 'merge', 'quick'].includes(algo)) {
-        inputs.style.display = 'block';
+        inputs.style.display = 'flex';
         arraySize.style.display = 'inline-block';
     }
     
@@ -1066,8 +1218,7 @@ function generateNewArray() {
         const container = document.getElementById('visualization');
         container.innerHTML = `<div style="text-align: center; color: #666; margin-top: 100px;">Empty ${algo.charAt(0).toUpperCase() + algo.slice(1)}</div>`;
     } else {
-        const sizeInput = document.getElementById('arraySize');
-        const size = sizeInput ? parseInt(sizeInput.value) || 8 : 8;
+        const size = getSafeArraySize('arraySize', 8);
         visualArray = [];
         for (let i = 0; i < size; i++) {
             visualArray.push(Math.floor(Math.random() * 80) + 10);
@@ -1080,7 +1231,7 @@ function displayVisualizationArray() {
     const container = document.getElementById('visualization');
     let html = '<div class="visualizer-array" style="display: flex; gap: 5px; justify-content: center; align-items: end; height: 250px; margin: 20px 0;">';
     
-    const maxValue = Math.max(...visualArray);
+    const maxValue = Math.max(...visualArray, 1);
     visualArray.forEach((value, index) => {
         const height = (value / maxValue) * 200 + 30;
         const width = Math.max(30, 400 / visualArray.length - 5);
@@ -1089,6 +1240,27 @@ function displayVisualizationArray() {
     
     html += '</div>';
     container.innerHTML = html;
+}
+
+function updateArrayBars(arr, state = {}) {
+    const comparing = new Set(state.comparingIndices || []);
+    const swapping = new Set(state.swappingIndices || []);
+    const selected = new Set(state.selectedIndices || []);
+    const maxValue = Math.max(...arr, 1);
+
+    arr.forEach((value, index) => {
+        const bar = document.getElementById(`bar${index}`);
+        if (!bar) return;
+
+        const height = (value / maxValue) * 200 + 30;
+        bar.style.height = height + 'px';
+        bar.textContent = value;
+        bar.classList.remove('comparing', 'swapping', 'selected');
+
+        if (selected.has(index)) bar.classList.add('selected');
+        if (comparing.has(index)) bar.classList.add('comparing');
+        if (swapping.has(index)) bar.classList.add('swapping');
+    });
 }
 
 async function startVisualization() {
@@ -1150,7 +1322,7 @@ function sleep(ms) {
 }
 
 function updateStep(description) {
-    document.getElementById('stepDescription').innerHTML = description;
+    document.getElementById('stepDescription').textContent = description;
 }
 
 // Animation Functions
@@ -1302,7 +1474,8 @@ async function insertionSortAnimation() {
 
 async function linearSearchAnimation() {
     const targetInput = document.getElementById('searchTarget');
-    let target = targetInput && targetInput.value ? parseInt(targetInput.value) : visualArray[Math.floor(Math.random() * visualArray.length)];
+    const parsedTarget = targetInput && targetInput.value ? Number.parseInt(targetInput.value, 10) : null;
+    let target = Number.isNaN(parsedTarget) || parsedTarget === null ? visualArray[Math.floor(Math.random() * visualArray.length)] : parsedTarget;
     
     updateStep(`Initialize: Looking for target = ${target}`);
     document.getElementById('visualStatus').innerHTML = `Linear Search: Looking for ${target}`;
@@ -1339,7 +1512,8 @@ async function binarySearchAnimation() {
     await sleep(1000);
     
     const targetInput = document.getElementById('searchTarget');
-    let target = targetInput && targetInput.value ? parseInt(targetInput.value) : sortedArray[Math.floor(Math.random() * sortedArray.length)];
+    const parsedTarget = targetInput && targetInput.value ? Number.parseInt(targetInput.value, 10) : null;
+    let target = Number.isNaN(parsedTarget) || parsedTarget === null ? sortedArray[Math.floor(Math.random() * sortedArray.length)] : parsedTarget;
     
     let left = 0;
     let right = sortedArray.length - 1;
@@ -1589,12 +1763,12 @@ function generateStringData() {
     
     const container = document.getElementById('visualization');
     let html = '<div style="text-align: center; padding: 20px;">';
-    html += `<div style="margin: 15px 0; font-size: 16px;"><strong>Text:</strong> ${text}</div>`;
-    html += `<div style="margin: 15px 0; font-size: 16px;"><strong>Pattern:</strong> ${pattern}</div>`;
+    html += `<div style="margin: 15px 0; font-size: 16px;"><strong>Text:</strong> ${escapeHtml(text)}</div>`;
+    html += `<div style="margin: 15px 0; font-size: 16px;"><strong>Pattern:</strong> ${escapeHtml(pattern)}</div>`;
     html += '<div id="stringViz" style="font-family: monospace; font-size: 18px; margin: 20px 0; display: flex; justify-content: center; flex-wrap: wrap;">';
     
     for (let i = 0; i < text.length; i++) {
-        html += `<span class="string-char" id="char${i}" style="padding: 8px 10px; margin: 2px; border: 2px solid #ddd; background: white; border-radius: 4px; min-width: 20px; text-align: center; transition: all 0.3s ease; cursor: pointer;">${text[i]}</span>`;
+        html += `<span class="string-char" id="char${i}" style="padding: 8px 10px; margin: 2px; border: 2px solid #ddd; background: white; border-radius: 4px; min-width: 20px; text-align: center; transition: all 0.3s ease; cursor: pointer;">${escapeHtml(text[i])}</span>`;
     }
     
     html += '</div></div>';
@@ -1665,17 +1839,138 @@ async function kmpAnimation() {
 
 // Placeholder animations for other algorithms
 async function mergeSortAnimation() {
-    document.getElementById('visualStatus').innerHTML = 'Merge Sort: Dividing array recursively...';
-    await sleep(2000);
-    document.getElementById('visualStatus').innerHTML = 'Merge Sort: Merging sorted subarrays...';
-    await sleep(2000);
-    document.getElementById('visualStatus').innerHTML = 'Merge Sort completed!';
+    const arr = [...visualArray];
+
+    async function merge(left, mid, right) {
+        const leftPart = arr.slice(left, mid + 1);
+        const rightPart = arr.slice(mid + 1, right + 1);
+        let i = 0;
+        let j = 0;
+        let k = left;
+
+        while (i < leftPart.length && j < rightPart.length) {
+            updateStep(`Merge step: compare ${leftPart[i]} and ${rightPart[j]}`);
+            document.getElementById('visualStatus').innerHTML = `Merge Sort: merging indices ${left}-${right}`;
+
+            arr[k] = leftPart[i] <= rightPart[j] ? leftPart[i++] : rightPart[j++];
+            updateArrayBars(arr, {
+                comparingIndices: [left + i - 1, mid + 1 + j - 1].filter(index => index >= left),
+                swappingIndices: [k],
+                selectedIndices: Array.from({ length: right - left + 1 }, (_, offset) => left + offset)
+            });
+            await sleep(500);
+            k++;
+        }
+
+        while (i < leftPart.length) {
+            arr[k] = leftPart[i++];
+            updateStep(`Copy remaining left value ${arr[k]} into position ${k}`);
+            updateArrayBars(arr, {
+                swappingIndices: [k],
+                selectedIndices: Array.from({ length: right - left + 1 }, (_, offset) => left + offset)
+            });
+            await sleep(400);
+            k++;
+        }
+
+        while (j < rightPart.length) {
+            arr[k] = rightPart[j++];
+            updateStep(`Copy remaining right value ${arr[k]} into position ${k}`);
+            updateArrayBars(arr, {
+                swappingIndices: [k],
+                selectedIndices: Array.from({ length: right - left + 1 }, (_, offset) => left + offset)
+            });
+            await sleep(400);
+            k++;
+        }
+    }
+
+    async function mergeSort(left, right) {
+        if (left >= right) return;
+
+        const mid = Math.floor((left + right) / 2);
+        updateStep(`Split array range ${left}-${right} at midpoint ${mid}`);
+        document.getElementById('visualStatus').innerHTML = `Merge Sort: dividing indices ${left}-${right}`;
+        updateArrayBars(arr, {
+            comparingIndices: Array.from({ length: right - left + 1 }, (_, offset) => left + offset),
+            selectedIndices: [mid]
+        });
+        await sleep(700);
+
+        await mergeSort(left, mid);
+        await mergeSort(mid + 1, right);
+        await merge(left, mid, right);
+    }
+
+    await mergeSort(0, arr.length - 1);
+    visualArray = arr;
+    updateArrayBars(arr, {
+        selectedIndices: Array.from({ length: arr.length }, (_, index) => index)
+    });
+    updateStep('Merge sort complete. The array is now fully sorted.');
+    document.getElementById('visualStatus').innerHTML = '🎉 Merge Sort Complete! Array is sorted';
 }
 
 async function quickSortAnimation() {
-    document.getElementById('visualStatus').innerHTML = 'Quick Sort: Selecting pivot and partitioning...';
-    await sleep(3000);
-    document.getElementById('visualStatus').innerHTML = 'Quick Sort completed!';
+    const arr = [...visualArray];
+
+    async function partition(low, high) {
+        const pivot = arr[high];
+        let i = low - 1;
+
+        updateStep(`Choose pivot ${pivot} at index ${high}`);
+        document.getElementById('visualStatus').innerHTML = `Quick Sort: partitioning indices ${low}-${high}`;
+        updateArrayBars(arr, {
+            selectedIndices: [high],
+            comparingIndices: Array.from({ length: high - low }, (_, offset) => low + offset)
+        });
+        await sleep(700);
+
+        for (let j = low; j < high; j++) {
+            updateStep(`Compare ${arr[j]} with pivot ${pivot}`);
+            updateArrayBars(arr, {
+                selectedIndices: [high],
+                comparingIndices: [j]
+            });
+            await sleep(500);
+
+            if (arr[j] <= pivot) {
+                i++;
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+                updateStep(`Swap ${arr[i]} into partition position ${i}`);
+                updateArrayBars(arr, {
+                    selectedIndices: [high],
+                    swappingIndices: [i, j]
+                });
+                await sleep(500);
+            }
+        }
+
+        [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
+        updateStep(`Move pivot ${pivot} into final position ${i + 1}`);
+        updateArrayBars(arr, {
+            swappingIndices: [i + 1, high]
+        });
+        await sleep(700);
+
+        return i + 1;
+    }
+
+    async function quickSort(low, high) {
+        if (low >= high) return;
+
+        const pivotIndex = await partition(low, high);
+        await quickSort(low, pivotIndex - 1);
+        await quickSort(pivotIndex + 1, high);
+    }
+
+    await quickSort(0, arr.length - 1);
+    visualArray = arr;
+    updateArrayBars(arr, {
+        selectedIndices: Array.from({ length: arr.length }, (_, index) => index)
+    });
+    updateStep('Quick sort complete. All partitions are now sorted.');
+    document.getElementById('visualStatus').innerHTML = '🎉 Quick Sort Complete! Array is sorted';
 }
 
 function getVirtualLab() {
@@ -2347,6 +2642,814 @@ function stringOperation(operation) {
             break;
     }
 }
+
+function matrixOperation(operation) {
+    const values = ['a11', 'a12', 'a21', 'a22', 'b11', 'b12', 'b21', 'b22'].map(getNumericInputValue);
+    const result = document.getElementById('matrixResult');
+    if (!result) return;
+
+    if (values.some(value => value === null)) {
+        setPlainText(result, 'Please enter valid numbers for all matrix cells.');
+        return;
+    }
+
+    const [a11, a12, a21, a22, b11, b12, b21, b22] = values;
+
+    switch(operation) {
+        case 'add':
+            setPlainText(result, `Matrix Addition:\nA + B = [[${a11 + b11}, ${a12 + b12}], [${a21 + b21}, ${a22 + b22}]]\nTime Complexity: O(n^2)\nSpace Complexity: O(n^2)`);
+            break;
+        case 'multiply':
+            const mult = [[a11 * b11 + a12 * b21, a11 * b12 + a12 * b22], [a21 * b11 + a22 * b21, a21 * b12 + a22 * b22]];
+            setPlainText(result, `Matrix Multiplication:\nA x B = [[${mult[0][0]}, ${mult[0][1]}], [${mult[1][0]}, ${mult[1][1]}]]\nTime Complexity: O(n^3)\nMultiplications: 8`);
+            break;
+        case 'transpose':
+            setPlainText(result, `Matrix Transpose:\nA^T = [[${a11}, ${a21}], [${a12}, ${a22}]]\nOperation: Swap rows and columns\nTime Complexity: O(n^2)`);
+            break;
+    }
+}
+
+function searchAlgorithm(type) {
+    const arrayStr = document.getElementById('searchArray')?.value ?? '';
+    const target = getNumericInputValue('searchTarget');
+    const result = document.getElementById('searchResult');
+    if (!result) return;
+
+    const array = parseNumberList(arrayStr);
+    if (array.length === 0 || target === null) {
+        setPlainText(result, 'Please enter a valid comma-separated array and a numeric target.');
+        return;
+    }
+
+    let comparisons = 0;
+    let found = false;
+    let position = -1;
+
+    if (type === 'linear') {
+        for (let i = 0; i < array.length; i++) {
+            comparisons++;
+            if (array[i] === target) {
+                found = true;
+                position = i;
+                break;
+            }
+        }
+
+        setPlainText(result, `Linear Search Results:\nArray: [${array.join(', ')}]\nTarget: ${target}\nFound: ${found}\nPosition: ${position}\nComparisons: ${comparisons}\nTime Complexity: O(n)`);
+        return;
+    }
+
+    const sortedArray = [...array].sort((a, b) => a - b);
+    let left = 0;
+    let right = sortedArray.length - 1;
+    
+    while (left <= right) {
+        comparisons++;
+        const mid = Math.floor((left + right) / 2);
+        if (sortedArray[mid] === target) {
+            found = true;
+            position = mid;
+            break;
+        } else if (sortedArray[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+
+    setPlainText(result, `Binary Search Results:\nSorted Array: [${sortedArray.join(', ')}]\nTarget: ${target}\nFound: ${found}\nPosition: ${position}\nComparisons: ${comparisons}\nTime Complexity: O(log n)`);
+}
+
+function generateRandom(type) {
+    const min = getNumericInputValue('minRange');
+    const max = getNumericInputValue('maxRange');
+    const count = getNumericInputValue('randomCount');
+    const result = document.getElementById('randomResult');
+    if (!result) return;
+
+    if (min === null || max === null || count === null || count <= 0) {
+        setPlainText(result, 'Please enter a valid range and a positive count.');
+        return;
+    }
+
+    if (min >= max) {
+        setPlainText(result, 'Error: minimum must be less than maximum.');
+        return;
+    }
+    
+    switch(type) {
+        case 'single':
+            const single = Math.floor(Math.random() * (max - min + 1)) + min;
+            setPlainText(result, `Single Random Number:\nRange: ${min} to ${max}\nGenerated: ${single}\nAlgorithm: Linear Congruential Generator`);
+            break;
+        case 'multiple':
+            const numbers = Array.from({ length: count }, () => Math.floor(Math.random() * (max - min + 1)) + min);
+            setPlainText(result, `Multiple Random Numbers:\nRange: ${min} to ${max}\nCount: ${count}\nGenerated: [${numbers.join(', ')}]\nUnique values: ${new Set(numbers).size}`);
+            break;
+        case 'stats':
+            const statNumbers = Array.from({ length: count }, () => Math.floor(Math.random() * (max - min + 1)) + min);
+            const avg = statNumbers.reduce((total, current) => total + current, 0) / statNumbers.length;
+            const variance = statNumbers.reduce((total, current) => total + Math.pow(current - avg, 2), 0) / statNumbers.length;
+            const stdDev = Math.sqrt(variance);
+            setPlainText(result, `Statistical Analysis:\nNumbers: [${statNumbers.join(', ')}]\nAverage: ${avg.toFixed(2)}\nVariance: ${variance.toFixed(2)}\nStd Deviation: ${stdDev.toFixed(2)}\nMin: ${Math.min(...statNumbers)}\nMax: ${Math.max(...statNumbers)}`);
+            break;
+    }
+}
+
+function getCodeReviewer() {
+    return `
+        <h2>Code Reviewer</h2>
+        <div style="margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+            <select id="codeLanguage" style="padding: 8px; border-radius: 5px; min-width: 120px;">
+                <option value="c">C/C++</option>
+                <option value="python">Python</option>
+                <option value="javascript">JavaScript</option>
+                <option value="java">Java</option>
+            </select>
+            <button onclick="loadSampleCode()" style="background: #17a2b8; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px;">Load Sample</button>
+            <button onclick="clearCode()" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px;">Clear</button>
+        </div>
+        <div style="display: flex; gap: 20px; height: calc(100% - 100px);" class="code-reviewer-layout">
+            <div style="flex: 1;">
+                <h4>Submit Your Code:</h4>
+                <textarea id="reviewCode" placeholder="Paste your code here for structured rule-based review..." style="width: 100%; height: 75%; font-family: 'Courier New', monospace; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; resize: vertical;"></textarea>
+                <button onclick="reviewCode()" style="background: #28a745; color: white; border: none; padding: 12px 24px; border-radius: 5px; margin-top: 10px; cursor: pointer; font-size: 16px;">Analyze Code</button>
+            </div>
+            <div style="flex: 1; background: #f8f9fa; padding: 15px; border-radius: 5px; overflow-y: auto;">
+                <h4>Analysis Results:</h4>
+                <div id="reviewResults" class="preformatted-output">Submit code to get:
+
+- Critical security issues
+- Warnings and likely bugs
+- Improvement suggestions
+- A rough quality score (0-100)
+
+This reviewer is rule-based and runs locally in the page.</div>
+            </div>
+        </div>
+        <style>
+        @media (max-width: 768px) {
+            .code-reviewer-layout {
+                flex-direction: column !important;
+                height: auto !important;
+                gap: 15px;
+            }
+            .code-reviewer-layout > div {
+                flex: none !important;
+            }
+            #reviewCode {
+                height: 200px !important;
+                font-size: 12px !important;
+            }
+        }
+        </style>
+    `;
+}
+
+function hasUncheckedNullSensitiveCall(source, callName) {
+    const callPattern = new RegExp(`${callName}\\s*\\(`);
+    if (!callPattern.test(source)) return false;
+
+    const assignmentPattern = new RegExp(`([A-Za-z_][A-Za-z0-9_]*)\\s*=\\s*${callName}\\s*\\(`, 'g');
+    let sawAssignment = false;
+    let match;
+
+    while ((match = assignmentPattern.exec(source)) !== null) {
+        sawAssignment = true;
+        const variableName = match[1];
+        const context = source.slice(match.index, match.index + 300);
+        const guardPattern = new RegExp(`if\\s*\\((?:[^)]*!\\s*${variableName}\\b|[^)]*${variableName}\\b\\s*(?:==|!=)\\s*(?:NULL|null|nullptr|0)|\\s*${variableName}\\s*)\\)`);
+
+        if (!guardPattern.test(context)) {
+            return true;
+        }
+    }
+
+    return !sawAssignment;
+}
+
+window.reviewCode = function() {
+    const code = document.getElementById('reviewCode')?.value || '';
+    const result = document.getElementById('reviewResults');
+    if (!result) return;
+
+    if (!code.trim()) {
+        setPlainText(result, 'Please enter some code to review.');
+        return;
+    }
+
+    const critical = [];
+    const warnings = [];
+    const suggestions = [];
+
+    if (code.includes('gets(')) critical.push('CRITICAL: gets() is unsafe. Use fgets() instead.');
+    if (code.includes('scanf("%s')) critical.push('CRITICAL: scanf("%s") is unsafe without a width limit.');
+    if (code.includes('system(')) critical.push('CRITICAL: system() is risky. Avoid shell execution on untrusted input.');
+    if (code.includes('eval(') || code.includes('exec(')) critical.push('CRITICAL: dynamic code execution detected.');
+
+    const mallocCount = (code.match(/malloc\s*\(/g) || []).length;
+    const callocCount = (code.match(/calloc\s*\(/g) || []).length;
+    const freeCount = (code.match(/free\s*\(/g) || []).length;
+    const totalAlloc = mallocCount + callocCount;
+
+    if (totalAlloc > freeCount) warnings.push(`Warning: ${totalAlloc} allocations but only ${freeCount} free() calls.`);
+    if (freeCount > totalAlloc) warnings.push(`Warning: ${freeCount} free() calls but only ${totalAlloc} allocations.`);
+    if (code.includes('strcpy(') && !code.includes('strncpy(')) warnings.push('Warning: strcpy() can overflow buffers.');
+    if (code.includes('strcat(') && !code.includes('strncat(')) warnings.push('Warning: strcat() can overflow buffers.');
+    if (code.includes('sprintf(') && !code.includes('snprintf(')) warnings.push('Warning: sprintf() can overflow buffers.');
+    if (hasUncheckedNullSensitiveCall(code, 'malloc')) warnings.push('Warning: malloc() result is not clearly checked for NULL.');
+    if (hasUncheckedNullSensitiveCall(code, 'fopen')) warnings.push('Warning: fopen() result is not clearly checked before use.');
+
+    if (!code.includes('//') && !code.includes('/*') && code.split('\n').length > 10) {
+        suggestions.push('Suggestion: add comments around complex sections.');
+    }
+
+    const longLines = code.split('\n').filter(line => line.length > 100);
+    if (longLines.length > 0) {
+        suggestions.push(`Suggestion: ${longLines.length} long lines exceed 100 characters.`);
+    }
+
+    if ((code.includes('import ') || code.includes('def ') || code.includes('print(')) && !code.includes('if __name__ == "__main__":') && code.includes('def ')) {
+        suggestions.push('Suggestion: add a main guard for Python scripts.');
+    }
+
+    if (code.includes('var ') && (code.includes('let ') || code.includes('const '))) {
+        suggestions.push('Suggestion: use consistent JavaScript declarations.');
+    }
+
+    if (code.includes('==') && !code.includes('===')) {
+        suggestions.push('Suggestion: prefer strict equality (===) in JavaScript.');
+    }
+
+    let output = '';
+    const totalIssues = critical.length + warnings.length;
+
+    if (totalIssues === 0 && suggestions.length === 0) {
+        output = '<div style="color: #28a745; font-size: 1.1rem; margin: 10px 0;">No issues found.</div>';
+    } else {
+        output += `<div style="margin-bottom: 15px;"><strong>Analysis Summary:</strong> ${totalIssues} issues, ${suggestions.length} suggestions</div>`;
+
+        if (critical.length > 0) {
+            output += '<h5 style="color: #dc3545; margin: 15px 0 10px 0;">Critical Issues</h5>';
+            critical.forEach(issue => {
+                output += `<div style="background: #f8d7da; color: #721c24; padding: 8px; margin: 5px 0; border-left: 4px solid #dc3545; border-radius: 3px;">${escapeHtml(issue)}</div>`;
+            });
+        }
+
+        if (warnings.length > 0) {
+            output += '<h5 style="color: #fd7e14; margin: 15px 0 10px 0;">Warnings</h5>';
+            warnings.forEach(warning => {
+                output += `<div style="background: #fff3cd; color: #856404; padding: 8px; margin: 5px 0; border-left: 4px solid #ffc107; border-radius: 3px;">${escapeHtml(warning)}</div>`;
+            });
+        }
+
+        if (suggestions.length > 0) {
+            output += '<h5 style="color: #0d6efd; margin: 15px 0 10px 0;">Suggestions</h5>';
+            suggestions.forEach(suggestion => {
+                output += `<div style="background: #d1ecf1; color: #0c5460; padding: 8px; margin: 5px 0; border-left: 4px solid #17a2b8; border-radius: 3px;">${escapeHtml(suggestion)}</div>`;
+            });
+        }
+
+        const score = Math.max(0, 100 - critical.length * 25 - warnings.length * 10 - suggestions.length * 2);
+        const scoreColor = score < 50 ? '#dc3545' : score < 75 ? '#ffc107' : '#28a745';
+        output += `<div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px; text-align: center;"><strong>Code Quality Score: <span style="color: ${scoreColor}; font-size: 1.2rem;">${score}/100</span></strong></div>`;
+    }
+
+    setHtml(result, output);
+};
+
+function clearCode() {
+    const editor = document.getElementById('reviewCode');
+    const results = document.getElementById('reviewResults');
+    if (editor) editor.value = '';
+    if (results) setPlainText(results, 'Code cleared. Submit new code for analysis.');
+}
+
+function buildTree() {
+    const values = parseNumberList(document.getElementById('treeValues')?.value ?? '');
+    const result = document.getElementById('treeResult');
+    if (!result) return;
+
+    class TreeNode {
+        constructor(val) {
+            this.val = val;
+            this.left = null;
+            this.right = null;
+        }
+    }
+
+    function insertNode(root, val) {
+        if (!root) return new TreeNode(val);
+        if (val < root.val) root.left = insertNode(root.left, val);
+        else root.right = insertNode(root.right, val);
+        return root;
+    }
+
+    binaryTree = null;
+    values.forEach(value => {
+        binaryTree = insertNode(binaryTree, value);
+    });
+
+    if (!binaryTree) {
+        setPlainText(result, 'Please enter at least one valid number.');
+        return;
+    }
+
+    setPlainText(result, `Binary Search Tree built with values: [${values.join(', ')}]\nTree height: ${getTreeHeight(binaryTree)}\nTotal nodes: ${values.length}`);
+}
+
+function traverseTree(type) {
+    const result = document.getElementById('treeResult');
+    if (!result) return;
+
+    if (!binaryTree) {
+        setPlainText(result, 'Please build a tree first');
+        return;
+    }
+
+    const traversal = [];
+
+    function inorder(node) {
+        if (node) {
+            inorder(node.left);
+            traversal.push(node.val);
+            inorder(node.right);
+        }
+    }
+
+    function preorder(node) {
+        if (node) {
+            traversal.push(node.val);
+            preorder(node.left);
+            preorder(node.right);
+        }
+    }
+
+    function postorder(node) {
+        if (node) {
+            postorder(node.left);
+            postorder(node.right);
+            traversal.push(node.val);
+        }
+    }
+
+    switch(type) {
+        case 'inorder': inorder(binaryTree); break;
+        case 'preorder': preorder(binaryTree); break;
+        case 'postorder': postorder(binaryTree); break;
+    }
+
+    setPlainText(result, `${type.charAt(0).toUpperCase() + type.slice(1)} Traversal: [${traversal.join(', ')}]\nTime Complexity: O(n)\nSpace Complexity: O(h) where h is height`);
+}
+
+function solveDynamicProgramming() {
+    const problem = document.getElementById('dpProblem')?.value ?? 'fibonacci';
+    const n = getNumericInputValue('dpInput');
+    const result = document.getElementById('dpResult');
+    if (!result) return;
+
+    if (n === null || n < 0) {
+        setPlainText(result, 'Please enter a non-negative integer.');
+        return;
+    }
+
+    switch(problem) {
+        case 'fibonacci':
+            const fib = new Array(Math.max(n + 1, 2)).fill(0);
+            fib[1] = 1;
+            for (let i = 2; i <= n; i++) {
+                fib[i] = fib[i - 1] + fib[i - 2];
+            }
+            setPlainText(result, `Fibonacci DP Solution:\nF(${n}) = ${fib[n]}\nMemoization table: [${fib.slice(0, Math.min(10, n + 1)).join(', ')}${n > 9 ? '...' : ''}]\nTime: O(n), Space: O(n)`);
+            break;
+        case 'knapsack':
+            const weights = [10, 20, 30];
+            const values = [60, 100, 120];
+            const capacity = 50;
+            const dp = Array(weights.length + 1).fill(null).map(() => Array(capacity + 1).fill(0));
+
+            for (let i = 1; i <= weights.length; i++) {
+                for (let w = 1; w <= capacity; w++) {
+                    if (weights[i - 1] <= w) {
+                        dp[i][w] = Math.max(values[i - 1] + dp[i - 1][w - weights[i - 1]], dp[i - 1][w]);
+                    } else {
+                        dp[i][w] = dp[i - 1][w];
+                    }
+                }
+            }
+
+            setPlainText(result, `0/1 Knapsack DP:\nItems: [(w:10,v:60), (w:20,v:100), (w:30,v:120)]\nCapacity: ${capacity}\nMaximum value: ${dp[weights.length][capacity]}\nTime: O(nW), Space: O(nW)`);
+            break;
+        case 'lcs':
+            const str1 = 'ABCDGH';
+            const str2 = 'AEDFHR';
+            const m = str1.length;
+            const l = str2.length;
+            const lcs = Array(m + 1).fill(null).map(() => Array(l + 1).fill(0));
+
+            for (let i = 1; i <= m; i++) {
+                for (let j = 1; j <= l; j++) {
+                    if (str1[i - 1] === str2[j - 1]) {
+                        lcs[i][j] = lcs[i - 1][j - 1] + 1;
+                    } else {
+                        lcs[i][j] = Math.max(lcs[i - 1][j], lcs[i][j - 1]);
+                    }
+                }
+            }
+
+            setPlainText(result, `Longest Common Subsequence:\nString 1: "${str1}"\nString 2: "${str2}"\nLCS Length: ${lcs[m][l]}\nTime: O(mn), Space: O(mn)`);
+            break;
+    }
+}
+
+function backtrackOperation(type) {
+    const n = getNumericInputValue('backtrackN');
+    const result = document.getElementById('backtrackResult');
+    if (!result) return;
+
+    if (n === null || n <= 0) {
+        setPlainText(result, 'Please enter a positive board size.');
+        return;
+    }
+
+    switch(type) {
+        case 'nqueens':
+            let solutions = 0;
+            const board = Array(n).fill(null).map(() => Array(n).fill(0));
+
+            function isSafe(row, col) {
+                for (let i = 0; i < col; i++) if (board[row][i]) return false;
+                for (let i = row, j = col; i >= 0 && j >= 0; i--, j--) if (board[i][j]) return false;
+                for (let i = row, j = col; i < n && j >= 0; i++, j--) if (board[i][j]) return false;
+                return true;
+            }
+
+            function solveNQueens(col) {
+                if (col >= n) {
+                    solutions++;
+                    return;
+                }
+                for (let i = 0; i < n; i++) {
+                    if (isSafe(i, col)) {
+                        board[i][col] = 1;
+                        solveNQueens(col + 1);
+                        board[i][col] = 0;
+                    }
+                }
+            }
+
+            solveNQueens(0);
+            setPlainText(result, `N-Queens Problem (N=${n}):\nTotal solutions: ${solutions}\nBacktracking used to explore all possibilities\nTime: O(N!), Space: O(N^2)`);
+            break;
+        case 'sudoku':
+            setPlainText(result, 'Sudoku Solver:\nUsing backtracking to fill empty cells\nTries values 1-9 for each empty cell\nBacktracks when no valid number found\nTime: O(9^(n*n)), Space: O(n*n)');
+            break;
+        case 'maze':
+            setPlainText(result, `Maze Solver:\nStarting from (0,0) to reach (${n - 1},${n - 1})\nExplores all 4 directions: up, down, left, right\nBacktracks when path is blocked\nPath found using DFS with backtracking`);
+            break;
+    }
+}
+
+function divideConquerOperation(type) {
+    const arr = parseNumberList(document.getElementById('divideArray')?.value ?? '');
+    const result = document.getElementById('divideResult');
+    if (!result) return;
+
+    if (arr.length === 0) {
+        setPlainText(result, 'Please enter a valid comma-separated number list.');
+        return;
+    }
+
+    switch(type) {
+        case 'mergesort': {
+            function mergeSort(values) {
+                if (values.length <= 1) return values;
+                const mid = Math.floor(values.length / 2);
+                const left = mergeSort(values.slice(0, mid));
+                const right = mergeSort(values.slice(mid));
+                const merged = [];
+                let i = 0;
+                let j = 0;
+                while (i < left.length && j < right.length) {
+                    merged.push(left[i] <= right[j] ? left[i++] : right[j++]);
+                }
+                return merged.concat(left.slice(i)).concat(right.slice(j));
+            }
+
+            const sorted = mergeSort([...arr]);
+            setPlainText(result, `Merge Sort:\nOriginal: [${arr.join(', ')}]\nSorted: [${sorted.join(', ')}]\nDivide: split array into halves\nConquer: merge sorted subarrays\nTime: O(n log n), Space: O(n)`);
+            break;
+        }
+        case 'quicksort': {
+            function quickSort(values, low = 0, high = values.length - 1) {
+                if (low < high) {
+                    const pivot = partition(values, low, high);
+                    quickSort(values, low, pivot - 1);
+                    quickSort(values, pivot + 1, high);
+                }
+                return values;
+            }
+
+            function partition(values, low, high) {
+                const pivot = values[high];
+                let i = low - 1;
+                for (let j = low; j < high; j++) {
+                    if (values[j] < pivot) {
+                        i++;
+                        [values[i], values[j]] = [values[j], values[i]];
+                    }
+                }
+                [values[i + 1], values[high]] = [values[high], values[i + 1]];
+                return i + 1;
+            }
+
+            const sorted = quickSort([...arr]);
+            setPlainText(result, `Quick Sort:\nOriginal: [${arr.join(', ')}]\nSorted: [${sorted.join(', ')}]\nPivot-based partitioning\nRecursive divide and conquer\nTime: O(n log n) average, Space: O(log n)`);
+            break;
+        }
+        case 'binarysearch': {
+            const sortedArr = [...arr].sort((a, b) => a - b);
+            const target = sortedArr[Math.floor(sortedArr.length / 2)];
+            let comparisons = 0;
+            let left = 0;
+            let right = sortedArr.length - 1;
+            let index = -1;
+
+            while (left <= right) {
+                comparisons++;
+                const mid = Math.floor((left + right) / 2);
+                if (sortedArr[mid] === target) {
+                    index = mid;
+                    break;
+                } else if (sortedArr[mid] < target) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+
+            setPlainText(result, `Binary Search:\nSorted array: [${sortedArr.join(', ')}]\nTarget: ${target}\nFound at index: ${index}\nComparisons: ${comparisons}\nTime: O(log n), Space: O(1)`);
+            break;
+        }
+    }
+}
+
+function patternMatchOperation(type) {
+    const text = document.getElementById('patternText')?.value ?? '';
+    const pattern = document.getElementById('patternSearch')?.value ?? '';
+    const result = document.getElementById('patternResult');
+    if (!result) return;
+
+    if (!text || !pattern) {
+        setPlainText(result, 'Please enter both text and pattern.');
+        return;
+    }
+
+    switch(type) {
+        case 'naive': {
+            const naiveMatches = [];
+            let naiveComparisons = 0;
+            for (let i = 0; i <= text.length - pattern.length; i++) {
+                let j = 0;
+                while (j < pattern.length) {
+                    naiveComparisons++;
+                    if (text[i + j] !== pattern[j]) break;
+                    j++;
+                }
+                if (j === pattern.length) naiveMatches.push(i);
+            }
+            setPlainText(result, `Naive Pattern Matching:\nText: "${text}"\nPattern: "${pattern}"\nMatches at: [${naiveMatches.join(', ')}]\nComparisons: ${naiveComparisons}\nTime: O(nm), Space: O(1)`);
+            break;
+        }
+        case 'kmp': {
+            function buildLps(currentPattern) {
+                const lps = new Array(currentPattern.length).fill(0);
+                let len = 0;
+                let i = 1;
+                while (i < currentPattern.length) {
+                    if (currentPattern[i] === currentPattern[len]) {
+                        len++;
+                        lps[i] = len;
+                        i++;
+                    } else if (len !== 0) {
+                        len = lps[len - 1];
+                    } else {
+                        lps[i] = 0;
+                        i++;
+                    }
+                }
+                return lps;
+            }
+
+            const lps = buildLps(pattern);
+            const matches = [];
+            let comparisons = 0;
+            let textIndex = 0;
+            let patternIndex = 0;
+
+            while (textIndex < text.length) {
+                comparisons++;
+                if (pattern[patternIndex] === text[textIndex]) {
+                    textIndex++;
+                    patternIndex++;
+                }
+
+                if (patternIndex === pattern.length) {
+                    matches.push(textIndex - patternIndex);
+                    patternIndex = lps[patternIndex - 1];
+                } else if (textIndex < text.length && pattern[patternIndex] !== text[textIndex]) {
+                    if (patternIndex !== 0) patternIndex = lps[patternIndex - 1];
+                    else textIndex++;
+                }
+            }
+
+            setPlainText(result, `KMP Algorithm:\nText: "${text}"\nPattern: "${pattern}"\nLPS array: [${lps.join(', ')}]\nMatches at: [${matches.join(', ')}]\nComparisons: ${comparisons}\nTime: O(n+m), Space: O(m)`);
+            break;
+        }
+        case 'rabin': {
+            const matches = [];
+            const prime = 101;
+            const d = 256;
+            const m = pattern.length;
+            const n = text.length;
+            let patternHash = 0;
+            let textHash = 0;
+            let h = 1;
+
+            for (let i = 0; i < m - 1; i++) h = (h * d) % prime;
+            for (let i = 0; i < m; i++) {
+                patternHash = (d * patternHash + pattern.charCodeAt(i)) % prime;
+                textHash = (d * textHash + (text.charCodeAt(i) || 0)) % prime;
+            }
+
+            for (let i = 0; i <= n - m; i++) {
+                if (patternHash === textHash) {
+                    let j = 0;
+                    while (j < m && text[i + j] === pattern[j]) j++;
+                    if (j === m) matches.push(i);
+                }
+
+                if (i < n - m) {
+                    textHash = (d * (textHash - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % prime;
+                    if (textHash < 0) textHash += prime;
+                }
+            }
+
+            setPlainText(result, `Rabin-Karp Algorithm:\nText: "${text}"\nPattern: "${pattern}"\nPattern hash: ${patternHash}\nMatches at: [${matches.join(', ')}]\nTime: O(nm) worst, O(n+m) average\nSpace: O(1)`);
+            break;
+        }
+    }
+}
+
+window.memoryOperation = function(operation) {
+    const size = getNumericInputValue('memSize');
+    const result = document.getElementById('memoryResult');
+    if (!result) return;
+
+    if ((operation === 'malloc' || operation === 'calloc' || operation === 'realloc') && (size === null || size <= 0)) {
+        setPlainText(result, 'Please enter a positive allocation size.');
+        return;
+    }
+
+    switch(operation) {
+        case 'malloc':
+            const block = { size, address: `0x${Math.random().toString(16).slice(2, 10)}`, type: 'malloc' };
+            memoryBlocks.push(block);
+            setPlainText(result, `malloc(${size}):\nAllocated ${size} bytes\nAddress: ${block.address}\nTotal blocks: ${memoryBlocks.length}`);
+            break;
+        case 'calloc':
+            const callocBlock = { size: size * 4, address: `0x${Math.random().toString(16).slice(2, 10)}`, type: 'calloc' };
+            memoryBlocks.push(callocBlock);
+            setPlainText(result, `calloc(${size}, 4):\nAllocated ${size * 4} bytes (initialized to 0)\nAddress: ${callocBlock.address}\nTotal blocks: ${memoryBlocks.length}`);
+            break;
+        case 'realloc':
+            if (memoryBlocks.length > 0) {
+                const lastBlock = memoryBlocks[memoryBlocks.length - 1];
+                lastBlock.size = size;
+                setPlainText(result, `realloc(${lastBlock.address}, ${size}):\nResized to ${size} bytes\nAddress: ${lastBlock.address}\nTotal blocks: ${memoryBlocks.length}`);
+            } else {
+                setPlainText(result, 'No memory blocks to reallocate');
+            }
+            break;
+        case 'free':
+            if (memoryBlocks.length > 0) {
+                const freed = memoryBlocks.pop();
+                setPlainText(result, `free() successful\nFreed ${freed.size} bytes\nRemaining blocks: ${memoryBlocks.length}`);
+            } else {
+                setPlainText(result, 'No memory blocks to free');
+            }
+            break;
+    }
+};
+
+window.greedyOperation = function(operation) {
+    const result = document.getElementById('greedyResult');
+    if (!result) return;
+
+    switch(operation) {
+        case 'activity':
+            setPlainText(result, 'Activity Selection:\nActivities: [(1,3), (2,5), (4,7), (1,8), (5,9)]\nSelected: (1,3), (4,7), (5,9)\nMaximum activities: 3');
+            break;
+        case 'coin':
+            setPlainText(result, 'Coin Change (Greedy):\nCoins: [25, 10, 5, 1]\nAmount: 67\nSolution: 2x25 + 1x10 + 1x5 + 2x1 = 6 coins');
+            break;
+        case 'fractional':
+            setPlainText(result, 'Fractional Knapsack:\nItems: [(w:10,v:60), (w:20,v:100), (w:30,v:120)]\nCapacity: 50\nOptimal value: 240 (take all items)');
+            break;
+    }
+};
+
+function performanceTest() {
+    const algorithm = document.getElementById('perfAlgorithm')?.value ?? 'sorting';
+    const size = getNumericInputValue('perfSize');
+    const result = document.getElementById('performanceResult');
+    if (!result) return;
+
+    if (size === null || size <= 0) {
+        setPlainText(result, 'Please enter a positive data size.');
+        return;
+    }
+
+    const testData = Array.from({ length: size }, () => Math.floor(Math.random() * 1000));
+
+    switch(algorithm) {
+        case 'sorting':
+            const bubbleStart = performance.now();
+            const bubbleData = [...testData];
+            for (let i = 0; i < bubbleData.length - 1; i++) {
+                for (let j = 0; j < bubbleData.length - i - 1; j++) {
+                    if (bubbleData[j] > bubbleData[j + 1]) {
+                        [bubbleData[j], bubbleData[j + 1]] = [bubbleData[j + 1], bubbleData[j]];
+                    }
+                }
+            }
+            const bubbleTime = performance.now() - bubbleStart;
+
+            const quickStart = performance.now();
+            const quickData = [...testData].sort((a, b) => a - b);
+            const quickTime = performance.now() - quickStart;
+            setPlainText(result, `Sorting Performance (${size} elements):\nBubble Sort: ${bubbleTime.toFixed(3)}ms\nQuick Sort: ${quickTime.toFixed(3)}ms\nSpeedup: ${formatSpeedup(bubbleTime, quickTime)}\nBubble: O(n^2), Quick: O(n log n)`);
+            break;
+        case 'searching':
+            const sortedData = [...testData].sort((a, b) => a - b);
+            const target = sortedData[Math.floor(sortedData.length / 2)];
+
+            const linearStart = performance.now();
+            for (let i = 0; i < sortedData.length; i++) {
+                if (sortedData[i] === target) break;
+            }
+            const linearTime = performance.now() - linearStart;
+
+            const binaryStart = performance.now();
+            let left = 0;
+            let right = sortedData.length - 1;
+            while (left <= right) {
+                const mid = Math.floor((left + right) / 2);
+                if (sortedData[mid] === target) break;
+                else if (sortedData[mid] < target) left = mid + 1;
+                else right = mid - 1;
+            }
+            const binaryTime = performance.now() - binaryStart;
+            setPlainText(result, `Search Performance (${size} elements):\nLinear Search: ${linearTime.toFixed(3)}ms\nBinary Search: ${binaryTime.toFixed(3)}ms\nSpeedup: ${formatSpeedup(linearTime, binaryTime)}\nLinear: O(n), Binary: O(log n)`);
+            break;
+        case 'datastructures':
+            const arrayStart = performance.now();
+            const arr = [];
+            for (let i = 0; i < size; i++) arr.push(i);
+            const arrayTime = performance.now() - arrayStart;
+
+            const setStart = performance.now();
+            const set = new Set();
+            for (let i = 0; i < size; i++) set.add(i);
+            const setTime = performance.now() - setStart;
+            setPlainText(result, `Data Structure Performance (${size} operations):\nArray insertion: ${arrayTime.toFixed(3)}ms\nSet insertion: ${setTime.toFixed(3)}ms\nArray: O(1) append, Set: O(1) average\nMemory: Array < Set (overhead)`);
+            break;
+    }
+}
+
+window.openTool = openTool;
+window.runCode = runCode;
+window.clearOutput = clearOutput;
+window.loadSampleCode = loadSampleCode;
+window.runExperimentDemo = runExperimentDemo;
+window.calculateRecursive = calculateRecursive;
+window.simulateFileOp = simulateFileOp;
+window.stringOperation = stringOperation;
+window.matrixOperation = matrixOperation;
+window.clearCode = clearCode;
+window.buildTree = buildTree;
+window.traverseTree = traverseTree;
+window.solveDynamicProgramming = solveDynamicProgramming;
+window.backtrackOperation = backtrackOperation;
+window.divideConquerOperation = divideConquerOperation;
+window.patternMatchOperation = patternMatchOperation;
+window.performanceTest = performanceTest;
+window.graphTraversal = graphTraversal;
+window.bitOperation = bitOperation;
+window.hashOperation = hashOperation;
+window.searchAlgorithm = searchAlgorithm;
+window.generateRandom = generateRandom;
+window.dsSearch = dsSearch;
 
 function matrixOperation(operation) {
     const a11 = parseInt(document.getElementById('a11').value);
@@ -3955,3 +5058,1382 @@ function performanceTest() {
             break;
     }
 }
+
+function parseNumberList(input) {
+    return input
+        .split(',')
+        .map(value => Number.parseInt(value.trim(), 10))
+        .filter(value => !Number.isNaN(value));
+}
+
+function formatSpeedup(first, second) {
+    if (!Number.isFinite(first) || !Number.isFinite(second) || second <= 0) {
+        return 'N/A';
+    }
+
+    return (first / second).toFixed(1) + 'x';
+}
+
+function buildDsBinaryTree() {
+    let root = null;
+
+    function insert(node, value, id) {
+        if (!node) {
+            return { value, id, left: null, right: null };
+        }
+
+        if (value < node.value) {
+            node.left = insert(node.left, value, id);
+        } else {
+            node.right = insert(node.right, value, id);
+        }
+
+        return node;
+    }
+
+    dsData.forEach((value, index) => {
+        root = insert(root, value, index);
+    });
+
+    return root;
+}
+
+function getDsBinaryTreeHeight(node) {
+    if (!node) return 0;
+    return 1 + Math.max(getDsBinaryTreeHeight(node.left), getDsBinaryTreeHeight(node.right));
+}
+
+function initDataStructureVisualizer() {
+    dsType = 'array';
+    dsData = [];
+
+    const select = document.getElementById('dataStructure');
+    if (select) {
+        select.value = dsType;
+    }
+
+    updateVisualization();
+    updateProperties();
+    const log = document.getElementById('dsOperations');
+    if (log) {
+        log.innerHTML = 'Select a data structure to begin';
+    }
+}
+
+function animateSearch(value, found, index) {
+    if (!found) {
+        return;
+    }
+    
+    const elementId = `${dsType === 'array' ? 'arr' : dsType === 'linkedlist' ? 'll' : dsType === 'stack' ? 'stack' : dsType === 'queue' ? 'queue' : dsType === 'binarytree' ? 'tree' : 'graph'}-${index}`;
+    const element = document.getElementById(elementId);
+    
+    if (element) {
+        element.style.animation = 'dsSearchHighlight 1.5s ease';
+    }
+}
+
+function addToBinaryTree(value) {
+    dsData.push(value);
+}
+
+function renderBinaryTree(canvas) {
+    if (dsData.length === 0) {
+        canvas.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 18px;">Empty Binary Search Tree</div>';
+        return;
+    }
+
+    const root = buildDsBinaryTree();
+    const width = canvas.clientWidth || 500;
+    const nodeRadius = 20;
+    let html = '<div style="position: relative; width: 100%; height: 100%; overflow: auto;">';
+
+    function renderNode(node, x, y, gap) {
+        if (!node) return;
+
+        if (node.left) {
+            const childX = x - gap;
+            const childY = y + 80;
+            const length = Math.hypot(childX - x, childY - y);
+            const angle = Math.atan2(childY - y, childX - x) * 180 / Math.PI;
+            html += `<div style="position: absolute; left: ${x}px; top: ${y}px; width: ${length}px; height: 2px; background: #333; transform-origin: 0 0; transform: rotate(${angle}deg); z-index: 1;"></div>`;
+            renderNode(node.left, childX, childY, Math.max(gap / 1.8, 35));
+        }
+
+        if (node.right) {
+            const childX = x + gap;
+            const childY = y + 80;
+            const length = Math.hypot(childX - x, childY - y);
+            const angle = Math.atan2(childY - y, childX - x) * 180 / Math.PI;
+            html += `<div style="position: absolute; left: ${x}px; top: ${y}px; width: ${length}px; height: 2px; background: #333; transform-origin: 0 0; transform: rotate(${angle}deg); z-index: 1;"></div>`;
+            renderNode(node.right, childX, childY, Math.max(gap / 1.8, 35));
+        }
+
+        html += `<div class="ds-element" id="tree-${node.id}" style="position: absolute; left: ${x - nodeRadius}px; top: ${y - nodeRadius}px; width: ${nodeRadius * 2}px; height: ${nodeRadius * 2}px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.3); z-index: 2;">${node.value}</div>`;
+    }
+
+    renderNode(root, width / 2, 50, Math.max(width / 4, 60));
+    html += '</div>';
+    canvas.innerHTML = html;
+}
+
+function updateProperties() {
+    const props = document.getElementById('dsProperties');
+    if (!props) return;
+
+    let info = '';
+    
+    switch(dsType) {
+        case 'array':
+            info = `Length: ${dsData.length}\nAccess: O(1)\nSearch: O(n)\nInsertion: O(1) at end\nDeletion: O(1) at end`;
+            break;
+        case 'linkedlist':
+            info = `Length: ${dsData.length}\nAccess: O(n)\nSearch: O(n)\nInsertion: O(1) at tail in this demo\nDeletion: O(1) at tail in this demo`;
+            break;
+        case 'stack':
+            info = `Size: ${dsData.length}\nPush: O(1)\nPop: O(1)\nPeek: O(1)\nPrinciple: LIFO`;
+            break;
+        case 'queue':
+            info = `Size: ${dsData.length}\nEnqueue: O(1)\nDequeue: O(n) in this array-backed demo\nFront: O(1)\nPrinciple: FIFO`;
+            break;
+        case 'binarytree':
+            const root = buildDsBinaryTree();
+            info = `Nodes: ${dsData.length}\nHeight: ${getDsBinaryTreeHeight(root)}\nSearch: O(log n) average, O(n) worst\nInsertion: O(log n) average, O(n) worst\nDeletion: O(log n) average, O(n) worst`;
+            break;
+        case 'graph':
+            info = `Vertices: ${dsData.length}\nEdges: ${dsData.length > 1 ? dsData.length : 0}\nTraversal: O(V+E)\nSpace: O(V)`;
+            break;
+    }
+    
+    props.innerHTML = info.replace(/\n/g, '<br>');
+}
+
+function graphTraversal(type) {
+    const result = document.getElementById('traversalResult');
+    if (!result) return;
+
+    if (type === 'bfs') {
+        setPlainText(result, `BFS Traversal:\nOrder: A -> B -> D -> C -> E -> F\nTime Complexity: O(V + E)\nSpace Complexity: O(V)`);
+    } else {
+        setPlainText(result, `DFS Traversal:\nOrder: A -> B -> C -> F -> E -> D\nTime Complexity: O(V + E)\nSpace Complexity: O(V)`);
+    }
+}
+
+function bitOperation(operation) {
+    const num1 = getNumericInputValue('bitNum1');
+    const num2 = getNumericInputValue('bitNum2');
+    const result = document.getElementById('bitResult');
+    if (!result) return;
+
+    if (num1 === null || num2 === null) {
+        setPlainText(result, 'Please enter valid integers for both bit inputs.');
+        return;
+    }
+    
+    switch(operation) {
+        case 'and':
+            setPlainText(result, `Bitwise AND:\n${num1} & ${num2} = ${num1 & num2}\nBinary: ${num1.toString(2)} & ${num2.toString(2)} = ${(num1 & num2).toString(2)}`);
+            break;
+        case 'or':
+            setPlainText(result, `Bitwise OR:\n${num1} | ${num2} = ${num1 | num2}\nBinary: ${num1.toString(2)} | ${num2.toString(2)} = ${(num1 | num2).toString(2)}`);
+            break;
+        case 'xor':
+            setPlainText(result, `Bitwise XOR:\n${num1} ^ ${num2} = ${num1 ^ num2}\nBinary: ${num1.toString(2)} ^ ${num2.toString(2)} = ${(num1 ^ num2).toString(2)}`);
+            break;
+    }
+}
+
+function hashOperation(operation) {
+    const key = document.getElementById('hashKey')?.value ?? '';
+    const value = document.getElementById('hashValue')?.value ?? '';
+    const result = document.getElementById('hashResult');
+    if (!result) return;
+    
+    function hashFunction(currentKey) {
+        let hash = 0;
+        for (let i = 0; i < currentKey.length; i++) {
+            hash = (hash + currentKey.charCodeAt(i)) % 7;
+        }
+        return hash;
+    }
+    
+    switch(operation) {
+        case 'insert':
+            if (!key || !value) {
+                setPlainText(result, 'Please enter both a key and a value before inserting.');
+                return;
+            }
+
+            const hash = hashFunction(key);
+            hashTable[key] = { value, hash };
+            setPlainText(result, `Inserted:\nKey: "${key}"\nValue: "${value}"\nHash: ${hash}\nTotal entries: ${Object.keys(hashTable).length}`);
+            break;
+        case 'search':
+            if (key && hashTable[key]) {
+                setPlainText(result, `Found:\nKey: "${key}"\nValue: "${hashTable[key].value}"\nHash: ${hashTable[key].hash}`);
+            } else {
+                setPlainText(result, `Not found: "${key}"`);
+            }
+            break;
+    }
+}
+
+function runExperimentDemo(num) {
+    const result = document.getElementById('experimentResult');
+    if (!result) return;
+    
+    const demos = {
+        4: 'Factorial(5) = 120\nFibonacci(7) = 13\nRecursion depth: 7 levels',
+        5: 'File created: data.txt\nBytes written: 256\nFile read successfully',
+        6: 'String length: 15\nReversed: "gnimmargorP"\nUppercase: "PROGRAMMING"',
+        7: 'Matrix A + B = [[8,10],[12,14]]\nMatrix multiplication completed\nTranspose calculated',
+        8: 'Linear search: 4 comparisons\nBinary search: 2 comparisons\nTarget found at index 3',
+        9: 'Random numbers: [42, 17, 89, 3, 56]\nAverage: 41.4\nStandard deviation: 32.1',
+        10: 'BFS traversal: A -> B -> D -> C -> E\nDFS traversal: A -> B -> C -> E -> D\nPath found',
+        11: 'AND: 5 & 3 = 1\nOR: 5 | 3 = 7\nXOR: 5 ^ 3 = 6\nNOT: ~5 = -6',
+        12: 'Hash function: key % 7\nCollisions handled with chaining\nLoad factor: 0.71',
+        13: 'Inorder: 4 2 5 1 3\nPreorder: 1 2 4 5 3\nPostorder: 4 5 2 3 1\nHeight: 3',
+        14: 'Fibonacci DP: O(n) time\nKnapsack solution: value = 220\nMemoization table filled',
+        15: 'malloc(100): 0x7fff5fbff890\ncalloc(10,4): 0x7fff5fbff8f4\nMemory freed successfully',
+        16: 'Activity selection: 3 activities\nCoin change: 4 coins\nOptimal solution found',
+        17: 'N-Queens: 2 solutions for 4x4\nMaze solved in 12 steps\nBacktrack count: 5',
+        18: 'Merge sort: O(n log n)\nArray divided into 8 parts\nMerged successfully',
+        19: 'Pattern "ABC" found at position 5\nKMP algorithm: 0 false matches\nSearch completed',
+        20: 'Bubble sort: 1.2ms\nQuick sort: 0.3ms\nPerformance ratio: 4:1'
+    };
+    
+    setPlainText(result, demos[num] || 'Experiment completed successfully!');
+}
+
+function calculateRecursive(type) {
+    const input = getNumericInputValue('recursiveInput');
+    const callStack = document.getElementById('callStack');
+    const result = document.getElementById('recursiveResult');
+    if (!callStack || !result) return;
+    
+    if (input === null || input < 0) {
+        setPlainText(result, 'Please enter a positive number');
+        return;
+    }
+    
+    let stackTrace = [];
+    let finalResult;
+    
+    if (type === 'factorial') {
+        function factorial(n, depth = 0) {
+            stackTrace.push(`${'  '.repeat(depth)}factorial(${n})`);
+            if (n <= 1) {
+                stackTrace.push(`${'  '.repeat(depth)}return 1`);
+                return 1;
+            }
+            const value = n * factorial(n - 1, depth + 1);
+            stackTrace.push(`${'  '.repeat(depth)}return ${n} * factorial(${n - 1}) = ${value}`);
+            return value;
+        }
+
+        finalResult = factorial(input);
+    } else {
+        function fibonacci(n, depth = 0) {
+            stackTrace.push(`${'  '.repeat(depth)}fibonacci(${n})`);
+            if (n <= 1) {
+                stackTrace.push(`${'  '.repeat(depth)}return ${n}`);
+                return n;
+            }
+            const value = fibonacci(n - 1, depth + 1) + fibonacci(n - 2, depth + 1);
+            stackTrace.push(`${'  '.repeat(depth)}return fibonacci(${n - 1}) + fibonacci(${n - 2}) = ${value}`);
+            return value;
+        }
+
+        finalResult = fibonacci(input);
+    }
+
+    setPlainText(callStack, stackTrace.join('\n'));
+    setPlainText(result, `${type}(${input}) = ${finalResult}\nRecursion depth: ${Math.max(...stackTrace.map(entry => entry.match(/^  */)[0].length / 2)) + 1} levels`);
+}
+
+function simulateFileOp(operation) {
+    const content = document.getElementById('fileContent')?.value ?? '';
+    const output = document.getElementById('fileOutput');
+    if (!output) return;
+    
+    if (operation === 'write') {
+        if (!content.trim()) {
+            setPlainText(output, 'Error: No content to write');
+            return;
+        }
+        setPlainText(output, `File Operation: WRITE\nFilename: data.txt\nContent: "${content}"\nBytes written: ${content.length}\nStatus: SUCCESS\nFile handle: 0x7fff5fbff890`);
+    } else {
+        const readContent = content || 'Hello World';
+        setPlainText(output, `File Operation: READ\nFilename: data.txt\nContent read: "${readContent}"\nBytes read: ${readContent.length}\nStatus: SUCCESS\nEOF reached: true`);
+    }
+}
+
+function stringOperation(operation) {
+    const str1 = document.getElementById('stringInput')?.value ?? '';
+    const str2 = document.getElementById('stringInput2')?.value ?? '';
+    const result = document.getElementById('stringResult');
+    if (!result) return;
+
+    if (!str1.trim()) {
+        setPlainText(result, 'Please enter a string');
+        return;
+    }
+    
+    switch(operation) {
+        case 'length':
+            setPlainText(result, `String: "${str1}"\nLength: ${str1.length} characters\nMemory used: ${str1.length + 1} bytes (including null terminator)`);
+            break;
+        case 'reverse':
+            setPlainText(result, `Original: "${str1}"\nReversed: "${str1.split('').reverse().join('')}"\nAlgorithm: Two-pointer technique`);
+            break;
+        case 'concat':
+            if (!str2.trim()) {
+                setPlainText(result, 'Please enter second string for concatenation');
+                return;
+            }
+            const concatenated = str1 + str2;
+            setPlainText(result, `String 1: "${str1}" (${str1.length} chars)\nString 2: "${str2}" (${str2.length} chars)\nConcatenated: "${concatenated}" (${concatenated.length} chars)`);
+            break;
+    }
+}
+
+function getDataStructureLabel(type) {
+    const labels = {
+        array: 'Array',
+        linkedlist: 'Linked List',
+        stack: 'Stack',
+        queue: 'Queue',
+        binarytree: 'Binary Search Tree',
+        graph: 'Graph'
+    };
+
+    return labels[type] || type;
+}
+
+function getCodeReviewer() {
+    return `
+        <h2>Code Reviewer</h2>
+        <div style="margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+            <select id="codeLanguage" style="padding: 8px; border-radius: 5px; min-width: 120px;">
+                <option value="c">C/C++</option>
+                <option value="python">Python</option>
+                <option value="javascript">JavaScript</option>
+                <option value="java">Java</option>
+            </select>
+            <button onclick="loadSampleCode()" style="background: #17a2b8; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px;">Load Sample</button>
+            <button onclick="clearCode()" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px;">Clear</button>
+        </div>
+        <div style="display: flex; gap: 20px; height: calc(100% - 100px);" class="code-reviewer-layout">
+            <div style="flex: 1;">
+                <h4>Submit Your Code:</h4>
+                <textarea id="reviewCode" placeholder="Paste your code here for a structured rule-based review..." style="width: 100%; height: 75%; font-family: 'Courier New', monospace; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; resize: vertical;"></textarea>
+                <button onclick="reviewCode()" style="background: #28a745; color: white; border: none; padding: 12px 24px; border-radius: 5px; margin-top: 10px; cursor: pointer; font-size: 16px;">Analyze Code</button>
+            </div>
+            <div style="flex: 1; background: #f8f9fa; padding: 15px; border-radius: 5px; overflow-y: auto;">
+                <h4>Analysis Results:</h4>
+                <div id="reviewResults" class="preformatted-output">Submit code to get:
+
+- Critical security issues
+- Warnings and likely bugs
+- Improvement suggestions
+- A rough quality score (0-100)
+
+This reviewer is rule-based and runs locally in the page.</div>
+            </div>
+        </div>
+        <style>
+        @media (max-width: 768px) {
+            .code-reviewer-layout {
+                flex-direction: column !important;
+                height: auto !important;
+                gap: 15px;
+            }
+            .code-reviewer-layout > div {
+                flex: none !important;
+            }
+            #reviewCode {
+                height: 200px !important;
+                font-size: 12px !important;
+            }
+        }
+        </style>
+    `;
+}
+
+function getDataStructureVisualizer() {
+    return `
+        <h2>Data Structure Visualizer</h2>
+        <div style="margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+            <select id="dataStructure" onchange="selectDataStructure()" style="padding: 10px; border-radius: 5px; min-width: 140px;">
+                <option value="array">Array</option>
+                <option value="linkedlist">Linked List</option>
+                <option value="stack">Stack</option>
+                <option value="queue">Queue</option>
+                <option value="binarytree">Binary Search Tree</option>
+                <option value="graph">Graph</option>
+            </select>
+            <input type="number" id="dsValue" placeholder="Value" style="padding: 8px; border-radius: 5px; width: 80px;">
+            <button onclick="dsAdd()" style="background: #28a745; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px;">Add</button>
+            <button onclick="dsRemove()" style="background: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px;">Remove</button>
+            <button onclick="dsSearch()" style="background: #17a2b8; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px;">Search</button>
+            <button onclick="dsClear()" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px;">Clear</button>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 300px; gap: 20px;" class="ds-visualizer-grid">
+            <div id="dsVisualization" style="height: 450px; border: 2px solid #ddd; border-radius: 10px; background: #f8f9fa; padding: 15px; overflow: hidden; position: relative;">
+                <div id="dsCanvas" style="width: 100%; height: 100%; position: relative;"></div>
+            </div>
+            <div style="background: #1e1e1e; color: #f8f8f2; padding: 15px; border-radius: 10px; overflow-y: auto;">
+                <h4 style="color: #50fa7b; margin-top: 0; font-size: 16px;">Operations Log</h4>
+                <div id="dsOperations" style="font-family: monospace; font-size: 12px; line-height: 1.4;">Select a data structure to begin</div>
+                <div style="margin-top: 15px; padding: 10px; background: #44475a; border-radius: 5px;">
+                    <strong style="color: #50fa7b; font-size: 14px;">Properties:</strong>
+                    <div id="dsProperties" style="margin-top: 5px; font-size: 11px;">-</div>
+                </div>
+            </div>
+        </div>
+        <style>
+        @media (max-width: 768px) {
+            .ds-visualizer-grid {
+                grid-template-columns: 1fr !important;
+                gap: 15px;
+            }
+            #dsVisualization {
+                height: 300px !important;
+            }
+        }
+        </style>
+    `;
+}
+
+function selectDataStructure() {
+    dsType = document.getElementById('dataStructure')?.value || 'array';
+    dsData = [];
+    const input = document.getElementById('dsValue');
+    if (input) {
+        input.value = '';
+    }
+    updateVisualization();
+    updateOperationsLog(`Selected ${getDataStructureLabel(dsType)}`);
+    updateProperties();
+}
+
+function dsRemove() {
+    if (dsAnimating) return;
+
+    if (dsData.length === 0) {
+        updateOperationsLog(`${getDataStructureLabel(dsType)} is empty`);
+        return;
+    }
+
+    const requestedValue = getNumericInputValue('dsValue');
+    let removed;
+    let animationDelay = 800;
+    dsAnimating = true;
+
+    switch(dsType) {
+        case 'array':
+            removed = dsData.pop();
+            animateArrayRemove();
+            break;
+        case 'linkedlist':
+            removed = dsData.pop();
+            animateLinkedListRemove();
+            break;
+        case 'stack':
+            removed = dsData.pop();
+            animateStackPop();
+            break;
+        case 'queue':
+            removed = dsData.shift();
+            animateQueueDequeue();
+            break;
+        case 'binarytree': {
+            const removeIndex = requestedValue === null ? dsData.length - 1 : dsData.indexOf(requestedValue);
+            if (removeIndex === -1) {
+                updateOperationsLog(`Value ${requestedValue} not found in Binary Search Tree`);
+                dsAnimating = false;
+                return;
+            }
+            removed = dsData.splice(removeIndex, 1)[0];
+            updateVisualization();
+            animationDelay = 100;
+            break;
+        }
+        case 'graph': {
+            const removeIndex = requestedValue === null ? dsData.length - 1 : dsData.indexOf(requestedValue);
+            if (removeIndex === -1) {
+                updateOperationsLog(`Node ${requestedValue} not found in Graph`);
+                dsAnimating = false;
+                return;
+            }
+            removed = dsData.splice(removeIndex, 1)[0];
+            updateVisualization();
+            animationDelay = 100;
+            break;
+        }
+    }
+
+    updateOperationsLog(`Removed ${removed}`);
+    updateProperties();
+    setTimeout(() => { dsAnimating = false; }, animationDelay);
+}
+
+function dsSearch() {
+    const value = getNumericInputValue('dsValue');
+    if (value === null) {
+        updateOperationsLog('Enter a value to search');
+        return;
+    }
+
+    const found = dsData.includes(value);
+    const index = dsData.indexOf(value);
+
+    animateSearch(value, found, index);
+
+    if (!found) {
+        updateOperationsLog(`Search ${value}: not found in ${getDataStructureLabel(dsType)}`);
+        return;
+    }
+
+    if (dsType === 'binarytree') {
+        updateOperationsLog(`Search ${value}: found in Binary Search Tree`);
+        return;
+    }
+
+    if (dsType === 'graph') {
+        updateOperationsLog(`Search ${value}: found vertex ${value}`);
+        return;
+    }
+
+    updateOperationsLog(`Search ${value}: found at index ${index}`);
+}
+
+function matrixOperation(operation) {
+    const matrixA = ['a11', 'a12', 'a21', 'a22'].map(getNumericInputValue);
+    const matrixB = ['b11', 'b12', 'b21', 'b22'].map(getNumericInputValue);
+    const result = document.getElementById('matrixResult');
+    if (!result) return;
+
+    if (matrixA.some(value => value === null)) {
+        setPlainText(result, 'Please fill in Matrix A with valid integers.');
+        return;
+    }
+
+    const [a11, a12, a21, a22] = matrixA;
+    const [b11, b12, b21, b22] = matrixB;
+
+    switch(operation) {
+        case 'add': {
+            if (matrixB.some(value => value === null)) {
+                setPlainText(result, 'Please fill in Matrix B with valid integers for addition.');
+                return;
+            }
+            const sum = [[a11 + b11, a12 + b12], [a21 + b21, a22 + b22]];
+            setPlainText(result, `Matrix Addition:\nA + B = [[${sum[0][0]}, ${sum[0][1]}], [${sum[1][0]}, ${sum[1][1]}]]\nTime Complexity: O(n^2)\nSpace Complexity: O(n^2)`);
+            break;
+        }
+        case 'multiply': {
+            if (matrixB.some(value => value === null)) {
+                setPlainText(result, 'Please fill in Matrix B with valid integers for multiplication.');
+                return;
+            }
+            const mult = [
+                [a11 * b11 + a12 * b21, a11 * b12 + a12 * b22],
+                [a21 * b11 + a22 * b21, a21 * b12 + a22 * b22]
+            ];
+            setPlainText(result, `Matrix Multiplication:\nA x B = [[${mult[0][0]}, ${mult[0][1]}], [${mult[1][0]}, ${mult[1][1]}]]\nTime Complexity: O(n^3)\nMultiplications: 8`);
+            break;
+        }
+        case 'transpose': {
+            const trans = [[a11, a21], [a12, a22]];
+            setPlainText(result, `Matrix Transpose:\nA^T = [[${trans[0][0]}, ${trans[0][1]}], [${trans[1][0]}, ${trans[1][1]}]]\nOperation: Swap rows and columns\nTime Complexity: O(n^2)`);
+            break;
+        }
+    }
+}
+
+function searchAlgorithm(type) {
+    const array = parseNumberList(document.getElementById('searchArray')?.value ?? '');
+    const target = getNumericInputValue('searchTarget');
+    const result = document.getElementById('searchResult');
+    if (!result) return;
+
+    if (array.length === 0) {
+        setPlainText(result, 'Please enter a comma-separated list of integers.');
+        return;
+    }
+
+    if (target === null) {
+        setPlainText(result, 'Please enter a valid search target.');
+        return;
+    }
+
+    let comparisons = 0;
+    let found = false;
+    let position = -1;
+
+    if (type === 'linear') {
+        for (let i = 0; i < array.length; i++) {
+            comparisons++;
+            if (array[i] === target) {
+                found = true;
+                position = i;
+                break;
+            }
+        }
+        setPlainText(result, `Linear Search Results:\nArray: [${array.join(', ')}]\nTarget: ${target}\nFound: ${found}\nPosition: ${position}\nComparisons: ${comparisons}\nTime Complexity: O(n)`);
+        return;
+    }
+
+    if (type === 'binary') {
+        const sortedArray = [...array].sort((a, b) => a - b);
+        let left = 0;
+        let right = sortedArray.length - 1;
+
+        while (left <= right) {
+            comparisons++;
+            const mid = Math.floor((left + right) / 2);
+            if (sortedArray[mid] === target) {
+                found = true;
+                position = mid;
+                break;
+            }
+            if (sortedArray[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        setPlainText(result, `Binary Search Results:\nSorted Array: [${sortedArray.join(', ')}]\nTarget: ${target}\nFound: ${found}\nPosition: ${position}\nComparisons: ${comparisons}\nTime Complexity: O(log n)`);
+    }
+}
+
+function generateRandom(type) {
+    const min = getNumericInputValue('minRange');
+    const max = getNumericInputValue('maxRange');
+    const count = getNumericInputValue('randomCount');
+    const result = document.getElementById('randomResult');
+    if (!result) return;
+
+    if (min === null || max === null) {
+        setPlainText(result, 'Please enter valid numeric minimum and maximum bounds.');
+        return;
+    }
+
+    if (min >= max) {
+        setPlainText(result, 'Error: minimum must be less than maximum.');
+        return;
+    }
+
+    if (type !== 'single' && (count === null || count <= 0)) {
+        setPlainText(result, 'Error: count must be a positive integer.');
+        return;
+    }
+
+    switch(type) {
+        case 'single': {
+            const single = Math.floor(Math.random() * (max - min + 1)) + min;
+            setPlainText(result, `Single Random Number:\nRange: ${min} to ${max}\nGenerated: ${single}\nAlgorithm: Linear Congruential Generator`);
+            break;
+        }
+        case 'multiple': {
+            const numbers = Array.from({ length: count }, () => Math.floor(Math.random() * (max - min + 1)) + min);
+            setPlainText(result, `Multiple Random Numbers:\nRange: ${min} to ${max}\nCount: ${count}\nGenerated: [${numbers.join(', ')}]\nUnique values: ${new Set(numbers).size}`);
+            break;
+        }
+        case 'stats': {
+            const statNumbers = Array.from({ length: count }, () => Math.floor(Math.random() * (max - min + 1)) + min);
+            const avg = statNumbers.reduce((total, current) => total + current, 0) / statNumbers.length;
+            const variance = statNumbers.reduce((total, current) => total + Math.pow(current - avg, 2), 0) / statNumbers.length;
+            const stdDev = Math.sqrt(variance);
+            setPlainText(result, `Statistical Analysis:\nNumbers: [${statNumbers.join(', ')}]\nAverage: ${avg.toFixed(2)}\nVariance: ${variance.toFixed(2)}\nStd Deviation: ${stdDev.toFixed(2)}\nMin: ${Math.min(...statNumbers)}\nMax: ${Math.max(...statNumbers)}`);
+            break;
+        }
+    }
+}
+
+function clearCode() {
+    const editor = document.getElementById('reviewCode');
+    const result = document.getElementById('reviewResults');
+    if (editor) {
+        editor.value = '';
+    }
+    if (result) {
+        setPlainText(result, 'Code cleared. Submit new code for analysis.');
+    }
+}
+
+function buildTree() {
+    const values = parseNumberList(document.getElementById('treeValues')?.value ?? '');
+    const result = document.getElementById('treeResult');
+    if (!result) return;
+
+    if (values.length === 0) {
+        setPlainText(result, 'Please enter one or more comma-separated integers.');
+        binaryTree = null;
+        return;
+    }
+
+    class TreeNode {
+        constructor(val) {
+            this.val = val;
+            this.left = null;
+            this.right = null;
+        }
+    }
+
+    function insertNode(root, val) {
+        if (!root) return new TreeNode(val);
+        if (val < root.val) {
+            root.left = insertNode(root.left, val);
+        } else {
+            root.right = insertNode(root.right, val);
+        }
+        return root;
+    }
+
+    binaryTree = null;
+    values.forEach(value => {
+        binaryTree = insertNode(binaryTree, value);
+    });
+
+    setPlainText(result, `Binary Search Tree built with values: [${values.join(', ')}]\nTree height: ${getTreeHeight(binaryTree)}\nTotal nodes: ${values.length}`);
+}
+
+function traverseTree(type) {
+    const result = document.getElementById('treeResult');
+    if (!result) return;
+
+    if (!binaryTree) {
+        setPlainText(result, 'Please build a tree first.');
+        return;
+    }
+
+    const traversal = [];
+
+    function inorder(node) {
+        if (!node) return;
+        inorder(node.left);
+        traversal.push(node.val);
+        inorder(node.right);
+    }
+
+    function preorder(node) {
+        if (!node) return;
+        traversal.push(node.val);
+        preorder(node.left);
+        preorder(node.right);
+    }
+
+    function postorder(node) {
+        if (!node) return;
+        postorder(node.left);
+        postorder(node.right);
+        traversal.push(node.val);
+    }
+
+    switch(type) {
+        case 'inorder':
+            inorder(binaryTree);
+            break;
+        case 'preorder':
+            preorder(binaryTree);
+            break;
+        case 'postorder':
+            postorder(binaryTree);
+            break;
+    }
+
+    setPlainText(result, `${type.charAt(0).toUpperCase() + type.slice(1)} Traversal: [${traversal.join(', ')}]\nTime Complexity: O(n)\nSpace Complexity: O(h) where h is tree height`);
+}
+
+function solveDynamicProgramming() {
+    const problem = document.getElementById('dpProblem')?.value ?? 'fibonacci';
+    const input = getNumericInputValue('dpInput');
+    const result = document.getElementById('dpResult');
+    if (!result) return;
+
+    if (problem === 'fibonacci') {
+        if (input === null || input < 0) {
+            setPlainText(result, 'Please enter a non-negative integer for the Fibonacci demo.');
+            return;
+        }
+
+        if (input > 1000) {
+            setPlainText(result, 'Please keep the Fibonacci input at 1000 or below for this demo.');
+            return;
+        }
+
+        const fib = new Array(input + 1);
+        fib[0] = 0;
+        if (input > 0) {
+            fib[1] = 1;
+        }
+        for (let i = 2; i <= input; i++) {
+            fib[i] = fib[i - 1] + fib[i - 2];
+        }
+
+        setPlainText(result, `Fibonacci DP Solution:\nF(${input}) = ${fib[input]}\nMemoization table: [${fib.slice(0, Math.min(10, input + 1)).join(', ')}${input > 9 ? '...' : ''}]\nTime: O(n), Space: O(n)`);
+        return;
+    }
+
+    if (problem === 'knapsack') {
+        const weights = [10, 20, 30];
+        const values = [60, 100, 120];
+        const capacity = 50;
+        const dp = Array.from({ length: weights.length + 1 }, () => Array(capacity + 1).fill(0));
+
+        for (let i = 1; i <= weights.length; i++) {
+            for (let weight = 1; weight <= capacity; weight++) {
+                if (weights[i - 1] <= weight) {
+                    dp[i][weight] = Math.max(values[i - 1] + dp[i - 1][weight - weights[i - 1]], dp[i - 1][weight]);
+                } else {
+                    dp[i][weight] = dp[i - 1][weight];
+                }
+            }
+        }
+
+        setPlainText(result, `0/1 Knapsack DP:\nItems: [(w:10,v:60), (w:20,v:100), (w:30,v:120)]\nCapacity: ${capacity}\nMaximum value: ${dp[weights.length][capacity]}\nTime: O(nW), Space: O(nW)`);
+        return;
+    }
+
+    if (problem === 'lcs') {
+        const str1 = 'ABCDGH';
+        const str2 = 'AEDFHR';
+        const lcs = Array.from({ length: str1.length + 1 }, () => Array(str2.length + 1).fill(0));
+
+        for (let i = 1; i <= str1.length; i++) {
+            for (let j = 1; j <= str2.length; j++) {
+                if (str1[i - 1] === str2[j - 1]) {
+                    lcs[i][j] = lcs[i - 1][j - 1] + 1;
+                } else {
+                    lcs[i][j] = Math.max(lcs[i - 1][j], lcs[i][j - 1]);
+                }
+            }
+        }
+
+        setPlainText(result, `Longest Common Subsequence:\nString 1: "${str1}"\nString 2: "${str2}"\nLCS Length: ${lcs[str1.length][str2.length]}\nTime: O(mn), Space: O(mn)`);
+    }
+}
+
+function backtrackOperation(type) {
+    const input = getNumericInputValue('backtrackN');
+    const result = document.getElementById('backtrackResult');
+    if (!result) return;
+
+    if (input === null || input < 1) {
+        setPlainText(result, 'Please enter a positive integer for the backtracking demo.');
+        return;
+    }
+
+    if (type === 'nqueens') {
+        if (input > 10) {
+            setPlainText(result, 'Please keep N at 10 or below for the N-Queens demo to stay responsive.');
+            return;
+        }
+
+        let solutions = 0;
+        const board = Array.from({ length: input }, () => Array(input).fill(0));
+
+        function isSafe(row, col) {
+            for (let i = 0; i < col; i++) {
+                if (board[row][i]) return false;
+            }
+            for (let i = row, j = col; i >= 0 && j >= 0; i--, j--) {
+                if (board[i][j]) return false;
+            }
+            for (let i = row, j = col; i < input && j >= 0; i++, j--) {
+                if (board[i][j]) return false;
+            }
+            return true;
+        }
+
+        function solveNQueens(col) {
+            if (col >= input) {
+                solutions++;
+                return;
+            }
+            for (let row = 0; row < input; row++) {
+                if (!isSafe(row, col)) continue;
+                board[row][col] = 1;
+                solveNQueens(col + 1);
+                board[row][col] = 0;
+            }
+        }
+
+        solveNQueens(0);
+        setPlainText(result, `N-Queens Problem (N=${input}):\nTotal solutions: ${solutions}\nBacktracking explores one safe column placement at a time\nTime: O(N!)\nSpace: O(N^2)`);
+        return;
+    }
+
+    if (type === 'sudoku') {
+        setPlainText(result, 'Sudoku Solver:\nUsing backtracking to fill empty cells\nTries values 1-9 for each empty cell\nBacktracks when no valid number remains\nTime: exponential in the number of blanks\nSpace: O(n^2)');
+        return;
+    }
+
+    if (type === 'maze') {
+        setPlainText(result, `Maze Solver:\nStarting from (0,0) to reach (${input - 1},${input - 1})\nExplores four directions at each step\nBacktracks when a path is blocked\nPath found using DFS with backtracking`);
+    }
+}
+
+function divideConquerOperation(type) {
+    const arr = parseNumberList(document.getElementById('divideArray')?.value ?? '');
+    const result = document.getElementById('divideResult');
+    if (!result) return;
+
+    if (arr.length === 0) {
+        setPlainText(result, 'Please enter a comma-separated list of integers.');
+        return;
+    }
+
+    if (type === 'mergesort') {
+        function merge(left, right) {
+            const merged = [];
+            let i = 0;
+            let j = 0;
+            while (i < left.length && j < right.length) {
+                if (left[i] <= right[j]) {
+                    merged.push(left[i++]);
+                } else {
+                    merged.push(right[j++]);
+                }
+            }
+            return merged.concat(left.slice(i), right.slice(j));
+        }
+
+        function mergeSort(values) {
+            if (values.length <= 1) return values;
+            const mid = Math.floor(values.length / 2);
+            return merge(mergeSort(values.slice(0, mid)), mergeSort(values.slice(mid)));
+        }
+
+        const sorted = mergeSort([...arr]);
+        setPlainText(result, `Merge Sort:\nOriginal: [${arr.join(', ')}]\nSorted: [${sorted.join(', ')}]\nDivide: split the array into halves\nConquer: merge sorted subarrays\nTime: O(n log n)\nSpace: O(n)`);
+        return;
+    }
+
+    if (type === 'quicksort') {
+        function partition(values, low, high) {
+            const pivot = values[high];
+            let i = low - 1;
+            for (let j = low; j < high; j++) {
+                if (values[j] >= pivot) continue;
+                i++;
+                [values[i], values[j]] = [values[j], values[i]];
+            }
+            [values[i + 1], values[high]] = [values[high], values[i + 1]];
+            return i + 1;
+        }
+
+        function quickSort(values, low = 0, high = values.length - 1) {
+            if (low < high) {
+                const pivotIndex = partition(values, low, high);
+                quickSort(values, low, pivotIndex - 1);
+                quickSort(values, pivotIndex + 1, high);
+            }
+            return values;
+        }
+
+        const quickSorted = quickSort([...arr]);
+        setPlainText(result, `Quick Sort:\nOriginal: [${arr.join(', ')}]\nSorted: [${quickSorted.join(', ')}]\nPivot-based partitioning\nRecursive divide and conquer\nTime: O(n log n) average\nSpace: O(log n) average`);
+        return;
+    }
+
+    if (type === 'binarysearch') {
+        const sortedArr = [...arr].sort((a, b) => a - b);
+        const target = sortedArr[Math.floor(sortedArr.length / 2)];
+        let comparisons = 0;
+
+        function binarySearch(values, targetValue) {
+            let left = 0;
+            let right = values.length - 1;
+            while (left <= right) {
+                comparisons++;
+                const mid = Math.floor((left + right) / 2);
+                if (values[mid] === targetValue) return mid;
+                if (values[mid] < targetValue) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+            return -1;
+        }
+
+        const index = binarySearch(sortedArr, target);
+        setPlainText(result, `Binary Search:\nSorted array: [${sortedArr.join(', ')}]\nTarget: ${target}\nFound at index: ${index}\nComparisons: ${comparisons}\nTime: O(log n)\nSpace: O(1)`);
+    }
+}
+
+function patternMatchOperation(type) {
+    const text = document.getElementById('patternText')?.value ?? '';
+    const pattern = document.getElementById('patternSearch')?.value ?? '';
+    const result = document.getElementById('patternResult');
+    if (!result) return;
+
+    if (!pattern) {
+        setPlainText(result, 'Please enter a pattern to search for.');
+        return;
+    }
+
+    if (pattern.length > text.length) {
+        setPlainText(result, `Pattern Matching:\nText: "${text}"\nPattern: "${pattern}"\nMatches at: []\nComparisons: 0\nPattern is longer than the text.`);
+        return;
+    }
+
+    if (type === 'naive') {
+        const matches = [];
+        let comparisons = 0;
+        for (let i = 0; i <= text.length - pattern.length; i++) {
+            let j = 0;
+            while (j < pattern.length) {
+                comparisons++;
+                if (text[i + j] !== pattern[j]) break;
+                j++;
+            }
+            if (j === pattern.length) {
+                matches.push(i);
+            }
+        }
+
+        setPlainText(result, `Naive Pattern Matching:\nText: "${text}"\nPattern: "${pattern}"\nMatches at: [${matches.join(', ')}]\nComparisons: ${comparisons}\nTime: O(nm)\nSpace: O(1)`);
+        return;
+    }
+
+    if (type === 'kmp') {
+        function buildLps(patternValue) {
+            const lps = new Array(patternValue.length).fill(0);
+            let length = 0;
+            let index = 1;
+            while (index < patternValue.length) {
+                if (patternValue[index] === patternValue[length]) {
+                    length++;
+                    lps[index] = length;
+                    index++;
+                } else if (length !== 0) {
+                    length = lps[length - 1];
+                } else {
+                    lps[index] = 0;
+                    index++;
+                }
+            }
+            return lps;
+        }
+
+        const lps = buildLps(pattern);
+        const matches = [];
+        let comparisons = 0;
+        let textIndex = 0;
+        let patternIndex = 0;
+
+        while (textIndex < text.length) {
+            comparisons++;
+            if (pattern[patternIndex] === text[textIndex]) {
+                textIndex++;
+                patternIndex++;
+            }
+
+            if (patternIndex === pattern.length) {
+                matches.push(textIndex - patternIndex);
+                patternIndex = lps[patternIndex - 1];
+            } else if (textIndex < text.length && pattern[patternIndex] !== text[textIndex]) {
+                if (patternIndex !== 0) {
+                    patternIndex = lps[patternIndex - 1];
+                } else {
+                    textIndex++;
+                }
+            }
+        }
+
+        setPlainText(result, `KMP Algorithm:\nText: "${text}"\nPattern: "${pattern}"\nLPS array: [${lps.join(', ')}]\nMatches at: [${matches.join(', ')}]\nComparisons: ${comparisons}\nTime: O(n + m)\nSpace: O(m)`);
+        return;
+    }
+
+    if (type === 'rabin') {
+        const matches = [];
+        const prime = 101;
+        const d = 256;
+        const m = pattern.length;
+        const n = text.length;
+        let patternHash = 0;
+        let textHash = 0;
+        let h = 1;
+
+        for (let i = 0; i < m - 1; i++) {
+            h = (h * d) % prime;
+        }
+        for (let i = 0; i < m; i++) {
+            patternHash = (d * patternHash + pattern.charCodeAt(i)) % prime;
+            textHash = (d * textHash + text.charCodeAt(i)) % prime;
+        }
+        for (let i = 0; i <= n - m; i++) {
+            if (patternHash === textHash) {
+                let j = 0;
+                while (j < m && text[i + j] === pattern[j]) {
+                    j++;
+                }
+                if (j === m) {
+                    matches.push(i);
+                }
+            }
+            if (i < n - m) {
+                textHash = (d * (textHash - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % prime;
+                if (textHash < 0) {
+                    textHash += prime;
+                }
+            }
+        }
+
+        setPlainText(result, `Rabin-Karp Algorithm:\nText: "${text}"\nPattern: "${pattern}"\nPattern hash: ${patternHash}\nMatches at: [${matches.join(', ')}]\nTime: O(nm) worst, O(n + m) average\nSpace: O(1)`);
+    }
+}
+
+function performanceTest() {
+    const algorithm = document.getElementById('perfAlgorithm')?.value ?? 'sorting';
+    const size = getNumericInputValue('perfSize');
+    const result = document.getElementById('performanceResult');
+    if (!result) return;
+
+    if (size === null || size < 1) {
+        setPlainText(result, 'Please enter a positive test size.');
+        return;
+    }
+
+    if (algorithm === 'sorting' && size > 2000) {
+        setPlainText(result, 'Please keep the sorting test size at 2000 or below to avoid freezing the page.');
+        return;
+    }
+
+    const testData = Array.from({ length: size }, () => Math.floor(Math.random() * 1000));
+
+    if (algorithm === 'sorting') {
+        const bubbleStart = performance.now();
+        const bubbleData = [...testData];
+        for (let i = 0; i < bubbleData.length - 1; i++) {
+            for (let j = 0; j < bubbleData.length - i - 1; j++) {
+                if (bubbleData[j] <= bubbleData[j + 1]) continue;
+                [bubbleData[j], bubbleData[j + 1]] = [bubbleData[j + 1], bubbleData[j]];
+            }
+        }
+        const bubbleTime = performance.now() - bubbleStart;
+
+        const quickStart = performance.now();
+        const quickData = [...testData];
+        quickData.sort((a, b) => a - b);
+        const quickTime = performance.now() - quickStart;
+
+        setPlainText(result, `Sorting Performance (${size} elements):\nBubble Sort: ${bubbleTime.toFixed(3)}ms\nQuick Sort: ${quickTime.toFixed(3)}ms\nSpeedup: ${formatSpeedup(bubbleTime, quickTime)}\nBubble: O(n^2)\nQuick: O(n log n)`);
+        return;
+    }
+
+    if (algorithm === 'searching') {
+        const sortedData = [...testData].sort((a, b) => a - b);
+        const target = sortedData[Math.floor(sortedData.length / 2)];
+
+        const linearStart = performance.now();
+        for (let i = 0; i < sortedData.length; i++) {
+            if (sortedData[i] === target) break;
+        }
+        const linearTime = performance.now() - linearStart;
+
+        const binaryStart = performance.now();
+        let left = 0;
+        let right = sortedData.length - 1;
+        while (left <= right) {
+            const mid = Math.floor((left + right) / 2);
+            if (sortedData[mid] === target) break;
+            if (sortedData[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        const binaryTime = performance.now() - binaryStart;
+
+        setPlainText(result, `Search Performance (${size} elements):\nLinear Search: ${linearTime.toFixed(3)}ms\nBinary Search: ${binaryTime.toFixed(3)}ms\nSpeedup: ${formatSpeedup(linearTime, binaryTime)}\nLinear: O(n)\nBinary: O(log n)`);
+        return;
+    }
+
+    const arrayStart = performance.now();
+    const arr = [];
+    for (let i = 0; i < size; i++) {
+        arr.push(i);
+    }
+    const arrayTime = performance.now() - arrayStart;
+
+    const setStart = performance.now();
+    const set = new Set();
+    for (let i = 0; i < size; i++) {
+        set.add(i);
+    }
+    const setTime = performance.now() - setStart;
+
+    setPlainText(result, `Data Structure Performance (${size} operations):\nArray insertion: ${arrayTime.toFixed(3)}ms\nSet insertion: ${setTime.toFixed(3)}ms\nSpeedup: ${formatSpeedup(arrayTime, setTime)}\nArray: O(1) append\nSet: O(1) average insertion`);
+}
+
+window.reviewCode = function() {
+    const code = document.getElementById('reviewCode')?.value || '';
+    const result = document.getElementById('reviewResults');
+    if (!result) return;
+
+    if (!code.trim()) {
+        setPlainText(result, 'Please enter some code to review.');
+        return;
+    }
+
+    const critical = [];
+    const warnings = [];
+    const suggestions = [];
+
+    if (code.includes('gets(')) critical.push('CRITICAL: gets() is unsafe. Use fgets() instead.');
+    if (code.includes('scanf("%s')) critical.push('CRITICAL: scanf("%s") is unsafe without a width limit.');
+    if (code.includes('system(')) critical.push('CRITICAL: system() is risky. Avoid shell execution on untrusted input.');
+    if (code.includes('eval(') || code.includes('exec(')) critical.push('CRITICAL: dynamic code execution detected.');
+
+    const mallocCount = (code.match(/malloc\s*\(/g) || []).length;
+    const callocCount = (code.match(/calloc\s*\(/g) || []).length;
+    const reallocCount = (code.match(/realloc\s*\(/g) || []).length;
+    const freeCount = (code.match(/free\s*\(/g) || []).length;
+    const totalAlloc = mallocCount + callocCount + reallocCount;
+
+    if (totalAlloc > freeCount) warnings.push(`Potential memory leak: ${totalAlloc} allocations but only ${freeCount} free() calls.`);
+    if (freeCount > totalAlloc) warnings.push(`Potential double free: ${freeCount} free() calls but only ${totalAlloc} allocations.`);
+
+    if (code.includes('strcpy(') && !code.includes('strncpy(')) warnings.push('Use strncpy() or another bounded copy instead of strcpy().');
+    if (code.includes('strcat(') && !code.includes('strncat(')) warnings.push('Use strncat() or another bounded append instead of strcat().');
+    if (code.includes('sprintf(') && !code.includes('snprintf(')) warnings.push('Use snprintf() instead of sprintf().');
+
+    if (hasUncheckedNullSensitiveCall(code, 'malloc')) warnings.push('malloc() return value may not be checked before use.');
+    if (hasUncheckedNullSensitiveCall(code, 'calloc')) warnings.push('calloc() return value may not be checked before use.');
+    if (hasUncheckedNullSensitiveCall(code, 'realloc')) warnings.push('realloc() return value may not be checked before use.');
+    if (hasUncheckedNullSensitiveCall(code, 'fopen')) warnings.push('fopen() return value may not be checked before use.');
+
+    if (!code.includes('//') && !code.includes('/*') && code.split('\n').length > 10) {
+        suggestions.push('Consider adding comments around the more complex logic.');
+    }
+
+    const longLines = code.split('\n').filter(line => line.length > 100);
+    if (longLines.length > 0) {
+        suggestions.push(`${longLines.length} lines exceed 100 characters. Consider wrapping them for readability.`);
+    }
+
+    if ((code.includes('import ') || code.includes('def ') || code.includes('print(')) && code.includes('def ') && !code.includes('if __name__ == "__main__":')) {
+        suggestions.push('Add an if __name__ == "__main__": guard when the file is meant to run as a script.');
+    }
+
+    if (/\bvar\s+/.test(code)) {
+        suggestions.push('Prefer let/const over var in modern JavaScript.');
+    }
+
+    if (/(^|[^=!<>])==([^=]|$)/m.test(code)) {
+        suggestions.push('Prefer strict equality (===) over loose equality (==) when possible.');
+    }
+
+    const totalIssues = critical.length + warnings.length;
+    const score = Math.max(0, 100 - (critical.length * 25) - (warnings.length * 10) - (suggestions.length * 2));
+    let scoreColor = '#28a745';
+    if (score < 50) {
+        scoreColor = '#dc3545';
+    } else if (score < 75) {
+        scoreColor = '#ffc107';
+    }
+
+    function renderSection(title, items, background, border, color) {
+        if (items.length === 0) return '';
+        const cards = items.map(item => `<div style="background: ${background}; color: ${color}; padding: 8px; margin: 5px 0; border-left: 4px solid ${border}; border-radius: 3px;">${escapeHtml(item)}</div>`).join('');
+        return `<h5 style="margin: 15px 0 10px 0; color: ${border};">${title}</h5>${cards}`;
+    }
+
+    if (totalIssues === 0 && suggestions.length === 0) {
+        setHtml(result, '<div style="color: #28a745; font-size: 1.05rem; margin: 10px 0;">No issues detected by the rule-based checks.</div>');
+        return;
+    }
+
+    const output = [
+        `<div style="margin-bottom: 15px;"><strong>Analysis Summary:</strong> ${totalIssues} issues, ${suggestions.length} suggestions</div>`,
+        renderSection('Critical Issues', critical, '#f8d7da', '#dc3545', '#721c24'),
+        renderSection('Warnings', warnings, '#fff3cd', '#ffc107', '#856404'),
+        renderSection('Suggestions', suggestions, '#d1ecf1', '#17a2b8', '#0c5460'),
+        `<div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px; text-align: center;"><strong>Code Quality Score: <span style="color: ${scoreColor}; font-size: 1.2rem;">${score}/100</span></strong></div>`
+    ].join('');
+
+    setHtml(result, output);
+};
+
+window.memoryOperation = function(operation) {
+    const size = getNumericInputValue('memSize');
+    const result = document.getElementById('memoryResult');
+    if (!result) return;
+
+    if ((operation === 'malloc' || operation === 'calloc' || operation === 'realloc') && (size === null || size <= 0)) {
+        setPlainText(result, 'Please enter a positive allocation size.');
+        return;
+    }
+
+    switch(operation) {
+        case 'malloc': {
+            const block = { size, address: `0x${Math.random().toString(16).slice(2, 10)}`, type: 'malloc' };
+            memoryBlocks.push(block);
+            setPlainText(result, `malloc(${size}):\nAllocated ${size} bytes\nAddress: ${block.address}\nTotal blocks: ${memoryBlocks.length}`);
+            break;
+        }
+        case 'calloc': {
+            const callocBlock = { size: size * 4, address: `0x${Math.random().toString(16).slice(2, 10)}`, type: 'calloc' };
+            memoryBlocks.push(callocBlock);
+            setPlainText(result, `calloc(${size}, 4):\nAllocated ${size * 4} bytes (initialized to 0)\nAddress: ${callocBlock.address}\nTotal blocks: ${memoryBlocks.length}`);
+            break;
+        }
+        case 'realloc': {
+            if (memoryBlocks.length === 0) {
+                setPlainText(result, 'No memory blocks to reallocate.');
+                return;
+            }
+            const lastBlock = memoryBlocks[memoryBlocks.length - 1];
+            lastBlock.size = size;
+            setPlainText(result, `realloc(${lastBlock.address}, ${size}):\nResized to ${size} bytes\nAddress: ${lastBlock.address}\nTotal blocks: ${memoryBlocks.length}`);
+            break;
+        }
+        case 'free': {
+            if (memoryBlocks.length === 0) {
+                setPlainText(result, 'No memory blocks to free.');
+                return;
+            }
+            const freed = memoryBlocks.pop();
+            setPlainText(result, `free() successful\nFreed ${freed.size} bytes\nRemaining blocks: ${memoryBlocks.length}`);
+            break;
+        }
+    }
+};
+
+window.greedyOperation = function(operation) {
+    const result = document.getElementById('greedyResult');
+    if (!result) return;
+
+    switch(operation) {
+        case 'activity':
+            setPlainText(result, 'Activity Selection:\nActivities: [(1,3), (2,5), (4,7), (1,8), (5,9)]\nSelected: (1,3), (4,7), (5,9)\nMaximum activities: 3');
+            break;
+        case 'coin':
+            setPlainText(result, 'Coin Change (Greedy):\nCoins: [25, 10, 5, 1]\nAmount: 67\nSolution: 2x25 + 1x10 + 1x5 + 2x1 = 6 coins');
+            break;
+        case 'fractional':
+            setPlainText(result, 'Fractional Knapsack:\nItems: [(w:10,v:60), (w:20,v:100), (w:30,v:120)]\nCapacity: 50\nOptimal value: 240 (take all items)');
+            break;
+    }
+};
+
+window.clearCode = clearCode;
+window.selectDataStructure = selectDataStructure;
+window.dsRemove = dsRemove;
+window.dsSearch = dsSearch;
+window.matrixOperation = matrixOperation;
+window.searchAlgorithm = searchAlgorithm;
+window.generateRandom = generateRandom;
+window.buildTree = buildTree;
+window.traverseTree = traverseTree;
+window.solveDynamicProgramming = solveDynamicProgramming;
+window.backtrackOperation = backtrackOperation;
+window.divideConquerOperation = divideConquerOperation;
+window.patternMatchOperation = patternMatchOperation;
+window.performanceTest = performanceTest;
