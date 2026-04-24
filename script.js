@@ -620,7 +620,7 @@ function clearOutput() {
 
 function getProgrammingQuiz() {
     return `
-        <h2>🧠 Programming Quiz</h2>
+        <h2>Programming Quiz</h2>
         <div id="quizContainer">
             <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
                 <div id="questionNumber" style="color: var(--primary); font-weight: bold; margin-bottom: 10px;"></div>
@@ -642,6 +642,27 @@ function getProgrammingQuiz() {
     `;
 }
 
+function getQuizInterfaceMarkup() {
+    return `
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+            <div id="questionNumber" style="color: var(--primary); font-weight: bold; margin-bottom: 10px;"></div>
+            <div id="question" style="font-size: 1.3rem; margin-bottom: 25px; line-height: 1.5;"></div>
+            <div id="options" style="margin-bottom: 25px;"></div>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <button id="submitBtn" onclick="checkAnswer()" style="background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 1rem;">Submit Answer</button>
+                <button onclick="nextQuestion()" id="nextBtn" style="background: #28a745; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; display: none;">Next Question</button>
+            </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <div id="score" style="font-size: 1.1rem; font-weight: bold;">Score: 0/0</div>
+            <div id="progress" style="background: #e9ecef; height: 10px; width: 200px; border-radius: 5px; overflow: hidden;">
+                <div id="progressBar" style="background: var(--primary); height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+            </div>
+        </div>
+        <div id="result" style="margin-top: 20px; padding: 15px; border-radius: 8px; display: none;"></div>
+    `;
+}
+
 let quizData = [
     {
         question: "What is the correct way to declare a pointer in C?",
@@ -657,7 +678,7 @@ let quizData = [
     },
     {
         question: "What is the time complexity of binary search?",
-        options: ["O(n)", "O(log n)", "O(n²)", "O(1)"],
+        options: ["O(n)", "O(log n)", "O(n^2)", "O(1)"],
         correct: 1,
         explanation: "Binary search divides the search space in half with each comparison, resulting in O(log n) complexity."
     },
@@ -674,10 +695,10 @@ let quizData = [
         explanation: "malloc() allocates a block of memory dynamically during runtime."
     },
     {
-        question: "What is the output of: printf('%d', sizeof(int))?",
-        options: ["2", "4", "8", "Depends on system"],
-        correct: 3,
-        explanation: "sizeof(int) returns the number of bytes used by int data type, which varies by system architecture."
+        question: "What does sizeof(int) return in C?",
+        options: ["The value stored in an int", "The number of digits in an integer", "The size in bytes of the int type", "It always returns 4"],
+        correct: 2,
+        explanation: "sizeof(int) returns the memory size in bytes used by the int type on the current system."
     },
     {
         question: "Which loop is guaranteed to execute at least once?",
@@ -699,9 +720,9 @@ let quizData = [
     },
     {
         question: "What is the worst-case time complexity of bubble sort?",
-        options: ["O(n)", "O(n log n)", "O(n²)", "O(2^n)"],
+        options: ["O(n)", "O(n log n)", "O(n^2)", "O(2^n)"],
         correct: 2,
-        explanation: "Bubble sort has O(n²) worst-case complexity when array is reverse sorted."
+        explanation: "Bubble sort has O(n^2) worst-case complexity when the array is in reverse order."
     },
     {
         question: "Which header file is required for printf() function?",
@@ -728,7 +749,7 @@ let quizData = [
         explanation: "break statement is used to exit from loops or switch statements immediately."
     },
     {
-        question: "Which sorting algorithm has best average-case performance?",
+        question: "Which sorting algorithm is typically fastest on average for large in-memory arrays?",
         options: ["Bubble Sort", "Selection Sort", "Quick Sort", "Insertion Sort"],
         correct: 2,
         explanation: "Quick Sort has O(n log n) average-case complexity, making it very efficient for large datasets."
@@ -798,23 +819,31 @@ let quizData = [
 let currentQuestion = 0;
 let score = 0;
 let selectedAnswer = -1;
+let questionLocked = false;
 
 function initQuiz() {
+    const quizContainer = document.getElementById('quizContainer');
+    if (quizContainer && !document.getElementById('questionNumber')) {
+        quizContainer.innerHTML = getQuizInterfaceMarkup();
+    }
     currentQuestion = 0;
     score = 0;
     selectedAnswer = -1;
+    questionLocked = false;
     showQuestion();
 }
 
 function showQuestion() {
     const q = quizData[currentQuestion];
+    if (!q) return;
+
     document.getElementById('questionNumber').innerHTML = `Question ${currentQuestion + 1} of ${quizData.length}`;
-    document.getElementById('question').innerHTML = q.question;
+    document.getElementById('question').textContent = q.question;
     
     let optionsHtml = '';
     if (q.options && q.options.length > 0) {
         q.options.forEach((option, index) => {
-            optionsHtml += `<div class="quiz-option" onclick="selectOption(${index})" id="option${index}">${String.fromCharCode(65 + index)}. ${option}</div>`;
+            optionsHtml += `<button type="button" class="quiz-option" onclick="selectOption(${index})" id="option${index}">${String.fromCharCode(65 + index)}. ${escapeHtml(option)}</button>`;
         });
     } else {
         optionsHtml = '<div style="color: red;">Error: No options available for this question</div>';
@@ -826,13 +855,15 @@ function showQuestion() {
     document.getElementById('nextBtn').style.display = 'none';
     document.getElementById('score').innerHTML = `Score: ${score}/${quizData.length}`;
     
-    const progress = ((currentQuestion) / quizData.length) * 100;
+    const progress = ((currentQuestion + 1) / quizData.length) * 100;
     document.getElementById('progressBar').style.width = progress + '%';
     
     selectedAnswer = -1;
+    questionLocked = false;
 }
 
 function selectOption(index) {
+    if (questionLocked) return;
     document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
     document.getElementById(`option${index}`).classList.add('selected');
     selectedAnswer = index;
@@ -846,12 +877,26 @@ function checkAnswer() {
     
     const q = quizData[currentQuestion];
     const resultDiv = document.getElementById('result');
+    questionLocked = true;
+
+    document.querySelectorAll('.quiz-option').forEach((opt, index) => {
+        opt.disabled = true;
+        opt.classList.add('locked');
+
+        if (index === q.correct) {
+            opt.classList.add('correct');
+        }
+
+        if (index === selectedAnswer && selectedAnswer !== q.correct) {
+            opt.classList.add('incorrect');
+        }
+    });
     
     if (selectedAnswer === q.correct) {
         score++;
-        resultDiv.innerHTML = `<div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 8px;"><strong>✓ Correct!</strong><br>${q.explanation}</div>`;
+        resultDiv.innerHTML = `<div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 8px;"><strong>Correct!</strong><br>${escapeHtml(q.explanation)}</div>`;
     } else {
-        resultDiv.innerHTML = `<div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px;"><strong>✗ Incorrect!</strong><br>Correct answer: <strong>${String.fromCharCode(65 + q.correct)}. ${q.options[q.correct]}</strong><br>${q.explanation}</div>`;
+        resultDiv.innerHTML = `<div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px;"><strong>Incorrect!</strong><br>Correct answer: <strong>${String.fromCharCode(65 + q.correct)}. ${escapeHtml(q.options[q.correct])}</strong><br>${escapeHtml(q.explanation)}</div>`;
     }
     
     resultDiv.style.display = 'block';
@@ -872,6 +917,8 @@ function nextQuestion() {
 function showFinalResults() {
     const percentage = Math.round((score / quizData.length) * 100);
     let message = '';
+    const quizContainer = document.getElementById('quizContainer');
+    if (!quizContainer) return;
     
     if (percentage >= 80) {
         message = 'Excellent! You have a strong understanding of programming concepts.';
@@ -881,9 +928,9 @@ function showFinalResults() {
         message = 'Keep studying! Review the concepts and try again.';
     }
     
-    document.getElementById('quizContainer').innerHTML = `
+    quizContainer.innerHTML = `
         <div style="text-align: center; padding: 40px;">
-            <h3 style="color: var(--primary); margin-bottom: 20px;">🎉 Quiz Complete!</h3>
+            <h3 style="color: var(--primary); margin-bottom: 20px;">Quiz Complete!</h3>
             <div style="font-size: 3rem; margin: 20px 0;">${percentage}%</div>
             <p style="font-size: 1.2rem; margin-bottom: 10px;"><strong>Final Score: ${score}/${quizData.length}</strong></p>
             <p style="color: #666; margin-bottom: 30px;">${message}</p>
