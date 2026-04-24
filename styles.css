@@ -2031,6 +2031,9 @@ footer {
     transition: all 0.3s ease;
     font-size: 1rem;
     line-height: 1.4;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
 }
 
 .quiz-option:hover {
@@ -2045,4 +2048,20 @@ footer {
     border-color: var(--primary);
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(0,123,255,0.3);
+}
+
+.quiz-option.locked {
+    cursor: default;
+}
+
+.quiz-option.correct {
+    background: #d4edda;
+    border-color: #28a745;
+    color: #155724;
+}
+
+.quiz-option.incorrect {
+    background: #f8d7da;
+    border-color: #dc3545;
+    color: #721c24;
 }
