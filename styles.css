@@ -152,6 +152,66 @@ section h2 {
   text-decoration: underline;
 }
 
+.social-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 8px 14px 8px 10px;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.social-link:hover,
+.social-link:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 18px rgba(0,0,0,0.18);
+}
+
+.social-link:focus {
+  outline: 3px solid rgba(0,123,255,0.3);
+  outline-offset: 3px;
+}
+
+.social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.18);
+}
+
+.social-icon svg {
+  width: 19px;
+  height: 19px;
+  fill: currentColor;
+}
+
+.social-link.linkedin {
+  background: #0a66c2;
+}
+
+.social-link.facebook {
+  background: #1877f2;
+}
+
+.social-link.instagram {
+  background: linear-gradient(135deg, #f58529 0%, #dd2a7b 45%, #8134af 75%, #515bd4 100%);
+}
+
 .project-links {
   display: flex;
   gap: 8px;
@@ -1603,6 +1663,10 @@ footer {
 .dark-mode section, .dark-mode .material-card, .dark-mode .card {
   background: #222 !important;
   color: #eee !important;
+}
+
+.dark-mode .social-link {
+  color: #fff !important;
 }
 
 .dark-mode footer {
