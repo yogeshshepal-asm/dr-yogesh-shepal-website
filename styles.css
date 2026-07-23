@@ -1314,6 +1314,27 @@ footer {
   transition: all 0.3s ease;
 }
 
+.featured-blog-post {
+  position: relative;
+  padding: 30px;
+  background: linear-gradient(135deg, #f4f8ff 0%, #ffffff 60%, #eef6ff 100%);
+  border: 1px solid rgba(0, 123, 255, 0.18);
+  box-shadow: 0 18px 40px rgba(0, 123, 255, 0.14);
+}
+
+.blog-featured-label {
+  display: inline-block;
+  margin-bottom: 14px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #0d47a1, #007bff);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .blog-post:hover {
   transform: translateY(-5px);
   box-shadow: 0 15px 35px rgba(0,0,0,0.15);
@@ -1333,14 +1354,22 @@ footer {
 .blog-post h3 {
   color: #2c3e50;
   margin: 0 0 15px 0;
-  font-size: 1.3rem;
-  line-height: 1.4;
+  font-size: 1.38rem;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+}
+
+.featured-blog-post h3 {
+  font-size: 1.7rem;
+  line-height: 1.35;
+  margin-bottom: 18px;
 }
 
 .blog-excerpt p {
   color: #666;
-  line-height: 1.6;
+  line-height: 1.7;
   margin-bottom: 15px;
+  font-size: 1rem;
 }
 
 .read-more-btn {
@@ -1359,21 +1388,58 @@ footer {
 }
 
 .blog-content {
-  margin-top: 20px;
-  padding-top: 20px;
+  margin-top: 24px;
+  padding-top: 22px;
   border-top: 1px solid #eee;
 }
 
 .blog-content h4 {
   color: var(--primary);
-  margin: 20px 0 10px 0;
-  font-size: 1.1rem;
+  margin: 22px 0 10px 0;
+  font-size: 1.15rem;
+  line-height: 1.4;
 }
 
 .blog-content p {
   color: #555;
-  line-height: 1.7;
-  margin-bottom: 15px;
+  line-height: 1.8;
+  margin-bottom: 16px;
+  font-size: 0.98rem;
+}
+
+.blog-cta-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  align-items: start;
+  margin: 0 0 20px 0;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(0, 123, 255, 0.12), rgba(13, 71, 161, 0.08));
+  border: 1px solid rgba(0, 123, 255, 0.18);
+}
+
+.blog-cta-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(0, 123, 255, 0.14);
+  font-size: 1.5rem;
+}
+
+.blog-cta-card strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #0d47a1;
+}
+
+.blog-cta-card p {
+  margin: 0;
+  color: #334155;
 }
 
 .blog-content ul {
