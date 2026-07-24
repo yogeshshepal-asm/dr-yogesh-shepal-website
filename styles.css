@@ -504,14 +504,14 @@ footer {
   max-width: 600px;
   margin: 30px auto;
   padding: 24px;
-  background: #fff;
+  background: linear-gradient(180deg, #f9fbff 0%, #eaf3ff 100%);
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-  border: 2px solid var(--primary);
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.1);
+  border: 2px solid #b8d4ff;
 }
 
 .material-card h4 {
-  color: var(--primary);
+  color: #0b4ea2;
   margin-top: 0;
 }
 
@@ -1802,8 +1802,8 @@ footer {
 
 .tabs-nav {
   display: flex;
-  background: #f8f9fa;
-  border-bottom: 1px solid #ddd;
+  background: #f3f7ff;
+  border-bottom: 1px solid #d7e4fa;
 }
 
 .tab-btn {
@@ -1813,21 +1813,22 @@ footer {
   background: transparent;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 500;
-  color: #666;
+  font-weight: 700;
+  color: #4a5568;
   transition: all 0.3s ease;
   border-bottom: 3px solid transparent;
 }
 
 .tab-btn:hover {
-  background: #e9ecef;
-  color: #333;
+  background: #e9f1ff;
+  color: #1f2d3d;
 }
 
 .tab-btn.active {
   background: #fff;
   color: var(--primary);
   border-bottom-color: var(--primary);
+  font-weight: 700;
 }
 
 .tab-content {
