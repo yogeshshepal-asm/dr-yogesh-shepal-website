@@ -1939,13 +1939,43 @@ footer {
 }
 
 .typewriter-text {
-  border-right: 2px solid var(--primary);
-  animation: blink 1s infinite;
+    font-weight: 700;
+    background: linear-gradient(
+        90deg,
+        #ff00cc,
+        #3333ff,
+        #00e5ff,
+        #00ff85,
+        #ffff00,
+        #ff6600,
+        #ff00cc
+    );
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+
+    animation: magicGradient 5s linear infinite,
+               magicGlow 2s ease-in-out infinite alternate;
 }
 
-.typing-complete .typewriter-text {
-  border-right: none;
-  animation: none;
+@keyframes magicGradient {
+    0% {
+        background-position: 0% center;
+    }
+    100% {
+        background-position: 300% center;
+    }
+}
+
+@keyframes magicGlow {
+    from {
+        filter: drop-shadow(0 0 3px rgba(0, 229, 255, 0.4));
+    }
+    to {
+        filter: drop-shadow(0 0 12px rgba(255, 0, 204, 0.8));
+    }
 }
 
 /* Data Structure Visualizer Styles */
